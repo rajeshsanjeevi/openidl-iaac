@@ -10,6 +10,7 @@ on:
     paths:
       - 'aws/aws_resources/**'
       - 'aws/k8s_resources/**'
+      - 'aws/tf_s3_backend/**'
 
     branches:
       - aais_dev
@@ -20,6 +21,7 @@ on:
     paths:
       - 'aws/aws_resources/**'
       - 'aws/k8s_resources/**
+      - 'aws/tf_s3_backend/**'
 
     branches:
       - aais_dev
@@ -102,42 +104,46 @@ jobs:
         terraform_wrapper: true
 
     # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
+    - name: Terraform Format AWS resources
       id: format
       run: terraform fmt -recursive
       working_directory: aws_resources
       #continue-on-error: true
 
     ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
+    - name: Terraform Init AWS resources
       id: init
-      run: terraform init -backend-config=tf_s3_backend/s3_backend
+      run: terraform init -backend-config=../tf_s3_backend/aws_resources
+      working_directory: aws_resources
 
     # Checks that all Terraform configuration files adhere for syntax
-    - name: Terraform Syntax
+    - name: Terraform Syntax AWS resources
       id: validate
       run: terraform validate -no-color -json
+      working_directory: aws_resources
       #continue-on-error: true
 
     # Generates an execution plan for Terraform
-    - name: Terraform Plan
+    - name: Terraform Plan AWS resources
       id: plan
       if: github.event_name == 'pull_request'
     # env:
       #run: terraform plan -var-file=aais.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
-      run: terraform plan -var-file=aais_dev.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
+      run: terraform plan -var-file=../aais_dev.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
       continue-on-error: true
+      working_directory: aws_resources
 
-    - name: Terraform Plan Status
+    - name: Terraform Plan Status AWS resources
       if: steps.plan.outcome == 'failure'
       run: exit 1
 
     # On push to main, build or change infrastructure according to Terraform configuration files
-    - name: Terraform Apply
+    - name: Terraform Apply AWS resources
       id: apply
       #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
       if: github.ref == 'refs/heads/aais_dev' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=aais_dev.tfvars
+      run: terraform apply -auto-approve -var-file=../aais_dev.tfvars
+      working_directory: aws_resources
 
 
 
