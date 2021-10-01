@@ -28,18 +28,17 @@ on:
       - aais_test
       - aais_prod
 
-defaults:
-  run:
-    shell: bash
-    working-directory: aws/aws_resources
-
 jobs:
-  aais_node_dev:
+  aais_node_dev-aws_resources:
     environment: aais_dev
 
     if: github.base_ref == 'aais_dev' || github.ref == 'refs/heads/aais_dev'
     name: 'aais-node-openidl-dev'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: aws/aws_resources
     env:
       TF_VAR_aws_account_number: ${{ secrets.aws_account_number }}
       TF_VAR_aws_role_arn: ${{ secrets.aws_role_arn }}
@@ -59,7 +58,6 @@ jobs:
       TF_VAR_aws_secret_key: ${{ secrets.aws_secret_key }}
       TF_VAR_aws_external_id: ${{ secrets.aws_external_id }}
       aws_input_bucket : ${{ secrets.aws_input_bucket }}
-
 
     steps:
     # Option:1 Configuring aws cli utilizing secrets from GIT SECRETS
@@ -94,7 +92,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/local/bin
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        aws s3 cp s3://${{env.aws_input_bucket}}/aais_node/dev/aais.tfvars aais_dev.tfvars
+        aws s3 cp s3://${{env.aws_input_bucket}}/aais_node/dev/aais.tfvars ../aais_dev.tfvars
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -130,7 +128,6 @@ jobs:
       run: terraform plan -var-file=../aais_dev.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
       continue-on-error: true
 
-
     - name: Terraform Plan Status AWS resources
       if: steps.plan.outcome == 'failure'
       run: exit 1
@@ -138,7 +135,6 @@ jobs:
     # On push to main, build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply AWS resources
       id: apply
-      #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
       if: github.ref == 'refs/heads/aais_dev' && github.event_name == 'push'
       run: terraform apply -auto-approve -var-file=../aais_dev.tfvars
 
