@@ -4,13 +4,12 @@
 # Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
 # Documentation for  `aws-actions/configure-aws-credentials` is located here: https://github.com/aws-actions/configure-aws-credentials
 
-name: 'aais-node-openidl-pipeline-v1.0'
+name: 'aais-node-openidl-aws-resources-pipeline-v1.0'
 on:
   push:
     paths:
-    #  - 'aws/aws_resources/**'
-    #  - 'aws/k8s_resources/**'
-    # - 'aws/tf_s3_backend/**'
+      - 'aws/aws_resources/**'
+      - 'aws/tf_s3_backend/aws_resources'
 
     branches:
       - aais_dev
@@ -19,9 +18,8 @@ on:
 
   pull_request:
     paths:
-    #  - 'aws/aws_resources/**'
-    #  - 'aws/k8s_resources/**'
-    #  - 'aws/tf_s3_backend/**'
+      - 'aws/aws_resources/**'
+      - 'aws/tf_s3_backend/aws_resources'
 
     branches:
       - aais_dev
@@ -33,7 +31,7 @@ jobs:
     environment: aais_dev
 
     if: github.base_ref == 'aais_dev' || github.ref == 'refs/heads/aais_dev'
-    name: 'aais-node-openidl-dev'
+    name: 'aais-node-dev-aws-resources'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -102,25 +100,25 @@ jobs:
         terraform_wrapper: true
 
     # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format AWS resources
+    - name: Terraform Format
       id: format
       run: terraform fmt -recursive
       #continue-on-error: true
 
     ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init AWS resources
+    - name: Terraform Init
       id: init
       run: terraform init -backend-config=../tf_s3_backend/aws_resources
 
 
     # Checks that all Terraform configuration files adhere for syntax
-    - name: Terraform Syntax AWS resources
+    - name: Terraform Syntax
       id: validate
       run: terraform validate -no-color -json
       #continue-on-error: true
 
     # Generates an execution plan for Terraform
-    - name: Terraform Plan AWS resources
+    - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
     # env:
@@ -128,17 +126,12 @@ jobs:
       run: terraform plan -var-file=../aais_dev.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
       continue-on-error: true
 
-    - name: Terraform Plan Status AWS resources
+    - name: Terraform Plan Status
       if: steps.plan.outcome == 'failure'
       run: exit 1
 
     # On push to main, build or change infrastructure according to Terraform configuration files
-    - name: Terraform Apply AWS resources
+    - name: Terraform Apply
       id: apply
       if: github.ref == 'refs/heads/aais_dev' && github.event_name == 'push'
       run: terraform apply -auto-approve -var-file=../aais_dev.tfvars
-
-
-
-
-
