@@ -19,7 +19,7 @@ on:
   pull_request:
     paths:
       - 'aws/aws_resources/**'
-     - 'aws/tf_s3_backend/k8s_resources'
+      - 'aws/tf_s3_backend/k8s_resources'
 
     branches:
       - aais_dev
