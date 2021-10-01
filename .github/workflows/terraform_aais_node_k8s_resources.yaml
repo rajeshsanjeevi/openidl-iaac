@@ -8,7 +8,7 @@ name: 'aais-node-openidl-k8s-resources-pipeline-v1.0'
 on:
   push:
     paths:
-      - 'aws/aws_resources/**'
+      - 'aws/k8s_resources/**'
       - 'aws/tf_s3_backend/k8s_resources'
 
     branches:
@@ -18,7 +18,7 @@ on:
 
   pull_request:
     paths:
-      - 'aws/aws_resources/**'
+      - 'aws/k8s_resources/**'
       - 'aws/tf_s3_backend/k8s_resources'
 
     branches:
