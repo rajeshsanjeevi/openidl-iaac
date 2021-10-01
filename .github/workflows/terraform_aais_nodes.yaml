@@ -20,7 +20,7 @@ on:
   pull_request:
     paths:
       - 'aws/aws_resources/**'
-      - 'aws/k8s_resources/**
+      - 'aws/k8s_resources/**'
       - 'aws/tf_s3_backend/**'
 
     branches:
