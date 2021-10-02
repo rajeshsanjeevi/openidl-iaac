@@ -1,14 +1,13 @@
-# This workflow is used to deploy aais_node - AWS specific resources in aws using terraform with github actions pipeline
-# On pull request to aais_dev/test/prod this will run terraform init, fmt, validate and plan.
-# On push event to aais_dev/test/prod this will run terraform apply
+# This workflow is used to deploy analytics_node - AWS specific resources in aws using terraform with github actions pipeline
+# On pull request to analytics_dev/test/prod this will run terraform init, fmt, validate and plan.
+# On push event to analytics_dev/test/prod this will run terraform apply
 # Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
 # Documentation for  `aws-actions/configure-aws-credentials` is located here: https://github.com/aws-actions/configure-aws-credentials
 
 #Author: Rajesh Sanjeevi
 #Version: 1.0
 
-
-name: 'aais-node-openidl-aws-resources-pipeline-v1.0'
+name: 'analytics-node-openidl-aws-resources-pipeline-v1.0'
 on:
   push:
     paths:
@@ -16,9 +15,9 @@ on:
       - 'aws/tf_s3_backend/aws_resources'
 
     branches:
-      - aais_dev
-      - aais_test
-      - aais_prod
+      - analytics_dev
+      - analytics_test
+      - analytics_prod
 
   pull_request:
     paths:
@@ -26,16 +25,16 @@ on:
       - 'aws/tf_s3_backend/aws_resources'
 
     branches:
-      - aais_dev
-      - aais_test
-      - aais_prod
+      - analytics_dev
+      - analytics_test
+      - analytics_prod
 
 jobs:
-  aais_node_dev-aws_resources:
-    environment: aais_dev
+  analytics_node_dev-aws_resources:
+    environment: analytics_dev
 
-    if: github.base_ref == 'aais_dev' || github.ref == 'refs/heads/aais_dev'
-    name: 'aais-node-dev-aws-resources'
+    if: github.base_ref == 'analytics_dev' || github.ref == 'refs/heads/analytics_dev'
+    name: 'analytics-node-dev-aws-resources'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -94,7 +93,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/local/bin
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        aws s3 cp s3://${{env.aws_input_bucket}}/aais_node/dev/aais.tfvars ../aais_dev.tfvars
+        aws s3 cp s3://${{env.aws_input_bucket}}/analytics_node/dev/analytics.tfvars ../analytics_dev.tfvars
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -113,7 +112,7 @@ jobs:
       id: init
       run: terraform init -backend-config=../tf_s3_backend/aws_resources
 
-    # Checks that all Terraform configuration files adhere for syntax
+   # Checks that all Terraform configuration files adhere for syntax
     - name: Terraform Syntax
       id: validate
       run: terraform validate -no-color -json
@@ -122,7 +121,7 @@ jobs:
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-      run: terraform plan -var-file=../aais_dev.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
+      run: terraform plan -var-file=../analytics_dev.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
@@ -132,14 +131,14 @@ jobs:
     # On push to main, build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply
       id: apply
-      if: github.ref == 'refs/heads/aais_dev' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=../aais_dev.tfvars
+      if: github.ref == 'refs/heads/analytics_dev' && github.event_name == 'push'
+      run: terraform apply -auto-approve -var-file=../analytics_dev.tfvars
 
-  aais_node_test-aws_resources:
-    environment: aais_test
+  analytics_node_test-aws_resources:
+    environment: analytics_test
 
-    if: github.base_ref == 'aais_test' || github.ref == 'refs/heads/aais_test'
-    name: 'aais-node-test-aws-resources'
+    if: github.base_ref == 'analytics_test' || github.ref == 'refs/heads/analytics_test'
+    name: 'analytics-node-test-aws-resources'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -198,7 +197,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/local/bin
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        aws s3 cp s3://${{env.aws_input_bucket}}/aais_node/test/aais.tfvars ../aais_test.tfvars
+        aws s3 cp s3://${{env.aws_input_bucket}}/analytics_node/test/analytics.tfvars ../analytics_test.tfvars
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -217,7 +216,7 @@ jobs:
       id: init
       run: terraform init -backend-config=../tf_s3_backend/aws_resources
 
-    # Checks that all Terraform configuration files adhere for syntax
+   # Checks that all Terraform configuration files adhere for syntax
     - name: Terraform Syntax
       id: validate
       run: terraform validate -no-color -json
@@ -226,7 +225,7 @@ jobs:
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-      run: terraform plan -var-file=../aais_test.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
+      run: terraform plan -var-file=../analytics_test.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
@@ -236,14 +235,14 @@ jobs:
     # On push to main, build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply
       id: apply
-      if: github.ref == 'refs/heads/aais_test' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=../aais_test.tfvars
+      if: github.ref == 'refs/heads/analytics_test' && github.event_name == 'push'
+      run: terraform apply -auto-approve -var-file=../analytics_test.tfvars
 
-  aais_node_prod-aws_resources:
-    environment: aais_prod
+  analytics_node_prod-aws_resources:
+    environment: analytics_prod
 
-    if: github.base_ref == 'aais_prod' || github.ref == 'refs/heads/aais_prod'
-    name: 'aais-node-prod-aws-resources'
+    if: github.base_ref == 'analytics_prod' || github.ref == 'refs/heads/analytics_prod'
+    name: 'analytics-node-prod-aws-resources'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -302,7 +301,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/local/bin
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        aws s3 cp s3://${{env.aws_input_bucket}}/aais_node/prod/aais.tfvars ../aais_prod.tfvars
+        aws s3 cp s3://${{env.aws_input_bucket}}/analytics_node/prod/analytics.tfvars ../analytics_prod.tfvars
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -330,7 +329,7 @@ jobs:
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-      run: terraform plan -var-file=../aais_prod.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
+      run: terraform plan -var-file=../analytics_prod.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
@@ -340,5 +339,5 @@ jobs:
     # On push to main, build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply
       id: apply
-      if: github.ref == 'refs/heads/aais_prod' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=../aais_prod.tfvars
+      if: github.ref == 'refs/heads/analytics_prod' && github.event_name == 'push'
+      run: terraform apply -auto-approve -var-file=../analytics_prod.tfvars
