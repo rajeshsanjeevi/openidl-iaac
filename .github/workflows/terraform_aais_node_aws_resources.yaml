@@ -7,7 +7,6 @@
 #Author: Rajesh Sanjeevi
 #Version: 1.0
 
-
 name: 'aais-node-openidl-aws-resources-pipeline-v1.0'
 on:
   push:
