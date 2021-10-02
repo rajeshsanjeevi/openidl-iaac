@@ -112,12 +112,10 @@ jobs:
       id: init
       run: terraform init -backend-config=../tf_s3_backend/k8s_resources
 
-
     # Checks that all Terraform configuration files adhere for syntax
     - name: Terraform Syntax
       id: validate
       run: terraform validate -no-color -json
-      #continue-on-error: true
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
@@ -343,4 +341,3 @@ jobs:
       id: apply
       if: github.ref == 'refs/heads/analytics_prod' && github.event_name == 'push'
       run: terraform apply -auto-approve -var-file=../analytics_prod.tfvars -compact-warnings
-

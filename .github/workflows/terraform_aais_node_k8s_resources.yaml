@@ -341,5 +341,3 @@ jobs:
       id: apply
       if: github.ref == 'refs/heads/aais_prod' && github.event_name == 'push'
       run: terraform apply -auto-approve -var-file=../aais_prod.tfvars -compact-warnings
-
-
