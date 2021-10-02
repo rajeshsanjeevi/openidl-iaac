@@ -134,7 +134,7 @@ jobs:
       if: github.ref == 'refs/heads/analytics_dev' && github.event_name == 'push'
       run: terraform apply -auto-approve -var-file=../analytics_dev.tfvars
 
- analytics_node_test-aws_resources:
+  analytics_node_test-aws_resources:
     environment: analytics_test
 
     if: github.base_ref == 'analytics_test' || github.ref == 'refs/heads/analytics_test'
