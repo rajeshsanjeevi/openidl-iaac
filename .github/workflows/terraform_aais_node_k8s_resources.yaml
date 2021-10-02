@@ -1,8 +1,11 @@
-# This workflow is used to deploy aais_node in aws using terraform with github actions pipeline
+# This workflow is used to deploy aais_node - Kubernetes Cluster specific resources in aws using terraform with github actions pipeline
 # On pull request to aais_dev/test/prod this will run terraform init, fmt, validate and plan.
 # On push event to aais_dev/test/prod this will run terraform apply
 # Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
 # Documentation for  `aws-actions/configure-aws-credentials` is located here: https://github.com/aws-actions/configure-aws-credentials
+
+#Author: Rajesh Sanjeevi
+#Version: 1.0
 
 name: 'aais-node-openidl-k8s-resources-pipeline-v1.0'
 on:
@@ -103,26 +106,21 @@ jobs:
     - name: Terraform Format
       id: format
       run: terraform fmt -recursive
-      #continue-on-error: true
 
-    ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
       run: terraform init -backend-config=../tf_s3_backend/k8s_resources
-
 
     # Checks that all Terraform configuration files adhere for syntax
     - name: Terraform Syntax
       id: validate
       run: terraform validate -no-color -json
-      #continue-on-error: true
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-    # env:
-      #run: terraform plan -var-file=aais.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
       run: terraform plan -var-file=../aais_dev.tfvars -out=k8s_resources_plan.out -compact-warnings && terraform show -json k8s_resources_plan.out > k8s_resources_plan.out.json
       continue-on-error: true
 
@@ -212,26 +210,21 @@ jobs:
     - name: Terraform Format
       id: format
       run: terraform fmt -recursive
-      #continue-on-error: true
 
-    ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
       run: terraform init -backend-config=../tf_s3_backend/k8s_resources
-
 
     # Checks that all Terraform configuration files adhere for syntax
     - name: Terraform Syntax
       id: validate
       run: terraform validate -no-color -json
-      #continue-on-error: true
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-    # env:
-      #run: terraform plan -var-file=aais.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
       run: terraform plan -var-file=../aais_test.tfvars -out=k8s_resources_plan.out -compact-warnings && terraform show -json k8s_resources_plan.out > k8s_resources_plan.out.json
       continue-on-error: true
 
@@ -321,26 +314,21 @@ jobs:
     - name: Terraform Format
       id: format
       run: terraform fmt -recursive
-      #continue-on-error: true
 
-    ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
       run: terraform init -backend-config=../tf_s3_backend/k8s_resources
-
 
     # Checks that all Terraform configuration files adhere for syntax
     - name: Terraform Syntax
       id: validate
       run: terraform validate -no-color -json
-      #continue-on-error: true
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-    # env:
-      #run: terraform plan -var-file=aais.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
       run: terraform plan -var-file=../aais_prod.tfvars -out=k8s_resources_plan.out -compact-warnings && terraform show -json k8s_resources_plan.out > k8s_resources_plan.out.json
       continue-on-error: true
 
