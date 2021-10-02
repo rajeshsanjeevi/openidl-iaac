@@ -1,11 +1,11 @@
-# This workflow is used to deploy aais_node - Kubernetes Cluster specific resources in aws using terraform with github actions pipeline
-# On pull request to aais_dev/test/prod this will run terraform init, fmt, validate and plan.
-# On push event to aais_dev/test/prod this will run terraform apply
+# This workflow is used to deploy carrier_node - Kubernetes Cluster specific resources in aws using terraform with github actions pipeline
+# On pull request to carrier_dev/test/prod this will run terraform init, fmt, validate and plan.
+# On push event to carrier_dev/test/prod this will run terraform apply
 # Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
 # Documentation for  `aws-actions/configure-aws-credentials` is located here: https://github.com/aws-actions/configure-aws-credentials
 #Author: Rajesh Sanjeevi
 #Version: 1.0
-name: 'aais-node-openidl-k8s-resources-pipeline-v1.0'
+name: 'carrier-node-openidl-k8s-resources-pipeline-v1.0'
 on:
   push:
     paths:
@@ -13,9 +13,9 @@ on:
       - 'aws/tf_s3_backend/k8s_resources'
 
     branches:
-      - aais_dev
-      - aais_test
-      - aais_prod
+      - carrier_dev
+      - carrier_test
+      - carrier_prod
 
   pull_request:
     paths:
@@ -23,16 +23,16 @@ on:
       - 'aws/tf_s3_backend/k8s_resources'
 
     branches:
-      - aais_dev
-      - aais_test
-      - aais_prod
+      - carrier_dev
+      - carrier_test
+      - carrier_prod
 
 jobs:
-  aais_node_dev-aws_resources:
-    environment: aais_dev
+  carrier_node_dev-aws_resources:
+    environment: carrier_dev
 
-    if: github.base_ref == 'aais_dev' || github.ref == 'refs/heads/aais_dev'
-    name: 'aais-node-dev-k8s-resources'
+    if: github.base_ref == 'carrier_dev' || github.ref == 'refs/heads/carrier_dev'
+    name: 'carrier-node-dev-k8s-resources'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -91,7 +91,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/local/bin
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        aws s3 cp s3://${{env.aws_input_bucket}}/aais_node/dev/aais.tfvars ../aais_dev.tfvars
+        aws s3 cp s3://${{env.aws_input_bucket}}/carrier.tfvars ../carrier_dev.tfvars
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -104,27 +104,22 @@ jobs:
     - name: Terraform Format
       id: format
       run: terraform fmt -recursive
-      #continue-on-error: true
 
-    ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
       run: terraform init -backend-config=../tf_s3_backend/k8s_resources
-
 
     # Checks that all Terraform configuration files adhere for syntax
     - name: Terraform Syntax
       id: validate
       run: terraform validate -no-color -json
-      #continue-on-error: true
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-    # env:
-      #run: terraform plan -var-file=aais.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
-      run: terraform plan -var-file=../aais_dev.tfvars -out=k8s_resources_plan.out -compact-warnings && terraform show -json k8s_resources_plan.out > k8s_resources_plan.out.json
+      run: terraform plan -var-file=../carrier_dev.tfvars -out=k8s_resources_plan.out -compact-warnings && terraform show -json k8s_resources_plan.out > k8s_resources_plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
@@ -134,14 +129,14 @@ jobs:
     # On push to main, build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply
       id: apply
-      if: github.ref == 'refs/heads/aais_dev' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=../aais_dev.tfvars -compact-warnings
+      if: github.ref == 'refs/heads/carrier_dev' && github.event_name == 'push'
+      run: terraform apply -auto-approve -var-file=../carrier_dev.tfvars -compact-warnings
 
-  aais_node_test-aws_resources:
-    environment: aais_test
+  carrier_node_test-aws_resources:
+    environment: carrier_test
 
-    if: github.base_ref == 'aais_test' || github.ref == 'refs/heads/aais_test'
-    name: 'aais-node-test-k8s-resources'
+    if: github.base_ref == 'carrier_test' || github.ref == 'refs/heads/carrier_test'
+    name: 'carrier-node-test-k8s-resources'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -200,7 +195,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/local/bin
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        aws s3 cp s3://${{env.aws_input_bucket}}/aais_node/test/aais.tfvars ../aais_test.tfvars
+        aws s3 cp s3://${{env.aws_input_bucket}}/carrier.tfvars ../carrier_test.tfvars
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -213,27 +208,22 @@ jobs:
     - name: Terraform Format
       id: format
       run: terraform fmt -recursive
-      #continue-on-error: true
 
-    ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
       run: terraform init -backend-config=../tf_s3_backend/k8s_resources
-
 
     # Checks that all Terraform configuration files adhere for syntax
     - name: Terraform Syntax
       id: validate
       run: terraform validate -no-color -json
-      #continue-on-error: true
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-    # env:
-      #run: terraform plan -var-file=aais.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
-      run: terraform plan -var-file=../aais_test.tfvars -out=k8s_resources_plan.out -compact-warnings && terraform show -json k8s_resources_plan.out > k8s_resources_plan.out.json
+      run: terraform plan -var-file=../carrier_test.tfvars -out=k8s_resources_plan.out -compact-warnings && terraform show -json k8s_resources_plan.out > k8s_resources_plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
@@ -243,14 +233,14 @@ jobs:
     # On push to main, build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply
       id: apply
-      if: github.ref == 'refs/heads/aais_test' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=../aais_test.tfvars -compact-warnings
+      if: github.ref == 'refs/heads/carrier_test' && github.event_name == 'push'
+      run: terraform apply -auto-approve -var-file=../carrier_test.tfvars -compact-warnings
 
-  aais_node_prod-aws_resources:
-    environment: aais_prod
+  carrier_node_prod-aws_resources:
+    environment: carrier_prod
 
-    if: github.base_ref == 'aais_prod' || github.ref == 'refs/heads/aais_prod'
-    name: 'aais-node-prod-k8s-resources'
+    if: github.base_ref == 'carrier_prod' || github.ref == 'refs/heads/carrier_prod'
+    name: 'carrier-node-prod-k8s-resources'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -309,7 +299,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/local/bin
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        aws s3 cp s3://${{env.aws_input_bucket}}/aais_node/prod/aais.tfvars ../aais_prod.tfvars
+        aws s3 cp s3://${{env.aws_input_bucket}}/carrier.tfvars ../carrier_prod.tfvars
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -322,9 +312,8 @@ jobs:
     - name: Terraform Format
       id: format
       run: terraform fmt -recursive
-      #continue-on-error: true
 
-    ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
       run: terraform init -backend-config=../tf_s3_backend/k8s_resources
@@ -334,15 +323,12 @@ jobs:
     - name: Terraform Syntax
       id: validate
       run: terraform validate -no-color -json
-      #continue-on-error: true
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-    # env:
-      #run: terraform plan -var-file=aais.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
-      run: terraform plan -var-file=../aais_prod.tfvars -out=k8s_resources_plan.out -compact-warnings && terraform show -json k8s_resources_plan.out > k8s_resources_plan.out.json
+      run: terraform plan -var-file=../carrier_prod.tfvars -out=k8s_resources_plan.out -compact-warnings && terraform show -json k8s_resources_plan.out > k8s_resources_plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
@@ -352,7 +338,7 @@ jobs:
     # On push to main, build or change infrastructure according to Terraform configuration files
     - name: Terraform Apply
       id: apply
-      if: github.ref == 'refs/heads/aais_prod' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=../aais_prod.tfvars -compact-warnings
+      if: github.ref == 'refs/heads/carrier_prod' && github.event_name == 'push'
+      run: terraform apply -auto-approve -var-file=../carrier_prod.tfvars -compact-warnings
 
 
