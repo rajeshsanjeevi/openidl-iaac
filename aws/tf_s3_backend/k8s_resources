@@ -1,4 +1,4 @@
-##The below config declaration is applicable when using remote backend as S3 in terraform
+#The below config declaration is applicable when using remote backend as S3 in terraform
 bucket               = "aais-test-tfstate-mgmt"
 key                  = "k8s/terraform.tfstate"
 region               = "us-west-2"
