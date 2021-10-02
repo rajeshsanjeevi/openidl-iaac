@@ -329,7 +329,7 @@ jobs:
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-       run: terraform plan -var-file=../analytics_prod.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
+      run: terraform plan -var-file=../analytics_prod.tfvars -out=aws_resources_plan.out && terraform show -json aws_resources_plan.out > aws_resources_plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
