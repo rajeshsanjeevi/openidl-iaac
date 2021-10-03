@@ -128,4 +128,4 @@ vault_password_reset = "set" #set a random string to this variable when password
 
 #--------------------------------------------------------------------------------------------------------------------
 #Name of the S3 bucket managing terraform state files
-tf_state_s3_bucket_name = "trv-dev-tfstate-mgmt"
+terraform_state_s3_bucket_name = "trv-dev-tfstate-mgmt"
