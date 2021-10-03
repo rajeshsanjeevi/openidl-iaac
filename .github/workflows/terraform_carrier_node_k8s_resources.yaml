@@ -3,8 +3,10 @@
 # On push event to carrier_dev/test/prod this will run terraform apply
 # Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
 # Documentation for  `aws-actions/configure-aws-credentials` is located here: https://github.com/aws-actions/configure-aws-credentials
+
 #Author: Rajesh Sanjeevi
 #Version: 1.0
+
 name: 'carrier-node-openidl-k8s-resources-pipeline-v1.0'
 on:
   push:
@@ -318,7 +320,6 @@ jobs:
       id: init
       run: terraform init -backend-config=../tf_s3_backend/k8s_resources
 
-
     # Checks that all Terraform configuration files adhere for syntax
     - name: Terraform Syntax
       id: validate
@@ -340,5 +341,3 @@ jobs:
       id: apply
       if: github.ref == 'refs/heads/carrier_prod' && github.event_name == 'push'
       run: terraform apply -auto-approve -var-file=../carrier_prod.tfvars -compact-warnings
-
-

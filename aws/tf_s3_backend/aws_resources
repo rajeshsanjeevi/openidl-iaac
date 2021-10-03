@@ -1,4 +1,6 @@
 #The below config declaration is applicable when using remote backend as S3 in terraform
+#This is the backend configuration required to setup for the first pipeline used to setup AWS resources
+
 bucket               = "aais-test-tfstate-mgmt"
 key                  = "aws/terraform.tfstate"
 region               = "us-west-2"
@@ -10,6 +12,7 @@ dynamodb_table       = "aais-test-tfstate-lock-aws"
 role_arn             = "arn:aws:iam::577645632856:role/aais-tf-automation"
 session_name         = "terraform-session"
 external_id          = "aais-terraform" #external id setup during IAM user and role setup for access
+
 
 
 
