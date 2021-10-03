@@ -1,14 +1,14 @@
 #The below config declaration is applicable when using remote backend as S3 in terraform
 #This backend configuration is used for 2nd pipeline to setup k8s resources
 
-bucket               = "<s3_bucket_name_tf_state>"
+bucket               = "aais-test-tfstate-mgmt"
 key                  = "k8s/terraform.tfstate"
-region               = "<aws_region>"
+region               = "us-west-2"
 encrypt              = true
 workspace_key_prefix = "env"
 ##################reference example: https://dynamodb.us-east-1.amazonaws.com#################
-dynamodb_endpoint    = "https://dynamodb.<aws_region>.amazonaws.com"
-dynamodb_table       = "<dynamodb_table_name_k8s_resources_pipeline>"
-role_arn             = "<IAM_role_arn>"
+dynamodb_endpoint    = "https://dynamodb.us-west-2.amazonaws.com"
+dynamodb_table       = "aais-test-tfstate-lock-k8s"
+role_arn             = "arn:aws:iam::577645632856:role/aais-tf-automation"
 session_name         = "terraform-session"
-external_id          = "<external_id>" #external id setup during IAM user and role setup for access
+external_id          = "aais-terraform" #external id setup during IAM user and role setup for access
