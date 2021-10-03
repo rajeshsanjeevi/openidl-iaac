@@ -628,7 +628,7 @@ variable "vault_password_reset" {
   type = string
   description = "A random string to be set/changed when password vault password in AWS secrets manager required to reset"
 }
-variable "tf_state_aws_resources_s3_bucket_name" {
+variable "tf_state_s3_bucket_name" {
   type = string
   description = "The name of the s3 bucket will manage terraform state files"
 }

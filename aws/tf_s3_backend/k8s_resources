@@ -1,7 +1,7 @@
 #The below config declaration is applicable when using remote backend as S3 in terraform
 #This backend configuration is used for 2nd pipeline to setup k8s resources
 
-bucket               = "<s3_bucket_name_k8s_resources_pipeline>"
+bucket               = "<s3_bucket_name_tf_state>"
 key                  = "k8s/terraform.tfstate"
 region               = "<aws_region>"
 encrypt              = true

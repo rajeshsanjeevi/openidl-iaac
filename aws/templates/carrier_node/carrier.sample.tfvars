@@ -127,5 +127,5 @@ s3_bucket_name_cloudtrail = "cloudtrail-logs"
 vault_password_reset = "set" #set a random string to this variable when password required to reset
 
 #--------------------------------------------------------------------------------------------------------------------
-#Name of the S3 bucket managing terraform state files of AWS resources pipeline
-tf_state_aws_resources_s3_bucket_name = "trv-dev-tfstate-mgmt"
+#Name of the S3 bucket managing terraform state files
+tf_state_s3_bucket_name = "trv-dev-tfstate-mgmt"
