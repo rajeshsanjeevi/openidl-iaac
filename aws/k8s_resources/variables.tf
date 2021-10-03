@@ -70,7 +70,7 @@ variable "org_name" {
   description = "The short name of the carrier node"
   default = ""
 }
-variable "terraform_state_s3_bucket_name" {
+variable "tf_state_aws_resources_s3_bucket_name" {
   type = string
   description = "The name of the s3 bucket will manage terraform state files"
 }

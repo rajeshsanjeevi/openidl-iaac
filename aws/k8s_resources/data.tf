@@ -2,7 +2,7 @@
 data "terraform_remote_state" "base_setup" {
   backend = "s3"
   config = {
-    bucket               = var.terraform_state_s3_bucket_name
+    bucket               = var.tf_state_aws_resources_s3_bucket_name
     key                  = "aws/terraform.tfstate"
     region               = var.aws_region
    }
