@@ -12,4 +12,3 @@ dynamodb_table       = "aais-test-tfstate-lock-k8s"
 role_arn             = "arn:aws:iam::577645632856:role/aais-tf-automation"
 session_name         = "terraform-session"
 external_id          = "aais-terraform" #external id setup during IAM user and role setup for access
-tup for access
