@@ -12,6 +12,8 @@ on:
         required: true
         default: ""
 
+env:
+  REGISTRY: ghcr.io 
 defaults:
   run:
     shell: bash
@@ -19,8 +21,6 @@ defaults:
 
 jobs:
   healthcheck:
-    environment:
-      REGISTRY: ghcr.io 
 
     name: Healthcheck
     runs-on: ubuntu-latest
