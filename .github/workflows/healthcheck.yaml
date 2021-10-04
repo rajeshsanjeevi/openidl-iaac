@@ -41,6 +41,7 @@ jobs:
 
       - name: Run Playbook
         run: |
+          pwd
           ansible-playbook deploy-network.yml -e "role=${{ github.event.inputs.role }}"
 
 
