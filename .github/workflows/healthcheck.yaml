@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       role:
-      description: "Ansible role to run"
-      required: true
-      default: ""
+        description: "Ansible role to run"
+        required: true
+        default: ""
 
 defaults:
   run:
