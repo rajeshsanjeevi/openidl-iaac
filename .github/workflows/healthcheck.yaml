@@ -30,16 +30,10 @@ jobs:
 
       - name: Install Ansible and utilities
         run: |
-          curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-          python get-pip.py --user
+      #    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+      #    python get-pip.py --user
           python -m pip install --user ansible==2.9.11
           ansible --version
-
-      - name: Install Pip3
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install python3-pip
-          pip3 --version
 
       - name: Install Docker
         run: |
