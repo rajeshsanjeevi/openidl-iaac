@@ -236,7 +236,7 @@ jobs:
     - name: Terraform Apply
       id: apply
       if: github.ref == 'refs/heads/analytics_test' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=../analytics_test.tfvars
+      run: terraform destroy -auto-approve -var-file=../analytics_test.tfvars
 
   analytics_node_prod-aws_resources:
     environment: analytics_prod
