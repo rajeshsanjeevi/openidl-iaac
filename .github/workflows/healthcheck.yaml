@@ -1,6 +1,7 @@
 # This is a manual workflow, hence it must be placed in the default branch of a repository to activate and use
-Author: Rajesh Sanjeevi
-version: 1.0
+
+#Author: Rajesh Sanjeevi
+#version: 1.0
 
 name: Healthcheck-Manual
 on:
