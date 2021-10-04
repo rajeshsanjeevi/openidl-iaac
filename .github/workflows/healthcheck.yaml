@@ -30,8 +30,6 @@ jobs:
 
       - name: Install Ansible and utilities
         run: |
-          sudo apt update
-          sudo apt install curl -y
           curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
           python get-pip.py --user
           python -m pip install --user ansible=2.9.11
@@ -48,11 +46,6 @@ jobs:
           pip3 install docker
           ansible-galaxy collection install community.docker
           ansible-galaxy collection install community.kubernetes
-
-      - name: Ansible lint
-        uses: ansible/ansible-lint-action@master
-        with:
-          targets: "./"
 
       - name: Run Playbook
         run: |
