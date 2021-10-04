@@ -1,0 +1,27 @@
+---
+# Default kubeconfig path
+kubernetes:
+  kube_config_file: "~/.kube/config"
+# Namespace for vault
+vault_namespace: vault1
+# AWS EKS cluster Region
+region: "us-west-1"
+# AWS EKS cluster name
+clustername: "blk-eks-dev-aais"
+# kubeconfig file location for helm chart
+kubeconfig_file: "~/.kube/config"
+# Mongodb helmchart name
+vault_helmchart_name: "aais-vault1"
+
+#mongodb helm chart values
+vault_server_ha_enabled: true
+vault_server_ha_raft_enabled: true
+vault_tlsDisable: false
+vault_server_ingress_enabled: true
+vault_server_ingress_hosts0_host: vault-carrier.dev.internal.aaiscarrierdemo.com
+vault_server_ingress_annotations_kubernetes_io_ingress_class: haproxy
+vault_server_dataStorage_storageClass: openidl-sc
+vault_cluster_address: https://vault-carrier.dev.internal.aaiscarrierdemo.com
+vault_kms_key_id: ""
+vault_kms_region: "us-west-1"
+vault_seal_type: "awskms"

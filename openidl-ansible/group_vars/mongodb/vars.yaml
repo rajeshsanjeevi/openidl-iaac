@@ -1,0 +1,43 @@
+---
+# Default kubeconfig path
+kubernetes:
+  kube_config_file: "~/.kube/config"
+# Namespace for mongodb
+mongodb_namespace: database1
+# AWS EKS cluster Region
+region: "us-west-1"
+# AWS EKS cluster name
+clustername: "blk-eks-dev-aais"
+# kubeconfig file location for helm chart
+kubeconfig_file: "~/.kube/config"
+# Mongodb helmchart name
+mongodb_helmchart_name: "aais-mongodb1"
+
+#mongodb helm chart values
+mongodb_architecture_type: replicaset
+mongodb_useStatefulSet: true
+mongodb_service_type: ClusterIP
+mongodb_service_port: 27017
+mongodb_auth_enabled: true
+mongodb_auth_rootPassword: "qJ8tN2aB9fT0aF9t"
+mongodb_auth_username: "aaismongodbmaster"
+mongodb_auth_password: "nJ7bW2hL3eD4qP0x"
+mongodb_auth_database: "openidl-offchain-db"
+mongodb_persistence_enabled: true
+mongodb_persistence_size: 20Gi
+mongodb_persistence_mountPath: "/bitnami/mongodb"
+mongodb_persistence_storageClass: "openidl-sc"
+mongodb_serviceAccount_create: true
+mongodb_serviceAccount_name: "aaismongodbsvcuser"
+mongodb_service_portName: "mongodb"
+mongodb_externalAccess_service_type: ClusterIP
+mongodb_externalAccess_service_port: 27017
+mongodb_externalAccess_enabled: true
+mongodb_replicaSetHostnames: true
+mongodb_replicaCount: 3
+mongodb_tls_enabled: true
+mongodb_readinessProbe_enabled: false
+mongodb_readinessProbe_initialDelaySeconds: 120
+mongodb_arbiter_livenessProbe_enabled: false
+mongodb_arbiter_readinessProbe_initialDelaySeconds: 120
+

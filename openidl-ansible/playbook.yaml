@@ -1,0 +1,7 @@
+---
+######################################################################
+# Master Playbook for the setting up mongodb and vault using ansible #
+######################################################################
+  - hosts: all
+  - import_playbook: install_mongodb.yaml
+  - import_playbook: install_vault.yaml

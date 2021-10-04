@@ -1,0 +1,63 @@
+# This is a manual workflow, hence it must be placed in the default branch of a repository to activate and use
+Author: Rajesh Sanjeevi
+version: 1.0
+
+name: Healthcheck-Manual
+on:
+  workflow_dispatch:
+    inputs:
+      role:
+      description: "Ansible role to run"
+      required: true
+      default: ""
+
+defaults:
+  run:
+    shell: bash
+    working-directory: openidl-ansible
+
+jobs:
+  healthcheck:
+    environment:
+
+    name: Healthcheck
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+
+      - name: Install Ansible and utilities
+        run: |
+          sudo apt update
+          sudo apt install curl -y
+          curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+          python get-pip.py --user
+          python -m pip install --user ansible=2.9.11
+          ansible --version
+
+      - name: Install Pip3
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install python3-pip
+          pip3 --version
+
+      - name: Install Docker
+        run: |
+          pip3 install docker
+          ansible-galaxy collection install community.docker
+          ansible-galaxy collection install community.kubernetes
+
+      - name: Ansible lint
+        uses: ansible/ansible-lint-action@master
+        with:
+          targets: "./"
+
+      - name: Run Playbook
+        run: |
+          ansible-playbook deploy-network.yml -e "role=${{ github.event.inputs.role }}"
+
+
+
+
+
