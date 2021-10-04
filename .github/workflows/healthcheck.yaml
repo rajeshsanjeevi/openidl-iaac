@@ -39,6 +39,14 @@ jobs:
           ansible-galaxy collection install community.docker
           ansible-galaxy collection install community.kubernetes
 
+      - name: Log into GitHub Docker Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run Playbook
         run: |
           pwd
