@@ -10,8 +10,7 @@
 - name: Push openidl-baf image
   community.docker.docker_image:
     name: openidl-baf
-    repository: ghcr.io/openidl-org/openidl-baf
+    repository: "{{ package_repo }}"
     push: yes
     source: local
 
-# repository needs to be addressed

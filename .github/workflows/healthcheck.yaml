@@ -81,7 +81,7 @@ jobs:
 
       - name: Run Playbook
         run: |
-          ansible-playbook deploy-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}"
+          ansible-playbook deploy-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }} package_repo=${{ env.registry }}/${{ github.actor }}/openidl-org/openidl-baf"
 
 
 
