@@ -18,6 +18,15 @@ defaults:
   run:
     shell: bash
     working-directory: openidl-ansible
+  env:
+  #  cluster_name: ${{ secrets.blk_cluster_name }}
+  #  aws_region: ${{ secrets.aws_region }}
+  #  aws_access_key: ${{ secrets.baf_user_access_key }}
+  #  aws_secret_key: ${{ secrets.baf_user_secret_key }}
+  #  aws_account: ${{ secrets.aws_account_number }}
+  #  github_user: ${{ secrets.github_user }}
+  #  github_user_token: ${{ secrets.github_user_token }}
+  #  github_user_email: ${{ secrets.github_user_email }}
 
 jobs:
   healthcheck:
@@ -31,6 +40,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+
+    - name: Configure AWS CLI
+      uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
+      with:
+        aws-access-key-id: ${{ env.aws_access_key }}
+        aws-secret-access-key: ${{ env.aws_secret_key }}
+        aws-region: ${{ env.aws_region }}
 
       - name: Install Ansible
         run: |
@@ -55,7 +71,7 @@ jobs:
 
       - name: Run Playbook
         run: |
-      #    ls -l /home/runner/.ansible/collections/ansible_collections/community/
+          ls -l /home/runner/.ansible/collections/ansible_collections/community/
           ansible-playbook deploy-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}"
 
 
