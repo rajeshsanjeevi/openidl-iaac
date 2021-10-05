@@ -1,9 +1,9 @@
-access_id: "AKIAYKTVXHYPCMR7VPVF"
-access_key: "j/QJDkVK1cy4HRrz4bSK/3nmqePKMPGwEtp2Ehfr"
-region: "us-west-1"
-cluster_name: "aais-dev-blk-cluster"
-account: "572551282206"
-vault_token: "s.r2KqEH3gaXd6pKzXbgZcrmHl"
+access_id: ""
+access_key: ""
+region: ""
+cluster_name: ""
+account: ""
+vault_token: ""
 
 network:
   org_name: "aais"
