@@ -43,8 +43,8 @@ jobs:
       - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
         with:
-        aws-access-key-id: ${{ env.aws_access_key }}
-        aws-secret-access-key: ${{ env.aws_secret_key }}
+        aws-access-key-id: ${{ env.baf_user_access_key }}
+        aws-secret-access-key: ${{ env.baf_user_secret_key }}
         aws-region: ${{ env.aws_region }}
 
       - name: Install Ansible and dependencies
