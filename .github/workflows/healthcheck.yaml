@@ -47,7 +47,7 @@ jobs:
           aws-secret-access-key: ${{ env.aws_secret_key }}
           aws-region: ${{ env.aws_region }}
 
-            - name: Install Ansible and dependencies
+      - name: Install Ansible and dependencies
         run: |
           pip3 install openshift
           sudo apt-get install -y python3-requests-oauthlib
