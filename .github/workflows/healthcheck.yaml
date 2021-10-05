@@ -16,15 +16,15 @@ defaults:
     shell: bash
     working-directory: openidl-ansible
   env:
-  #  cluster_name: ${{ secrets.blk_cluster_name }}
-  #  aws_region: ${{ secrets.aws_region }}
-  #  aws_access_key: ${{ secrets.baf_user_access_key }}
-  #  aws_secret_key: ${{ secrets.baf_user_secret_key }}
-  #  aws_account: ${{ secrets.aws_account_number }}
-  #  github_user: ${{ secrets.github_user }}
-  #  github_user_token: ${{ secrets.github_user_token }}
-  #  github_user_email: ${{ secrets.github_user_email }}
-     registry: ghcr.io
+    cluster_name: ${{ secrets.blk_cluster_name }}
+    aws_region: ${{ secrets.aws_region }}
+    aws_access_key: ${{ secrets.baf_user_access_key }}
+    aws_secret_key: ${{ secrets.baf_user_secret_key }}
+    aws_account: ${{ secrets.aws_account_number }}
+    github_user: ${{ secrets.ghub_user }}
+    github_user_token: ${{ secrets.ghub_user_token }}
+    github_user_email: ${{ secrets.ghub_user_email }}
+    registry: ghcr.io
 
 jobs:
   healthcheck:
