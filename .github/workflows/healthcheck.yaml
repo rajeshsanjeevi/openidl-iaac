@@ -39,9 +39,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
 
-    - name: Configure AWS CLI
-      uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
-      with:
+      - name: Configure AWS CLI
+        uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
+        with:
         aws-access-key-id: ${{ env.aws_access_key }}
         aws-secret-access-key: ${{ env.aws_secret_key }}
         aws-region: ${{ env.aws_region }}
