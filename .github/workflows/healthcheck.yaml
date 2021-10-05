@@ -49,6 +49,7 @@ jobs:
 
       - name: Install Ansible and dependencies
         run: |
+          pip3 install openshift
           sudo apt-get install -y python3-requests-oauthlib
           sudo apt-get install -y python-yaml
           python -m pip install --user ansible==2.9.11
