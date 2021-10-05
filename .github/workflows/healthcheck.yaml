@@ -55,7 +55,6 @@ jobs:
 
       - name: Run Playbook
         run: |
-      #    ls -l /home/runner/.ansible/collections/ansible_collections/community/
           ansible-playbook deploy-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}"
 
 
