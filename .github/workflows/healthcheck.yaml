@@ -51,7 +51,7 @@ jobs:
           aws-secret-access-key: ${{ env.aws_secret_key }}
           aws-region: ${{ env.aws_region }}
           role-to-assume: ${{ env.aws_role }}
-          role-external-id: ${{ secrets.aws_external_id }}
+          role-external-id: ${{ env.aws_external_id }}
           role-duration-seconds: 7200 # session valid for 30 minutes
           role-session-name: git-actions
           role-skip-session-tagging: true
