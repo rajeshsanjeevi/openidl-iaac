@@ -89,7 +89,7 @@ jobs:
           role-external-id: ${{ secrets.gitactions_external_id }}
           role-duration-seconds: 3600 # session valid for 60 minutes
           role-session-name: github-actions
-      #    role-skip-session-tagging: true
+          role-skip-session-tagging: true
 
       - name: Install Ansible and dependencies
         run: |
