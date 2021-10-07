@@ -14,9 +14,11 @@ on:
 env:
   cluster_name: ${{ secrets.blk_cluster_name }}
   aws_region: ${{ secrets.region }}
-  aws_access_key: ${{ secrets.baf_user_access_key }}
-  aws_secret_key: ${{ secrets.baf_user_secret_key }}
+  aws_access_key: ${{ secrets.git_user_access_key }}
+  aws_secret_key: ${{ secrets.git_user_secret_key }}
   aws_account: ${{ secrets.account_number }}
+  aws_role: ${{ secrets.iam_role }}
+  aws_external_id: ${{ secrets.external_id }}
   github_user: ${{ secrets.ghub_user }}
   github_user_token: ${{ secrets.ghub_user_token }}
   github_user_email: ${{ secrets.ghub_user_email }}
@@ -43,11 +45,11 @@ jobs:
       - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
         with:
-          aws-access-key-id: ${{ env.access_key }}
-          aws-secret-access-key: ${{ env.secret_key }}
-          aws-region: ${{ env.region }}
-          role-to-assume: ${{ secrets.admin_role }}
-          role-external-id: ${{ secrets.external_id }}
+          aws-access-key-id: ${{ env.aws_access_key }}
+          aws-secret-access-key: ${{ env.aws_secret_key }}
+          aws-region: ${{ env.aws_region }}
+          role-to-assume: ${{ env.aws_role }}
+          role-external-id: ${{ secrets.aws_external_id }}
           role-duration-seconds: 7200 # session valid for 30 minutes
           role-session-name: git-actions
 
