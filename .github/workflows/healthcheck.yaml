@@ -52,7 +52,7 @@ jobs:
           aws-region: ${{ env.aws_region }}
           role-to-assume: ${{ env.aws_role }}
           role-external-id: ${{ env.aws_external_id }}
-          role-duration-seconds: 7200 # session valid for 30 minutes
+          role-duration-seconds: 3600 # session valid for 30 minutes
           role-session-name: git-actions
           role-skip-session-tagging: true
 
