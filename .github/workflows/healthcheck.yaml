@@ -50,6 +50,7 @@ jobs:
           role-external-id: ${{ secrets.aws_external_id }}
           role-duration-seconds: 7200 # session valid for 30 minutes
           role-session-name: git-actions
+          role-skip-session-tagging: true
 
       - name: Install Ansible and dependencies
         run: |
