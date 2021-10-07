@@ -43,9 +43,13 @@ jobs:
       - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
         with:
-          aws-access-key-id: ${{ env.aws_access_key }}
-          aws-secret-access-key: ${{ env.aws_secret_key }}
-          aws-region: ${{ env.aws_region }}
+          aws-access-key-id: ${{ env.access_key }}
+          aws-secret-access-key: ${{ env.secret_key }}
+          aws-region: ${{ env.region }}
+          role-to-assume: ${{ secrets.admin_role }}
+          role-external-id: ${{ secrets.external_id }}
+          role-duration-seconds: 7200 # session valid for 30 minutes
+          role-session-name: git-actions
 
       - name: Install Ansible and dependencies
         run: |
@@ -81,7 +85,8 @@ jobs:
 
       - name: Run Playbook
         run: |
-          ansible-playbook deploy-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }} package_repo=${{ env.registry }}/${{ github.actor }}/openidl-org/openidl-baf"
+         echo "ansible playbook" 
+        #  ansible-playbook deploy-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }} package_repo=${{ env.registry }}/${{ github.actor }}/openidl-org/openidl-baf"
 
 
 
