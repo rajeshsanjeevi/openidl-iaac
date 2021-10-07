@@ -1,5 +1,24 @@
 # This is a manual workflow, hence it must be placed in the default branch of a repository to enable and use
-#Author: Rajesh Sanjeevi
+# Prerequisites:
+#--------------
+# 1. Setup the github environment name according to the organisation name and environment.
+# Example for org aais and for dev environment set github environment name as aais-dev
+
+# 2. Configure below listed secrets in the created github environment for the pipeline to work
+# aws_account_number - aws account in which the resources are provisioned
+# aws_region - aws region in which the resources are provisioned
+# baf_user_access_key - access key of IAM user setup for blockchain automation framework
+# baf_user_secret_key - secret key of IAM user setup for blockchain automation framework
+# gitactions_user_access_key - access key of IAM user setup for github actions
+# gitactions_user_secret_key - secret key of IAM user setup for github actions
+# gitactions_external_id - defaults to git-actions (external_id value setup for github actions IAM user/role)
+# gitactions_eksadm_role - refer to IAM roles that was setup for gitactions user to assume
+# blk_cluster_name - name of the eks cluster setup for blockchain network
+# git_repo_user - user name of the github repository
+# git_repo_user_token - user token of the github repository
+# git_user_email - user email address of github repository
+
+#Author: Rajesh Sanjeevi & Surya Lanka
 #version: 1.0
 
 name: Deploy Blockhain Network
