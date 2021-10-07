@@ -31,9 +31,10 @@ defaults:
 
 jobs:
   healthcheck:
-
+    
     name: Healthcheck
     runs-on: ubuntu-latest
+    environment: itpc-aais-dev
     permissions:
       packages: write
       contents: read
