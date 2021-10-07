@@ -39,6 +39,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      
+      - name: Print aws info
+        run: |
+          echo env.aws_region, env.aws_external_id, env.aws_role, env.aws_access_key
 
       - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
