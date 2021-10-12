@@ -1,8 +1,8 @@
 # This is a manual workflow, hence it must be placed in the default branch of a repository to enable and use
 # Prerequisites:
 #--------------
-# 1. Setup the github environment name according to the organisation name and environment.
-# Example for org aais and for dev environment set github environment name as aais-dev
+# 1. Setup the github environment name according to the organisation name and environment in the format <orgname>_<envtype>
+# Example for org aais and for dev environment set github environment name as aais_dev
 
 # 2. Configure below listed secrets in the created github environment for the pipeline to work
 # aws_account_number - aws account in which the resources are provisioned
@@ -16,7 +16,7 @@
 # blk_cluster_name - name of the eks cluster setup for blockchain network
 # git_repo_user - user name of the github repository
 # git_repo_user_token - user token of the github repository
-# git_user_email - user email address of github repository
+# git_repo_user_email - user email address of github repository
 
 #Author: Rajesh Sanjeevi & Surya Lanka
 #version: 1.0
@@ -52,7 +52,7 @@ on:
 
 jobs:
   deploy-blockchain-network:
-    environment: ${{ github.event.inputs.org_name }}-${{ github.event.inputs.environment }}
+    environment: ${{ github.event.inputs.org_name }}_${{ github.event.inputs.environment }}
     name: deploy-blockchain-network
     runs-on: ubuntu-latest
 
@@ -96,7 +96,7 @@ jobs:
           pip3 install openshift
           sudo apt-get install -y python3-requests-oauthlib python-yaml jq
           python -m pip install --user ansible==2.9.11
-
+          
       - name: Install ansible galaxy collection for docker and k8s
         run: |
           ansible-galaxy collection install community.docker
@@ -106,7 +106,6 @@ jobs:
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
       - name: Update kubeconfig and set context to blockchain cluster
         run: |
           aws eks update-kubeconfig --region ${{ env.region }} --name ${{ env.cluster_name }}
@@ -114,7 +113,6 @@ jobs:
       - name: Install Docker
         run: |
           pip3 install docker
-
       - name: Log into GitHub Docker Registry
         uses: docker/login-action@v1
         with:
@@ -224,3 +222,4 @@ jobs:
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.events.inputs.channel_name }}" \
             -e "org_json=${{ github.events.inputs.org_json }}"
+
