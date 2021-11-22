@@ -12,9 +12,7 @@ pipeline {
         stage("init") {
             steps {
                 echo "terraform init started"
-                sh "cd aws/aws_resources/"
-                sh "pwd"
-                sh "terraform init --backend-config=../tf_s3_backend/aws_resources_tfc.hcl"
+                sh "aws/aws_resources/terraform init --backend-config=../tf_s3_backend/aws_resources_tfc.hcl"
                 echo "terraform init finished"
                 }
         }
