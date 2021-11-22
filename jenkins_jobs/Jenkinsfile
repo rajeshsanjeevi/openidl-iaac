@@ -5,10 +5,8 @@ pipeline {
     }
     stages {
         stage("init") {
-            step {
+            steps {
                 echo "terraform init started"
-                sh terraform init
-                echo "terraform init finished"
             }
         }
     }
