@@ -16,7 +16,3 @@ pipeline {
         }
     }
 }
-{
-            node {
-              label 'java8'
-            }
