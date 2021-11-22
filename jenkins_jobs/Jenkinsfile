@@ -5,19 +5,11 @@ pipeline {
     }
     stages {
         stage("init") {
-            echo "terraform init started"
-            terraform init
-            echo "terraform init finished"
-        }
-        stage("plan") {
-            echo "terraform plan started"
-            terraform plan
-            echo "terraform plan finished"
-        }
-        stage("apply") {
-            echo "terraform apply started"
-            terraform apply
-            echo "terraform apply completed"
+            steps {
+                echo "terraform init started"
+                terraform init
+                echo "terraform init finished"
+            }
         }
     }
 }
