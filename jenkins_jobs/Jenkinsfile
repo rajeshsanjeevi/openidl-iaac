@@ -1,5 +1,9 @@
 pipeline {
-    agent master
+    agent {
+        node {
+            label 'Jenkins-Master'
+        }
+    }
     tools {
         terraform 'terraform'
         git 'git'
@@ -12,3 +16,7 @@ pipeline {
         }
     }
 }
+{
+            node {
+              label 'java8'
+            }
