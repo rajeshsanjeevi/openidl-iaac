@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo "terraform init started"
                 cd aws/aws_resources
-                terraform init --backend-config=../tf_s3_backend/aws_resources_tfc.hcl
+                pwd
                 }
         }
     }
