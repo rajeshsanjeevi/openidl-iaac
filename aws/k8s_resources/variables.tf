@@ -70,11 +70,34 @@ variable "org_name" {
   description = "The short name of the carrier node"
   default = ""
 }
-variable "tf_state_s3_bucket_name" {
+variable "terraform_state_s3_bucket_name" {
   type = string
   description = "The name of the s3 bucket will manage terraform state files"
+  default = ""
+}
+variable "tfc_workspace_name_aws_resources" {
+  type = string
+  description = "The terraform cloud workspace of AWS resources provisioned"
+  default = ""
+}
+variable "tfc_org_name" {
+  type = string
+  description = "The terraform cloud organisation name"
+  default = ""
 }
 variable "bastion_host_nlb_external" {
   type = bool
   description = "Do you want to set nlb for the bastion hosts in autoscaling group to be external"
+}
+variable "aws_access_key" {
+  type = string
+  default = ""
+}
+variable "aws_secret_key" {
+  type = string
+  default = ""
+}
+variable "aws_external_id" {
+  type = string
+  default = ""
 }

@@ -22,7 +22,7 @@ resource "aws_kms_key" "eks_kms_key" {
         "Sid" : "Allow access for Key Administrators",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "${var.aws_user_arn}"
+          "AWS" : "${var.aws_role_arn}"
         },
         "Action" : [
           "kms:Create*",
@@ -38,17 +38,7 @@ resource "aws_kms_key" "eks_kms_key" {
           "kms:TagResource",
           "kms:UntagResource",
           "kms:ScheduleKeyDeletion",
-          "kms:CancelKeyDeletion"
-        ],
-        "Resource" : "*"
-      },
-      {
-        "Sid" : "Allow use of the key",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "${var.aws_user_arn}"
-        },
-        "Action" : [
+          "kms:CancelKeyDeletion",
           "kms:Encrypt",
           "kms:Decrypt",
           "kms:ReEncrypt*",
@@ -61,7 +51,7 @@ resource "aws_kms_key" "eks_kms_key" {
         "Sid" : "Allow attachment of persistent resources",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "${var.aws_user_arn}"
+          "AWS" : "${var.aws_role_arn}"
         },
         "Action" : [
           "kms:CreateGrant",
@@ -74,15 +64,6 @@ resource "aws_kms_key" "eks_kms_key" {
             "kms:GrantIsForAWSResource" : "true"
           }
         }
-      },
-      {
-        "Sid" : "Enable IAM User Permissions",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "arn:aws:iam::${var.aws_account_number}:root"
-        },
-        "Action" : "kms:*",
-        "Resource" : "*"
       },
       {
         "Effect" : "Allow",

@@ -346,12 +346,12 @@ variable "userpool_email_config" {
   description = "The details of email config set from SES"
   default     = {}
 }
-variable "userpool_email_verficiation_subject" {
+variable "userpool_email_verification_subject" {
   type        = string
   description = "The email verification subject"
   default     = ""
 }
-variable "userpool_email_verficiation_message" {
+variable "userpool_email_verification_message" {
   type        = string
   description = "The email verification message"
   default     = ""
@@ -621,14 +621,48 @@ variable "s3_bucket_name_cloudtrail" {
 }
 variable "org_name" {
   type = string
-  description = "The short name of the carrier node"
+  description = "The name of the organization"
   default = ""
 }
 variable "vault_password_reset" {
   type = string
   description = "A random string to be set/changed when password vault password in AWS secrets manager required to reset"
+  default = ""
 }
-variable "tf_state_s3_bucket_name" {
+variable "terraform_state_s3_bucket_name" {
   type = string
   description = "The name of the s3 bucket will manage terraform state files"
+  default = ""
+}
+variable "tfc_workspace_name_aws_resources" {
+  type = string
+  description = "The terraform cloud workspace of AWS resources provisioned"
+  default = ""
+}
+variable "tfc_org_name" {
+  type = string
+  description = "The terraform cloud organisation name"
+  default = ""
+}
+variable "app_worker_nodes_ami_id" {
+  type = string
+  description = "The AMI id of the app cluster worker nodes"
+  default = ""
+}
+variable "blk_worker_nodes_ami_id" {
+  type = string
+  description = "The AMI id of the blk cluster worker nodes"
+  default = ""
+}
+variable "aws_access_key" {
+  type = string
+  default = ""
+}
+variable "aws_secret_key" {
+  type = string
+  default = ""
+}
+variable "aws_external_id" {
+  type = string
+  default = ""
 }

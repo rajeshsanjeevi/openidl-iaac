@@ -1,11 +1,20 @@
 #reading data from base modules-terraform state file
+#data "terraform_remote_state" "base_setup" {
+#  backend = "s3"
+#  config = {
+#    bucket               = var.terraform_state_s3_bucket_name
+#    key                  = "aws/terraform.tfstate"
+#    region               = var.aws_region
+#   }
+#}
 data "terraform_remote_state" "base_setup" {
-  backend = "s3"
+  backend = "remote"
   config = {
-    bucket               = var.tf_state_s3_bucket_name
-    key                  = "aws/terraform.tfstate"
-    region               = var.aws_region
-   }
+    organization = var.tfc_org_name
+    workspaces = {
+      name = var.tfc_workspace_name_aws_resources
+    }
+  }
 }
 #reading NLB setup by ingress controller deployed in app EKS
 data aws_alb "app_nlb" {
@@ -45,4 +54,3 @@ data aws_route53_zone "private_zone_internal" {
 data aws_route53_zone "private_zone" {
   zone_id = data.terraform_remote_state.base_setup.outputs.r53_private_hosted_zone_id
 }
-#fix the condition here when public zone does not exist
