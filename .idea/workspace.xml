@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c002453d-50d6-49a5-aa85-fcc8917338d7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/aws/aws_resources/main.tf" beforeDir="false" afterPath="$PROJECT_DIR$/aws/aws_resources/main.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jenkins_jobs/Jenkinsfile" beforeDir="false" afterPath="$PROJECT_DIR$/jenkins_jobs/Jenkinsfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
