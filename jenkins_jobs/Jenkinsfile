@@ -1,12 +1,12 @@
 pipeline {
     agent {
         node {
-            label 'jenkins-slave'
+            label 'Jenkins-Master'
         }
     }
     tools {
-        terraform 'terraform'
         git 'git'
+
     }
     stages {
         stage("TF-init-AWS-resources") {
