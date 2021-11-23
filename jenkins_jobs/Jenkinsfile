@@ -5,7 +5,7 @@ pipeline {
         }
     }
     tools {
-
+        terraform 'terraform'
         git 'git'
     }
     stages {
