@@ -27,7 +27,7 @@ pipeline {
         stage("apply") {
             steps {
                 echo "terrform apply"
-                sh "terraform -chdir=aws/aws_resources apply
+                sh "terraform -chdir=aws/aws_resources apply --auto-approve"
                 echo "terraform apply finished"
             }
 
