@@ -9,28 +9,63 @@ pipeline {
         git 'git'
     }
     stages {
-        stage("init") {
+        stage("TF-init-AWS-resources") {
             steps {
                 echo "terraform init started"
-                sh "mv aws/carrier.tfvars aws/aws_resources/carrier.auto.tfvars"
+                sh "cp aws/carrier.tfvars aws/aws_resources/carrier.auto.tfvars"
                 sh "terraform -chdir=aws/aws_resources init --backend-config=../tf_s3_backend/aws_resources_tfc.hcl"
                 echo "terraform init finished"
                 }
         }
-        stage("plan") {
+        stage("TF-syntax-AWS-resources") {
+            steps {
+                echo "terraform syntax check started"
+                sh "terraform -chdir=aws/aws_resources validate -no-color -json"
+                echo "terraform syntax check finished"
+            }
+        }
+        stage("TF-plan-AWS-resources") {
             steps {
                 echo "terraform plan started"
-                sh "terraform -chdir=aws/aws_resources plan"
+                sh "terraform -chdir=aws/aws_resources plan -compact-warnings"
                 echo "terraform plan finished"
             }
         }
-        stage("apply") {
+        stage("TF-apply-AWS-resources") {
             steps {
                 echo "terrform apply"
-                sh "terraform -chdir=aws/aws_resources apply --auto-approve"
+                sh "terraform -chdir=aws/aws_resources apply --auto-approve -compact-warnings"
                 echo "terraform apply finished"
             }
-
+        }
+        stage("TF-init-K8s-resources") {
+            steps {
+                echo "terraform init started"
+                sh "cp aws/carrier.tfvars aws/k8s_resources/carrier.auto.tfvars"
+                sh "terraform -chdir=aws/k8s_resources init --backend-config=../tf_s3_backend/k8s_resources_tfc.hcl"
+                echo "terraform init finished"
+                }
+        }
+        stage("TF-syntax-K8s-resources") {
+            steps {
+                echo "terraform syntax check started"
+                sh "terraform -chdir=aws/k8s_resources validate -no-color -json"
+                echo "terraform syntax check finished"
+            }
+        }
+        stage("TF-plan-K8s-resources") {
+            steps {
+                echo "terraform plan started"
+                sh "terraform -chdir=aws/k8s_resources plan -compact-warnings"
+                echo "terraform plan finished"
+            }
+        }
+        stage("TF-apply-K8s-resources") {
+            steps {
+                echo "terrform apply"
+                sh "terraform -chdir=aws/k8s_resources apply --auto-approve -compact-warnings"
+                echo "terraform apply finished"
+            }
         }
     }
 }
