@@ -4,10 +4,6 @@ pipeline {
             label 'jenkins-slave'
         }
     }
-    tools {
-        terraform 'terraform'
-        git 'git'
-    }
     stages {
         stage("TF-init-AWS-resources") {
             steps {
