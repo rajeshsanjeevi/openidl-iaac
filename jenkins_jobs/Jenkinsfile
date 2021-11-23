@@ -12,6 +12,7 @@ pipeline {
         stage("init") {
             steps {
                 echo "terraform init started"
+                sh "mv aws/carrier.tfvars aws/aws_resources/carrier.auto.tfvars"
                 sh "terraform -chdir=aws/aws_resources init --backend-config=../tf_s3_backend/aws_resources_tfc.hcl"
                 echo "terraform init finished"
                 }
@@ -22,6 +23,14 @@ pipeline {
                 sh "terraform -chdir=aws/aws_resources plan"
                 echo "terraform plan finished"
             }
+        }
+        stage("apply") {
+            steps {
+                echo "terrform apply"
+                sh "terraform -chdir=aws/aws_resources apply
+                echo "terraform apply finished"
+            }
+
         }
     }
 }
