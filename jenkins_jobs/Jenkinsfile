@@ -4,10 +4,6 @@ pipeline {
             label 'Jenkins-Master'
         }
     }
-    tools {
-        git 'git'
-
-    }
     stages {
         stage("TF-init-AWS-resources") {
             steps {
