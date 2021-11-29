@@ -1,9 +1,9 @@
 #setting up ha proxy in app cluster
-resource "helm_release" "app1_haproxy" {
+resource "helm_release" "app_haproxy" {
   depends_on = [data.aws_eks_cluster.app_eks_cluster, data.aws_eks_cluster_auth.app_eks_cluster_auth, kubernetes_config_map.app_config_map]
   provider = helm.app_cluster
   cleanup_on_fail = true
-  name = "haproxy-ingress1"
+  name = "haproxy-ingress-1"
   chart ="resources/haproxy-app-cluster"
   timeout = 600
   force_update = true
@@ -12,11 +12,11 @@ resource "helm_release" "app1_haproxy" {
   values = ["${file("resources/haproxy-app-cluster/values.yaml")}"]
 }
 #setting up ha proxy in blk cluster
-resource "helm_release" "blk1_haproxy" {
+resource "helm_release" "blk_haproxy" {
   depends_on = [data.aws_eks_cluster.blk_eks_cluster, data.aws_eks_cluster_auth.blk_eks_cluster_auth, kubernetes_config_map.blk_config_map]
   provider = helm.blk_cluster
   cleanup_on_fail = true
-  name = "haproxy-ingress1"
+  name = "haproxy-ingress-1"
   chart ="resources/haproxy-blk-cluster"
   timeout = 600
   force_update = true
