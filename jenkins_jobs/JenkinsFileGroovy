@@ -13,8 +13,7 @@ def checkout() {
 }
 
 def awsUploadCode() {
-    sh "tar -zcvf "./aws-content-$(date +%s).tar.gz" -C "./aws/aws_resources .""
-
+    sh "tar -czf aws-content.tar.gz -C "openidl-iaac/aws/aws_resources" --exclude .git ."
 }
 def buildInfrastructure() {
     stage('Terraform init') {}
