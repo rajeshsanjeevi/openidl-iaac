@@ -16,14 +16,6 @@ def checkout() {
 def awsUploadCode() {
     sh "tar -czf content.tar.gz -C openidl-iaac/aws/aws_resources --exclude .git ."
  }
-+ tar -czf aws-content.tar.gz -C
-tar: option requires an argument -- 'C'
-Try `tar --help' or `tar --usage' for more information.
-[Pipeline] }
-[Pipeline] // node
-[Pipeline] End of Pipeline
-ERROR: script returned exit code 64
-Finished: FAILURE
 
 def buildInfrastructure() {
     stage('Terraform init') {}
