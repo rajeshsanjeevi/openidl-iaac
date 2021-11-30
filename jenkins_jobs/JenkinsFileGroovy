@@ -37,12 +37,11 @@ def buildInfrastructure() {
 def getWorkspaceId() {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + ${params.TF_BEARER_TOKEN} ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
-        url: "https://app.terraform.io/api/v2/organizations/" + "${params.TF_ORGNAME}" + "/workspaces/" + "${params.TF_AWS_WORKSPACE}"
+        url: "https://app.terraform.io/api/v2/organizations/" + ${params.TF_ORGNAME} + "/workspaces/" + ${params.TF_AWS_WORKSPACE}
     )
-
     def data = new JsonSlurper().parseText(response.content)
     println ("Workspace Id: " + data.data.id)
     return data.data.id
