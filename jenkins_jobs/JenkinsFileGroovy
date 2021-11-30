@@ -54,6 +54,7 @@ def createConfig() {
                 [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
+        httpMode: 'POST',
         data: "${payload}",
         url: "https://app.terraform.io/api/v2/workspaces/" + "${wsid}" + "/configuration-versions"
     )
