@@ -13,14 +13,9 @@ def checkout() {
 }
 
 def awsUploadCode() {
-    def aws_filename = "./aws-content.tar.gz"
-    def aws_upload = "tar -zcvf $aws_filename -C "/aws/aws_resources/" ."
-    proc.waitFor()
-    println "Process exit code: ${proc.exitValue()}"
-    println "Std Err: ${proc.err.text}"
-    println "Std Out: ${proc.in.text}"
-}
+    sh "tar -zcvf "./aws-content-$(date +%s).tar.gz" -C "aws/aws_resources .""
 
+}
 def buildInfrastructure() {
     stage('Terraform init') {}
     stage('Terraform plan') {}
