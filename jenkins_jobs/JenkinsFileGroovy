@@ -14,10 +14,8 @@ def checkout() {
 }
 
 def awsUploadCode() {
-    sh '''
-        tar -czf aws-content.tar.gz -C openidl-iaac/aws/aws_resources --exclude .git .
-    '''
-}
+    sh "tar -czf content.tar.gz -C openidl-iaac/aws/aws_resources --exclude .git ."
+ }
 + tar -czf aws-content.tar.gz -C
 tar: option requires an argument -- 'C'
 Try `tar --help' or `tar --usage' for more information.
