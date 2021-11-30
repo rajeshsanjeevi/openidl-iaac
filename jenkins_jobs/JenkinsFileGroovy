@@ -23,11 +23,7 @@ def buildAWSInfra() {
     stage('AWS-TFPlan') {
         getWorkspaceId()
         createConfig()
-        UploadConfig()
-        buildPayload()
-        def runid = ""
-        runid = startPlan()
-        waitForPlan(runid)
+        
     }
 }
 def getWorkspaceId() {
