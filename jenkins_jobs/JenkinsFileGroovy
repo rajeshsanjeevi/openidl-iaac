@@ -19,6 +19,13 @@ def prepareAWSCode() {
         echo "Successfully prepared the AWS resources code bundle"
     '''
  }
+def prepareK8sCode() {
+    sh '''
+        cp ./aws/carrier.tfvars ./aws/k8s_resources/carrier.auto.tfvars
+        tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
+        echo "Successfully prepared the K8s resources code bundle"
+    '''
+ }
 def buildAWSInfra() {
     stage('AWS-TFPlan') {
         getWorkspaceId()
@@ -62,5 +69,5 @@ def createConfig() {
     println ("Config Version: " + data.data.id)
     def upload_url = data.data.attributes."upload-url"
     println ("Upload URL: " + data.data.attributes."upload-url")
-    return data.data.id, data.data.attributes."upload-url"
+    return [data.data.id, data.data.attributes."upload-url"]
 }
