@@ -22,7 +22,7 @@ def prepareAWSCode() {
 def buildAWSInfra() {
     stage('AWS-TFPlan') {
         getWorkspaceId()
-        createConfigVersion()
+        createConfig()
         UploadConfig()
         buildPayload()
         def runid = ""
