@@ -14,7 +14,7 @@ def checkout() {
 }
 
 def awsUploadCode() {
-    sh "tar -czf content.tar.gz -C openidl-iaac/aws/aws_resources --exclude .git ."
+    sh "tar -czf content.tar.gz -C aws/aws_resources --exclude .git ."
  }
 
 def buildInfrastructure() {
