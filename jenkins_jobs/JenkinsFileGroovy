@@ -42,27 +42,4 @@ def getWorkspaceId() {
     println ("Workspace Id: " + data.data.id)
     return data.data.id
 }
-def createConfig() {
-    def wsid = getWorkspaceId()
-    def payload = """
-{
-  "data": {
-    "type": "configuration-versions",
-    "attributes": {
-      "auto-queue-runs": false
-    }
-  }
-}
-    """
-     def response = httpRequest(
-        customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ],
-                [ name: "Content-Type", value: "application/vnd.api+json" ]
-            ],
-        data: ${payload},
-        url: "https://app.terraform.io/api/v2/workspaces/" + "${wsid}" + "/configuration-versions"
-    )
-    def data = new JsonSlurper().parseText(response.content)
-    println ("Config Version: " + data.data.id)
-    return data.data.id
-}
+
