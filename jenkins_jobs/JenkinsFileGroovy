@@ -4,33 +4,30 @@ import groovy.json.JsonSlurper
 node {
     def url =
     checkout()
-    awsUploadCode()
-    k8sUploadCode()
-    buildInfrastructure()
+    prepareAWSCode()
+    buildAWSInfra()
 }
 def checkout() {
     stage('Clone') {
         git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
     }
 }
-def awsUploadCode() {
+def prepareAWSCode() {
     sh '''
         cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
         tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
         echo "Successfully prepared the AWS resources code bundle"
     '''
  }
-def k8sUploadCode() {
-    sh '''
-        cp ./aws/carrier.tfvars ./aws/k8s_resources/carrier.auto.tfvars
-        tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
-        echo "Successfully prepared the K8s resources code bundle"
-    '''
- }
-def buildInfrastructure() {
+def buildAWSInfra() {
     stage('AWS-TFPlan') {
-        def runid = ""
         getWorkspaceId()
+        createConfigVersion()
+        UploadConfig()
+        buildPayload()
+        def runid = ""
+        runid = startPlan()
+        waitForPlan(runid)
     }
 }
 def getWorkspaceId() {
@@ -43,5 +40,29 @@ def getWorkspaceId() {
     )
     def data = new JsonSlurper().parseText(response.content)
     println ("Workspace Id: " + data.data.id)
+    return data.data.id
+}
+def createConfig() {
+    def wsid = getWorkspaceId()
+    def payload = """
+{
+  "data": {
+    "type": "configuration-versions",
+    "attributes": {
+      "auto-queue-runs": false
+    }
+  }
+}
+    """
+     def response = httpRequest(
+        customHeaders: [
+                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ],
+                [ name: "Content-Type", value: "application/vnd.api+json" ]
+            ],
+        data: ${payload},
+        url: "https://app.terraform.io/api/v2/workspaces/" + "${wsid}" + "/configuration-versions"
+    )
+    def data = new JsonSlurper().parseText(response.content)
+    println ("Config Version: " + data.data.id)
     return data.data.id
 }
