@@ -5,6 +5,7 @@ node {
     def url =
     checkout()
     awsUploadCode()
+    k8sUploadCode()
     buildInfrastructure()
 }
 def checkout() {
@@ -14,7 +15,18 @@ def checkout() {
 }
 
 def awsUploadCode() {
-    sh "tar -czf content.tar.gz -C aws/aws_resources --exclude .git ."
+    sh '''
+        cp aws/carrier.tfvars /aws/aws_resources/carrier.auto.tfvars
+        tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
+        ls -l aws/aws_resources/carrier.auto.tfvars
+    '''
+ }
+def k8sUploadCode() {
+    sh '''
+        cp aws/carrier.tfvars /aws/k8s_resources/carrier.auto.tfvars
+        tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
+        ls -l aws/k8s_resources/carrier.auto.tfvars
+    '''
  }
 
 def buildInfrastructure() {
