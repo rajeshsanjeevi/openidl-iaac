@@ -14,7 +14,7 @@ def checkout() {
 
 def awsUploadCode() {
     def aws_filename = "./aws-content.tar.gz)"
-    def aws_upload = "tar -zcvf "aws_filename -C "/aws/aws_resources/" ."
+    def aws_upload = "tar -zcvf $aws_filename -C "/aws/aws_resources/" ."
     proc.waitFor()
     println "Process exit code: ${proc.exitValue()}"
     println "Std Err: ${proc.err.text}"
