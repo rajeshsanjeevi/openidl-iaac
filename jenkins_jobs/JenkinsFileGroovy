@@ -13,7 +13,7 @@ def checkout() {
 }
 
 def awsUploadCode() {
-    sh "tar -zcvf "./aws-content-$(date +%s).tar.gz" -C "aws/aws_resources .""
+    sh "tar -zcvf "./aws-content-$(date +%s).tar.gz" -C "./aws/aws_resources .""
 
 }
 def buildInfrastructure() {
