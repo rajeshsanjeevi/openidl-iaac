@@ -9,7 +9,7 @@ node {
 def checkout() {
     stage('Clone') {
         git credentialsId: 'github', branch: "${params.branchName}", url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
-        sh "echo '${params.branchName}'"
+        sh "echo '${params.GITHUB_BRANCH}'"
     }
 }
 def buildInfrastructure() {
