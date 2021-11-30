@@ -23,12 +23,6 @@ def buildAWSInfra() {
     stage('AWS-TFPlan') {
         getWorkspaceId()
         createConfig()
-        UploadConfig()
-        buildPayload()
-        def runid = ""
-        runid = startPlan()
-        waitForPlan(runid)
-        apply()
     }
 }
 def getWorkspaceId() {
@@ -44,7 +38,7 @@ def getWorkspaceId() {
     return data.data.id
 }
 def createConfig() {
-    def workspace-id = getWorkspaceId()
+    def wsid = getWorkspaceId()
     def payload = """
 {
   "data": {
@@ -61,7 +55,7 @@ def createConfig() {
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         data: "${payload}",
-        url: "https://app.terraform.io/api/v2/workspaces/" + "${workspace-id}" + "/configuration-versions"
+        url: "https://app.terraform.io/api/v2/workspaces/" + "${wsid}" + "/configuration-versions"
     )
     def data = new JsonSlurper().parseText(response.content)
     println ("Config Version: " + data.data.id)
