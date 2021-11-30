@@ -1,0 +1,20 @@
+#!groovy
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+node {
+    checkout()
+//    uploadCode()
+    buildInfrastructure()
+}
+def checkout() {
+    stage('Clone') {
+        git branch: '${params.branchName}', url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
+        sh "echo '${params.branchName}'"
+    }
+}
+def buildInfrastructure() {
+    stage('Terraform init') {}
+    stage('Terraform plan') {}
+    stage('Terraform apply') {}
+}
+
