@@ -55,7 +55,7 @@ def createConfig() {
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
-        requestBody: '$payload', 
+        requestBody: "$payload", 
         url: "https://app.terraform.io/api/v2/workspaces/" + "${wsid}" + "/configuration-versions"
     )
     def data = new JsonSlurper().parseText(response.content)
