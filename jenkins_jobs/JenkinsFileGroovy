@@ -28,8 +28,10 @@ def prepareK8sCode() {
  }
 def buildAWSInfra() {
     stage('AWS-TFPlan') {
-        getWorkspaceId()
-        createConfig()
+        def ws_id = getWorkspaceId()
+        def [config_version, upload_url] = createConfig()
+        def upload_status = uploadConfig(${upload_url})
+        println(${ws_id}, ${config_version}, ${upload_url} )
     }
 }
 def getWorkspaceId() {
@@ -44,8 +46,7 @@ def getWorkspaceId() {
     println ("Workspace Id: " + data.data.id)
     return data.data.id
 }
-def createConfig() {
-    def wsid = getWorkspaceId()
+def createConfig(ws_id) {
     def payload = """
 {
   "data": {
@@ -63,11 +64,22 @@ def createConfig() {
             ],
         httpMode: 'POST',
         requestBody: "$payload",
-        url: "https://app.terraform.io/api/v2/workspaces/" + "${wsid}" + "/configuration-versions"
+        url: "https://app.terraform.io/api/v2/workspaces/" + "${ws_id}" + "/configuration-versions"
     )
     def data = new JsonSlurper().parseText(response.content)
     println ("Config Version: " + data.data.id)
     def upload_url = data.data.attributes."upload-url"
     println ("Upload URL: " + data.data.attributes."upload-url")
     return [data.data.id, data.data.attributes."upload-url"]
+}
+def uploadConfig(url) {
+         def response = httpRequest(
+        customHeaders: [
+                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ],
+                [ name: "Content-Type", value: "application/vnd.api+json" ]
+            ],
+        httpMode: 'POST', responseHandle: 'NONE',
+        uploadFile: './aws-content.tar.gz',
+        url: "$url"
+    )
 }
