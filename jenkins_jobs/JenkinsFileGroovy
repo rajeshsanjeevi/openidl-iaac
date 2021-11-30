@@ -8,7 +8,7 @@ node {
 }
 def checkout() {
     stage('Clone') {
-        git credentialsId: 'github', branch: 'hig-carrier-feature', url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
+        git credentialsId: 'github', branch: '${params.branchName}', url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
         sh "echo '${params.branchName}'"
     }
 }
