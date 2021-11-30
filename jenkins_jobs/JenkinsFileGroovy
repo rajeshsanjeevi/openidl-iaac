@@ -28,6 +28,7 @@ def buildAWSInfra() {
         def runid = ""
         runid = startPlan()
         waitForPlan(runid)
+        apply()
     }
 }
 def getWorkspaceId() {
@@ -64,5 +65,7 @@ def createConfig() {
     )
     def data = new JsonSlurper().parseText(response.content)
     println ("Config Version: " + data.data.id)
+    def upload_url = data.data.attributes."upload-url"
+    println ("Upload URL: " + data.data.attributes."upload-url")
     return data.data.id
 }
