@@ -8,13 +8,21 @@ node {
 }
 def checkout() {
     stage('Clone') {
-        git credentialsId: 'github' branch: '${params.branchName}', url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
-        sh "echo '${params.branchName}'"
+        git credentialsId: 'github' branch: "${params.GITHUB_BRANCH}", url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
     }
 }
+
+def awsUploadCode() {
+    def aws_filename = "./aws-content-$(data +%s).tar.gz)"
+    def aws_upload = "tar -zcvf "aws_filename -C "/aws/aws_resources/" ."
+    proc.waitFor()
+    println "Process exit code: ${proc.exitValue()}"
+    println "Std Err: ${proc.err.text}"
+    println "Std Out: ${proc.in.text}"
+}
+
 def buildInfrastructure() {
     stage('Terraform init') {}
     stage('Terraform plan') {}
     stage('Terraform apply') {}
 }
-
