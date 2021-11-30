@@ -18,19 +18,32 @@ def awsUploadCode() {
     sh '''
         cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
         tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
-        ls -l ./aws/aws_resources/carrier.auto.tfvars
+        echo "Successfully prepared the AWS resources code bundle"
     '''
  }
 def k8sUploadCode() {
     sh '''
         cp ./aws/carrier.tfvars ./aws/k8s_resources/carrier.auto.tfvars
         tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
-        ls -l ./aws/k8s_resources/carrier.auto.tfvars
+        echo "Successfully prepared the K8s resources code bundle"
     '''
  }
-
 def buildInfrastructure() {
-    stage('Terraform init') {}
-    stage('Terraform plan') {}
-    stage('Terraform apply') {}
+    stage('AWS-TFPlan') {
+        def runid = ""
+        getWorkspaceId()
+    }
+}
+def getWorkspaceId() {
+    def response = httpRequest(
+        customHeaders: [
+                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}"} ],
+                [ name: "Content-Type", value: "application/vnd.api+json" ]
+            ],
+        url: "https://app.terraform.io/api/v2/organizations/" + "${params.TF_ORGNAME}" + "/workspaces/" + "${params.TF_AWS_WORKSPACE}"
+    )
+
+    def data = new JsonSlurper().parseText(response.content)
+    println ("Workspace Id: " + data.data.id)
+    return data.data.id
 }
