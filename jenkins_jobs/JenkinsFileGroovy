@@ -43,10 +43,10 @@ def buildAWSInfra() {
 def getWorkspaceId() {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
-        url: "https://app.terraform.io/api/v2/organizations/" + "${params.TF_ORGNAME}" + "/workspaces/" + "${params.TF_AWS_WORKSPACE}"
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/organizations/" + "${params.TF_ORGNAME}" + "/workspaces/" + "${params.TF_AWS_WORKSPACE}"
     )
     def data = new JsonSlurper().parseText(response.content)
     println ("Workspace Id: " + data.data.id)
@@ -65,12 +65,12 @@ def createConfig(ws_id) {
     """
      def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
         requestBody: "${payload}",
-        url: "https://app.terraform.io/api/v2/workspaces/" + "${ws_id}" + "/configuration-versions"
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/workspaces/" + "${ws_id}" + "/configuration-versions"
     )
     def data = new JsonSlurper().parseText(response.content)
     println ("Config Version: " + data.data.id)
@@ -81,7 +81,7 @@ def createConfig(ws_id) {
 def uploadConfig(url) {
          def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/octet-stream" ]
             ],
         httpMode: 'PUT', multipartName: 'aws-content', responseHandle: 'NONE',
@@ -111,12 +111,12 @@ def Plan(ws_id) {
     """
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ], 
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
         requestBody: "${payload}",
-        url: "https://app.terraform.io/api/v2/runs"
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs"
     )
     def data = new JsonSlurper().parseText(response.content)
     println ("Run Id: " + data.data.id)
@@ -125,8 +125,8 @@ def Plan(ws_id) {
 def getPlanStatus(runid) {
     def result = ""
     def response = httpRequest(
-        customHeaders: [[ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ]],
-        url: "https://app.terraform.io/api/v2/runs/${runid}"
+        customHeaders: [[ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ]],
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}"
     )
     def data = new JsonSlurper().parseText(response.content)
     switch (data.data.attributes.status) {
@@ -263,33 +263,33 @@ def waitforApply(runid) {
 def applyRun(runid) {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ], 
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
         requestBody: '{ "comment": "Apply confirmed" }',
-        url: "https://app.terraform.io/api/v2/runs/${runid}/actions/apply"
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/apply"
     )
 }
 def discardRun(runid) {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ], 
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
         responseBody: '{ comment: "Run has been discarded" }',
-        url: "https://app.terraform.io/api/v2/runs/${runid}/actions/discard"
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/discard"
     )
 }
 def overridePolicy(policyid) {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ], 
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
-        url: "https://app.terraform.io/api/v2/policy-checks/${policyid}/actions/override"
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/policy-checks/${policyid}/actions/override"
     )
 
     def data = new JsonSlurper().parseText(response.content)
@@ -303,8 +303,8 @@ def overridePolicy(policyid) {
 def getApplyStatus(runid) {
     def result = ""
     def response = httpRequest(
-        customHeaders: [[ name: "Authorization", value: "Bearer " + "${params.TF_BEARER_TOKEN}" ]],
-        url: "https://app.terraform.io/api/v2/runs/${runid}"
+        customHeaders: [[ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ]],
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}"
     )
     def data = new JsonSlurper().parseText(response.content)
     switch (data.data.attributes.status) {
