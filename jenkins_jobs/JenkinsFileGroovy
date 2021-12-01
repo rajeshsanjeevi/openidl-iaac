@@ -288,7 +288,7 @@ def discardRun(runid) {
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
-        responseBody: '{ comment: "Run has been discarded" }',
+        requestBody: '{ comment: "Run has been discarded" }',
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/discard"
     )
     waitForApply("${runid}")
