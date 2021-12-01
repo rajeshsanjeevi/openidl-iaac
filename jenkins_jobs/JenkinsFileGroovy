@@ -46,7 +46,7 @@ def getWorkspaceId() {
     println ("Workspace Id: " + data.data.id)
     return data.data.id
 }
-def createConfig(ws_id) {
+def createConfig(workspace_id) {
     def payload = """
 {
   "data": {
@@ -64,7 +64,7 @@ def createConfig(ws_id) {
             ],
         httpMode: 'POST',
         requestBody: "$payload",
-        url: "https://app.terraform.io/api/v2/workspaces/" + "${ws_id}" + "/configuration-versions"
+        url: "https://app.terraform.io/api/v2/workspaces/" + "${workspace_id}" + "/configuration-versions"
     )
     def data = new JsonSlurper().parseText(response.content)
     println ("Config Version: " + data.data.id)
