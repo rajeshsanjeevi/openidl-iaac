@@ -5,7 +5,8 @@ node('master') {
     def url =
     checkout()
     prepareAWSCode()
-    buildAWSInfra()
+    prepareK8sCode)
+    buildInfra()
 }
 def checkout() {
     stage('Clone') {
@@ -26,11 +27,11 @@ def prepareK8sCode() {
         echo "Successfully prepared the K8s resources code bundle"
     '''
  }
-def buildAWSInfra() {
+def buildInfra() {
     stage('AWS') {
         def ws_id = getWorkspaceId("${params.TF_AWS_WORKSPACE}")
         def (config_version, upload_url) = createConfig("${ws_id}")
-        def upload_status = uploadConfig("${upload_url}")
+        def upload_status = uploadAWSConfig("${upload_url}")
         def runid = ""
         runid = Plan("${ws_id}")
         waitForPlan("${runid}")
@@ -38,7 +39,7 @@ def buildAWSInfra() {
     stage('K8s') {
         def ws_id = getWorkspaceId("${params.TF_K8S_WORKSPACE}")
         def (config_version, upload_url) = createConfig("${ws_id}")
-        def upload_status = uploadConfig("${upload_url}")
+        def upload_status = uploadK8sConfig("${upload_url}")
         def runid = ""
         runid = Plan("${ws_id}")
         waitForPlan("${runid}")
@@ -82,7 +83,7 @@ def createConfig(ws_id) {
     println ("Upload URL: " + data.data.attributes."upload-url")
     return [data.data.id, data.data.attributes."upload-url"]
 }
-def uploadConfig(url) {
+def uploadAWSConfig(url) {
          def response = httpRequest(
         customHeaders: [
                 [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
@@ -90,6 +91,17 @@ def uploadConfig(url) {
             ],
         httpMode: 'PUT', multipartName: 'aws-content', responseHandle: 'NONE',
         uploadFile: './aws-content.tar.gz',
+        url: "${url}"
+    )
+}
+def uploadK8sConfig(url) {
+         def response = httpRequest(
+        customHeaders: [
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
+                [ name: "Content-Type", value: "application/octet-stream" ]
+            ],
+        httpMode: 'PUT', multipartName: 'aws-content', responseHandle: 'NONE',
+        uploadFile: './k8s-content.tar.gz',
         url: "${url}"
     )
 }
