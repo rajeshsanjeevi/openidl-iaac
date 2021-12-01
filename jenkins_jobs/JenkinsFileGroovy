@@ -2,10 +2,7 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 node('master') {
-    def url =
     checkout()
-    prepareAWSCode()
-    prepareK8sCode()
     buildInfra()
 }
 def checkout() {
