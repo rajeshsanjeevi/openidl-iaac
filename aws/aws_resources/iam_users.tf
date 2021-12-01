@@ -4,7 +4,7 @@ resource "aws_iam_user" "baf_user" {
   force_destroy = true
   tags = merge(local.tags, { Name = "${local.std_name}-baf-automation", Cluster_type = "both" })
 }
-resource "aws_iam_user1" "baf_user1" {
+resource "aws_iam_user" "baf_user1" {
   name = "${local.std_name}-baf-automation1"
   force_destroy = true
   tags = merge(local.tags, { Name = "${local.std_name}-baf-automation1", Cluster_type = "both" })
