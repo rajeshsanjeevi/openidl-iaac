@@ -224,6 +224,7 @@ def waitForPlan(runid) {
             if (apply == true) {
                 println('Applying plan')
                 applyRun(runid)
+                break
             }
             else {
                 println('Rejecting!')
@@ -278,6 +279,7 @@ def applyRun(runid) {
         requestBody: '{ "comment": "Apply confirmed" }',
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/apply"
     )
+    waitForApply("${runid}")
 }
 def discardRun(runid) {
     def response = httpRequest(
@@ -289,6 +291,7 @@ def discardRun(runid) {
         responseBody: '{ comment: "Run has been discarded" }',
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/discard"
     )
+    waitForApply("${runid}")
 }
 def overridePolicy(policyid) {
     def response = httpRequest(
