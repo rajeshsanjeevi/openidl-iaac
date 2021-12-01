@@ -93,6 +93,7 @@ def uploadAWSConfig(url) {
         uploadFile: './aws-content.tar.gz',
         url: "${url}"
     )
+    println("upload completed")
 }
 def uploadK8sConfig(url) {
          def response = httpRequest(
@@ -104,6 +105,7 @@ def uploadK8sConfig(url) {
         uploadFile: './k8s-content.tar.gz',
         url: "${url}"
     )
+    println("upload completed")
 }
 def Plan(ws_id) {
     def payload = """
