@@ -293,7 +293,7 @@ def waitForApply(runid) {
     }
 }
 def applyRun(runid) {
-    stage('AWS-Apply') {
+    stage('Apply') {
         def response = httpRequest(
             customHeaders: [
                     [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
