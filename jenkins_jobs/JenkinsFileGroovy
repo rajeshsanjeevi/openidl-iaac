@@ -238,7 +238,7 @@ def waitForPlan(runid) {
         sleep(5)
     }
 }
-def waitforApply(runid) {
+def waitForApply(runid) {
     def count = 0
     while (true) {
         
