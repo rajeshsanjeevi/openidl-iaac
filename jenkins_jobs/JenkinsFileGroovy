@@ -27,8 +27,16 @@ def prepareK8sCode() {
     '''
  }
 def buildAWSInfra() {
-    stage('AWS-TFPlan') {
-        def ws_id = getWorkspaceId()
+    stage('AWS') {
+        def ws_id = getWorkspaceId("${params.TF_AWS_WORKSPACE}")
+        def (config_version, upload_url) = createConfig("${ws_id}")
+        def upload_status = uploadConfig("${upload_url}")
+        def runid = ""
+        runid = Plan("${ws_id}")
+        waitForPlan("${runid}")
+    }
+    stage('K8s') {
+        def ws_id = getWorkspaceId("${params.TF_K8S_WORKSPACE}")
         def (config_version, upload_url) = createConfig("${ws_id}")
         def upload_status = uploadConfig("${upload_url}")
         def runid = ""
