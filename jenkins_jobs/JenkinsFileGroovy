@@ -41,7 +41,7 @@ def buildInfra() {
         def (config_version, upload_url) = createConfig("${ws_id}")
         def upload_status = uploadK8sConfig("${upload_url}")
     }
-    stage('K8s-Plan')
+    stage('K8s-Plan') {
         def runid = ""
         runid = Plan("${ws_id}")
         waitForPlan("${runid}")
