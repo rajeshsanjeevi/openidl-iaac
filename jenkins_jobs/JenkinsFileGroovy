@@ -5,7 +5,7 @@ node('master') {
     def url =
     checkout()
     prepareAWSCode()
-    prepareK8sCode)
+    prepareK8sCode()
     buildInfra()
 }
 def checkout() {
