@@ -31,12 +31,8 @@ def buildAWSInfra() {
         def ws_id = getWorkspaceId()
         def (config_version, upload_url) = createConfig("${ws_id}")
         def upload_status = uploadConfig("${upload_url}")
-        println("Workspace Id:" + ws_id)
-        println("Config Version:" + config_version)
-        println("Upload URL:" + upload_url)
         def runid = ""
         runid = Plan("${ws_id}")
-        println("Run ID:" + runid)
         waitForPlan("${runid}")
     }
 }
@@ -131,8 +127,9 @@ def getPlanStatus(runid) {
     def data = new JsonSlurper().parseText(response.content)
     switch (data.data.attributes.status) {
         case 'pending':
-        case 'plan_queued':
             result = "pending"
+        case 'plan_queued':
+            result = "plan_queued"
             break
         case 'planning':
             result = "planning"
@@ -141,18 +138,29 @@ def getPlanStatus(runid) {
             result = "planned"
             break
         case 'cost_estimating':
-        case 'cost_estimated':
             result = "costing"
+            break 
+        case 'cost_estimated':
+            result = "costing_finished"
             break
         case 'policy_checking':
-            result = "policy"
+            result = "policy_checking"
             break
+        case 'policy_soft_failed':
+            result = "policy_soft_failed"
+            break
+        case 'confirmed':
+            result = "confirmed"
+            break 
+        case 'planned_and_finished':
+            result = "planning_finished"
+            break 
         case 'policy_override':
             println(response.content)
             result = "approve_policy:" + data.data.relationships["policy-checks"].data[0].id
             break
         case 'policy_checked':
-            result = "apply_plan"
+            result = "policy_check_finished"
             break
         default:
             result = "running"
@@ -202,7 +210,7 @@ def waitForPlan(runid) {
         }
 
         // If we're ready to apply, prompt in the pipeline to do so
-        if (status == "finished") {
+        if (status == "planning_finished" || status == "costing_finished") {
             def apply
             try {
                 apply = input (message: 'Confirm Apply', ok: 'Continue', 
@@ -308,8 +316,21 @@ def getApplyStatus(runid) {
     )
     def data = new JsonSlurper().parseText(response.content)
     switch (data.data.attributes.status) {
+        case 'apply_queued':
+            result = data.data.attributes.status
+            break
+        case 'applied':
+            result = data.data.attributes.status
+            break
         case 'discarded':
+            result = data.data.attributes.status
+            break
         case 'errored':
+            result = data.data.attributes.status
+            break
+        case 'force_canceled':  
+            result = data.data.attributes.status
+            break
         case 'canceled':
             result = data.data.attributes.status
             break
