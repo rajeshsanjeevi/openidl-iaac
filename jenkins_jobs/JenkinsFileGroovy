@@ -241,7 +241,7 @@ def waitForPlan(runid) {
 def waitForApply(runid) {
     def count = 0
     while (true) {
-        
+        def status = getApplyStatus(runid)
         println("Status: " + status)
 
         if (status == 'discarded') {
@@ -279,6 +279,7 @@ def applyRun(runid) {
         requestBody: '{ "comment": "Apply confirmed" }',
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/apply"
     )
+    println("Apply completed")
     waitForApply("${runid}")
 }
 def discardRun(runid) {
@@ -292,7 +293,7 @@ def discardRun(runid) {
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/discard"
     )
    println("Discard completed")
-   // waitForApply("${runid}")
+   waitForApply("${runid}")
 }
 def overridePolicy(policyid) {
     def response = httpRequest(
