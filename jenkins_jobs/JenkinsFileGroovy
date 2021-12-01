@@ -210,7 +210,7 @@ def waitForPlan(runid) {
         }
 
         // If we're ready to apply, prompt in the pipeline to do so
-        if (status == "planning_finished" || status == "costing_finished") {
+        if (status == "planning_finished" || status == "costing_finished" || status == "policy_check_finished") {
             def apply
             try {
                 apply = input (message: 'Confirm Apply', ok: 'Continue', 
