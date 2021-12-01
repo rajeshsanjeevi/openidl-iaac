@@ -28,6 +28,7 @@ def buildInfra() {
         def upload_status = uploadAWSConfig("${upload_url}")
     }
     stage('AWS-Plan') {
+        def ws_id = getWorkspaceId("${params.TF_AWS_WORKSPACE}")
         def runid = ""
         runid = Plan("${ws_id}")
         waitForPlan("${runid}")
@@ -39,6 +40,7 @@ def buildInfra() {
         def upload_status = uploadK8sConfig("${upload_url}")
     }
     stage('K8s-Plan') {
+        def ws_id = getWorkspaceId("${params.TF_AWS_WORKSPACE}")
         def runid = ""
         runid = Plan("${ws_id}")
         waitForPlan("${runid}")
