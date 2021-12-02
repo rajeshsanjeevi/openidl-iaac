@@ -168,6 +168,18 @@ def getPlanStatus(runid) {
         case 'policy_checked':
             result = "policy_check_finished"
             break
+        case 'discarded':
+            result = "discarded"
+            break 
+        case 'errored':
+            result = "errored"
+            break 
+        case 'canceled':
+            result = "canceled"
+            break 
+        case "force_canceled":
+            result = "canceled"
+            break 
         default:
             result = "running"
             break
@@ -239,6 +251,20 @@ def waitForPlan(runid) {
                 break
             }
         }
+        if (status == "errored") {
+            println("The pipeline failed due to the plan errored")
+            error("The Terraform run has encountered an error while planning, and the pipeline cannot continue.")
+            break 
+        } else if(status == "canceled") {
+            println("The pipeline failed due to the plan canceled")
+            error("The Terraform run has been canceled outside the pipeline, and the pipeline cannot continue.")
+            break
+        } else if(status == "discarded")  {
+            println("The pipeline failed due to the plan discarded")
+            error("The Terraform run has been discarded and the pipeline cannot continue.")
+            break 
+        }
+
         if (count > 60) break
         count++
         sleep(5)
