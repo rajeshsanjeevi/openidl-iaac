@@ -1,0 +1,54 @@
+pipeline {
+    agent {
+        node {
+            label 'Jenkins-Master'
+        }
+    }
+    stages {
+        stage("TF-init-AWS") {
+            steps {
+                echo "terraform init started"
+                sh "cp aws/carrier.tfvars aws/aws_resources/carrier.auto.tfvars"
+                sh "terraform -chdir=aws/aws_resources init --backend-config=../tf_s3_backend/aws_resources_tfc.hcl"
+                echo "terraform init finished"
+                }
+        }
+        stage("TF-plan-AWS") {
+            steps {
+                echo "terraform plan started"
+                sh "terraform -chdir=aws/aws_resources plan -compact-warnings"
+                echo "terraform plan finished"
+            }
+        }
+        stage("TF-apply-AWS") {
+            steps {
+                echo "terrform apply"
+                sh "terraform -chdir=aws/aws_resources apply --auto-approve -compact-warnings"
+                echo "terraform apply finished"
+            }
+        }
+        stage("TF-init-K8s") {
+            steps {
+                echo "terraform init started"
+                sh "cp aws/carrier.tfvars aws/k8s_resources/carrier.auto.tfvars"
+                sh "terraform -chdir=aws/k8s_resources init --backend-config=../tf_s3_backend/k8s_resources_tfc.hcl"
+                echo "terraform init finished"
+                }
+        }
+        stage("TF-plan-K8s") {
+            steps {
+                echo "terraform plan started"
+                sh "terraform -chdir=aws/k8s_resources plan -compact-warnings"
+                echo "terraform plan finished"
+            }
+        }
+        stage("TF-apply-K8s") {
+            steps {
+                echo "terrform apply"
+                sh "terraform -chdir=aws/k8s_resources apply --auto-approve -compact-warnings"
+                echo "terraform apply finished"
+            }
+        }
+    }
+}
+
