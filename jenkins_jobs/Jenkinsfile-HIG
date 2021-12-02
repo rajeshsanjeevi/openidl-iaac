@@ -28,12 +28,12 @@ def checkout() {
     }
 }
 def buildInfra() {
-    stage('TF-Plan-Apply') {
+    stage('Terraform Run') {
         def ws_id = getWorkspaceId("${params.TF_WORKSPACE}")
         def (config_version, upload_url) = createConfig("${ws_id}")
         def upload_status = uploadConfig("${upload_url}")
         def runid = ""
-        runid = Plan("${ws_id}")
+        runid = plan("${ws_id}")
         waitForPlan("${runid}")
     }
 }
@@ -46,7 +46,7 @@ def getWorkspaceId(workspace) {
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/organizations/" + "${params.TF_ORGNAME}" + "/workspaces/" + "${workspace}"
     )
     def data = new JsonSlurper().parseText(response.content)
-    println ("Workspace Id: " + data.data.id)
+    println("Workspace Id: " + data.data.id)
     println("Get workspaceId HTTP response:" + response)
     return data.data.id
 }
@@ -71,9 +71,9 @@ def createConfig(ws_id) {
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/workspaces/" + "${ws_id}" + "/configuration-versions"
     )
     def data = new JsonSlurper().parseText(response.content)
-    println ("Config Version: " + data.data.id)
+    println("Config Version: " + data.data.id)
     def upload_url = data.data.attributes."upload-url"
-    println ("Upload URL: " + data.data.attributes."upload-url")
+    println("Upload URL: " + data.data.attributes."upload-url")
     println("createConfig HTTP response:" + response)
     return [data.data.id, data.data.attributes."upload-url"]
 }
@@ -89,7 +89,7 @@ def uploadConfig(url) {
     )
     println("createConfig HTTP response:" + response)
 }
-def Plan(ws_id) {
+def plan(ws_id) {
     def payload = """
 {
     "data": {
@@ -119,9 +119,25 @@ def Plan(ws_id) {
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs"
     )
     def data = new JsonSlurper().parseText(response.content)
-    println ("Run Id: " + data.data.id)
+    println("Run Id: " + data.data.id)
     println("Plan HTTP response:" + response)
     return data.data.id
+}
+def planResult(runid){
+    def response = httpRequest(
+        customHeaders: [
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
+                [ name: "Content-Type", value: "application/vnd.api+json" ]],
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${run_id}?include=plan"
+    )
+    def data = new JsonSlurper().parseText(response.content)
+    println("plan Result HTTP response:" + response)
+    println("Plan log")
+    def plan_log_url = data.included[0].attributes."log-read-url"
+    def log_response = httpRequest(
+        url: "${plan_log_url}"
+    )
+    println(log_response)
 }
 def getPlanStatus(runid) {
     def result = ""
@@ -194,6 +210,7 @@ def waitForPlan(runid) {
         // If a policy requires an override, prompt in the pipeline
         if (status.startsWith("approve_policy")) {
             def override
+            planResult(runid)
             try {
                 override = input (message: 'Override policy?', 
                                   ok: 'Continue', 
@@ -229,6 +246,7 @@ def waitForPlan(runid) {
         // If we're ready to apply, prompt in the pipeline to do so
         if (status == "planned" || status == "cost_estimated" || status == "policy_checked") {
             def apply
+            planResult(runid)
             try {
                 apply = input (message: 'Confirm Apply', ok: 'Continue', 
                                     parameters: [booleanParam(defaultValue: false,
@@ -251,18 +269,22 @@ def waitForPlan(runid) {
             }
         }
         if (status == "errored") {
+            planResult(runid)
             println("The pipeline failed due to the plan errored")
             error("The Terraform run has encountered an error while planning, and the pipeline cannot continue.")
             break 
         } else if(status == "canceled") {
+            planResult(runid)
             println("The pipeline failed due to the plan canceled")
             error("The Terraform run has been canceled outside the pipeline, and the pipeline cannot continue.")
             break
         } else if(status == "discarded")  {
+            planResult(runid)
             println("The pipeline failed due to the plan discarded")
             error("The Terraform run has been discarded and the pipeline cannot continue.")
             break 
         } else if(status == "planned_and_finished") {
+            planResult(runid)
             println("The environment is up to date and there are no changes to apply.")
             break
         }    
