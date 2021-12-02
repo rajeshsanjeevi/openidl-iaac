@@ -19,16 +19,21 @@ def checkout() {
     }
 }
 def buildInfra() {
-    stage('AWS-Plan') {
+    stage('AWS-Init') {
         def ws_id = getWorkspaceId("${params.TF_AWS_WORKSPACE}")
         def (config_version, upload_url) = createConfig("${ws_id}")
         def upload_status = uploadAWSConfig("${upload_url}")
-        def runid = ""
-        runid = plan("${ws_id}") 
         environment {
             aws_wsid = ws_id 
+        }
+    }
+    stage('AWS-Plan') {
+        def runid = ""
+        runid = plan("${env.aws_wsid}") 
+        environment {
             aws_runid = runid 
         } 
+    }
     stage('AWS-Apply') {
         waitForPlan("${env.aws_runid}")
     
