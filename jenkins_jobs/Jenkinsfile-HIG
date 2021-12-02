@@ -9,13 +9,17 @@ def checkout() {
     stage('Clone') {
         git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
         sh '''
-            cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
-            tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
-            echo "Successfully prepared the AWS resources code bundle"
-            cp ./aws/carrier.tfvars ./aws/k8s_resources/carrier.auto.tfvars
-            tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
-            echo "Successfully prepared the K8s resources code bundle"
-
+            if ["$param.TF_WORKSPACE" == *AWS*]; then
+                cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
+                tar -czf content.tar.gz -C aws/aws_resources --exclude .git .
+                echo "Successfully prepared the AWS resources code bundle"
+            elif ["$param.TF_WORKSPACE" == *K8*]; then
+                cp ./aws/carrier.tfvars ./aws/k8s_resources/carrier.auto.tfvars
+                tar -czf content.tar.gz -C aws/k8s_resources --exclude .git .
+                echo "Successfully prepared the K8s resources code bundle"
+            else 
+                echo "There is mismatch in workspace names in Terraform, hence pipeline fails"
+                continue=0
         '''
     }
 }
@@ -73,8 +77,8 @@ def uploadAWSConfig(url) {
                 [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/octet-stream" ]
             ],
-        httpMode: 'PUT', multipartName: 'aws-content', responseHandle: 'NONE',
-        uploadFile: './aws-content.tar.gz',
+        httpMode: 'PUT', multipartName: 'content', responseHandle: 'NONE',
+        uploadFile: './content.tar.gz',
         url: "${url}"
     )
     println("upload completed")
@@ -270,63 +274,6 @@ def waitForPlan(runid) {
         sleep(5)
     }
 }
-def waitForApply(runid) {
-    def count = 0
-    while (true) {
-        def status = getApplyStatus(runid)
-        println("Status: " + status)
-
-        if (status == 'discarded') {
-            println("This run has been discarded")
-            error("The Terraform run has been discarded, and the pipeline cannot continue.")
-            break
-        }
-        if (status == 'canceled') {
-            println("This run has been canceled outside the pipeline")
-            error("The Terraform run has been canceled outside the pipeline, and the pipeline cannot continue.")
-            break
-        }
-        if (status == 'errored') {
-            println("This run has encountered an error while applying")
-            error("The Terraform run has encountered an error while applying, and the pipeline cannot continue.")
-            break
-        }
-        if (status == 'applied') {
-            println("This run has finished applying")
-            break
-        }
-
-        if (count > 3600) break
-        count++
-        sleep(10)
-    }
-}
-def applyRun(runid) {
-    def response = httpRequest(
-        customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
-                [ name: "Content-Type", value: "application/vnd.api+json" ]
-            ],
-        httpMode: 'POST',
-        requestBody: '{ "comment": "Apply confirmed" }',
-        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/apply"
-    )
-    println("Apply completed")
-    waitForApply("${runid}")
-}
-def discardRun(runid) {
-    def response = httpRequest(
-        customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
-                [ name: "Content-Type", value: "application/vnd.api+json" ]
-            ],
-        httpMode: 'POST',
-        requestBody: '{ "comment": "Run has been discarded" }',
-        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/discard"
-    )
-   println("Discard completed")
-   waitForApply("${runid}")
-}
 def overridePolicy(policyid) {
     def response = httpRequest(
         customHeaders: [
@@ -344,6 +291,19 @@ def overridePolicy(policyid) {
     else {
         return true
     }
+}
+def applyRun(runid) {
+    def response = httpRequest(
+        customHeaders: [
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
+                [ name: "Content-Type", value: "application/vnd.api+json" ]
+            ],
+        httpMode: 'POST',
+        requestBody: '{ "comment": "Apply confirmed" }',
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/apply"
+    )
+    println("Apply completed")
+    waitForApply("${runid}")
 }
 def getApplyStatus(runid) {
     def result = ""
@@ -376,6 +336,52 @@ def getApplyStatus(runid) {
     }
     return result
 }
+def waitForApply(runid) {
+    def count = 0
+    while (true) {
+        def status = getApplyStatus(runid)
+        println("Status: " + status)
+
+        if (status == 'discarded') {
+            println("This run has been discarded")
+            error("The Terraform run has been discarded, and the pipeline cannot continue.")
+            break
+        }
+        if (status == 'canceled') {
+            println("This run has been canceled outside the pipeline")
+            error("The Terraform run has been canceled outside the pipeline, and the pipeline cannot continue.")
+            break
+        }
+        if (status == 'errored') {
+            println("This run has encountered an error while applying")
+            error("The Terraform run has encountered an error while applying, and the pipeline cannot continue.")
+            break
+        }
+        if (status == 'applied') {
+            println("This run has finished applying")
+            break
+        }
+
+        if (count > 3600) break
+        count++
+        sleep(10)
+    }
+}
+def discardRun(runid) {
+    def response = httpRequest(
+        customHeaders: [
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
+                [ name: "Content-Type", value: "application/vnd.api+json" ]
+            ],
+        httpMode: 'POST',
+        requestBody: '{ "comment": "Run has been discarded" }',
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/discard"
+    )
+   println("Discard completed")
+   waitForApply("${runid}")
+}
+
+
 
 
 
