@@ -134,10 +134,7 @@ def planResult(runid){
     println("plan Result HTTP response:" + response)
     println("Plan log")
     def plan_log_url = data.included[0].attributes."log-read-url"
-    def log_response = httpRequest(
-        url: "${plan_log_url}"
-    )
-    println(log_response)
+    println("URL to review terraform plan:\n" + plan_log_url)
 }
 def getPlanStatus(runid) {
     def result = ""
