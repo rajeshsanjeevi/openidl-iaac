@@ -262,7 +262,7 @@ def waitForPlan(runid) {
             println("The pipeline failed due to the plan discarded")
             error("The Terraform run has been discarded and the pipeline cannot continue.")
             break 
-        } else if(status == "planned_and_finished")
+        } else if(status == "planned_and_finished") {
             println("The environment is up to date and there are no changes to apply.")
             break
         }    
