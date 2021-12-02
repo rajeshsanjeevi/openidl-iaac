@@ -1,12 +1,15 @@
-#reading data from base modules-terraform state file
-#data "terraform_remote_state" "base_setup" {
-#  backend = "s3"
-#  config = {
-#    bucket               = var.terraform_state_s3_bucket_name
-#    key                  = "aws/terraform.tfstate"
-#    region               = var.aws_region
-#   }
-#}
+#Active below code snippet when terraform uses S3 as backend
+/*
+data "terraform_remote_state" "base_setup" {
+  backend = "s3"
+  config = {
+    bucket               = var.terraform_state_s3_bucket_name
+    key                  = "aws/terraform.tfstate"
+    region               = var.aws_region
+   }
+}
+*/
+#Active below code snippet when terraform uses TFC/TFE as environment
 data "terraform_remote_state" "base_setup" {
   backend = "remote"
   config = {
@@ -16,6 +19,8 @@ data "terraform_remote_state" "base_setup" {
     }
   }
 }
+
+#The following code are standard and no changes required
 #reading NLB setup by ingress controller deployed in app EKS
 data aws_alb "app_nlb" {
   tags = { "kubernetes.io/cluster/${local.app_cluster_name}" = "owned"}

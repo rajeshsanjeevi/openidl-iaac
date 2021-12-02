@@ -657,12 +657,15 @@ variable "blk_worker_nodes_ami_id" {
 variable "aws_access_key" {
   type = string
   default = ""
+  description = "IAM user access key"
 }
 variable "aws_secret_key" {
   type = string
   default = ""
+  description = "IAM user secret key"
 }
 variable "aws_external_id" {
   type = string
-  default = ""
+  default = "terraform"
+  description = "External Id setup while setting up IAM user and and its relevant roles"
 }

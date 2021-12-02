@@ -1,4 +1,11 @@
-#required when used in github actions pipeline
+#Activate the below code snippet when used with GitHub actions pipeline
+/*
+provider "aws" {
+  region = var.aws_region
+}
+*/
+
+#Active below code snippet when used with Jenkins pipeline 
 provider "aws" {
   region = var.aws_region
   access_key = var.aws_access_key
