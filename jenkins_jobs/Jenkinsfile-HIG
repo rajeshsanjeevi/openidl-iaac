@@ -47,6 +47,7 @@ def getWorkspaceId(workspace) {
     )
     def data = new JsonSlurper().parseText(response.content)
     println ("Workspace Id: " + data.data.id)
+    println("Get workspaceId HTTP response:" + response)
     return data.data.id
 }
 def createConfig(ws_id) {
@@ -73,6 +74,7 @@ def createConfig(ws_id) {
     println ("Config Version: " + data.data.id)
     def upload_url = data.data.attributes."upload-url"
     println ("Upload URL: " + data.data.attributes."upload-url")
+    println("createConfig HTTP response:" + response)
     return [data.data.id, data.data.attributes."upload-url"]
 }
 def uploadConfig(url) {
@@ -85,7 +87,12 @@ def uploadConfig(url) {
         uploadFile: './content.tar.gz',
         url: "${url}"
     )
-    println("upload completed")
+    println("createConfig HTTP response:" + response)
+   if ( response == 'Status: 422') {
+        println("The code upload failed, Please retry build")
+        error("The code upload to terraform environment failed, Please retry.")
+        break
+   }
 }
 def Plan(ws_id) {
     def payload = """
@@ -117,8 +124,8 @@ def Plan(ws_id) {
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs"
     )
     def data = new JsonSlurper().parseText(response.content)
-    println("Plan Response:" + response)
     println ("Run Id: " + data.data.id)
+    println("Plan HTTP response:" + response)
     return data.data.id
 }
 def getPlanStatus(runid) {
@@ -295,8 +302,11 @@ def applyRun(runid) {
         requestBody: '{ "comment": "Apply confirmed" }',
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/apply"
     )
-    println("Apply Response:" + response)
-    println("Apply completed")
+    println("Apply HTTP response:" + response)
+   if ( response == 'Status: 409') {
+        println("The run was not paused for confirmation; apply not allowed")
+        break
+   }
     waitForApply("${runid}")
 }
 def getApplyStatus(runid) {
@@ -371,8 +381,11 @@ def discardRun(runid) {
         requestBody: '{ "comment": "Run has been discarded" }',
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/discard"
     )
-   println("Discard Response:" + response)
-   println("Discard completed")
+   println("Discard HTTP response:" + response)
+   if ( response == 'Status: 409') {
+        println("The run was not passed for confirmation; discard not allowed")
+        break
+   }
    waitForApply("${runid}")
 }
 
