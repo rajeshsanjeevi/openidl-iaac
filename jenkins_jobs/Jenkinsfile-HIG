@@ -8,13 +8,13 @@ node('master') {
 def checkout() {
     stage('Clone') {
         git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
-        if ("${params.TF_WORKSPACE}" ==~ "AWS") {
+        if ("${params.TF_WORKSPACE}" ==~ ".*AWS.*") {
             sh '''
                 cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
                 tar -czf content.tar.gz -C aws/aws_resources --exclude .git .
                 echo "Successfully prepared the AWS resources code bundle"
             '''
-        } else if ("${params.TF_WORKSPACE}" ==~ "K8s") {
+        } else if ("${params.TF_WORKSPACE}" ==~ ".*K8s.*") {
             sh '''
                 cp ./aws/carrier.tfvars ./aws/k8s_resources/carrier.auto.tfvars
                 tar -czf content.tar.gz -C aws/k8s_resources --exclude .git .
