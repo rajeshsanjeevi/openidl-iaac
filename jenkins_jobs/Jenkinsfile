@@ -270,8 +270,7 @@ def waitForPlan(runid) {
                 println('Applying plan')
                 applyRun(runid)
                 break
-            }
-            else {
+            } else {
                 println('Rejecting!')
                 discardRun(runid)
                 error("The pipeline failed due to a manual rejection of the plan.")
@@ -296,10 +295,8 @@ def waitForPlan(runid) {
         } else if(status == "planned_and_finished") {
             planResult("${runid}")
             println("The environment is up to date and there are no changes to apply.")
-            continue 
-        }    
-
-        if (count > 60) break
+            break   
+        } else if (count > 60) break
         count++
         sleep(5)
     }
@@ -317,8 +314,7 @@ def overridePolicy(policyid) {
     def data = new JsonSlurper().parseText(response.content)
     if (data.data.attributes.status != "overridden") {
         return false
-    }
-    else {
+    } else {
         return true
     }
 }
@@ -376,26 +372,22 @@ def waitForApply(runid) {
             println("This run has been discarded")
             error("The Terraform run has been discarded, and the pipeline cannot continue.")
             break
-        }
-        if (status == 'canceled') {
+        } else if (status == 'canceled') {
             println("This run has been canceled outside the pipeline")
             error("The Terraform run has been canceled outside the pipeline, and the pipeline cannot continue.")
             break
-        }
-        if (status == 'errored') {
+        } else if (status == 'errored') {
             println("This run has encountered an error while applying")
             error("The Terraform run has encountered an error while applying, and the pipeline cannot continue.")
             break
-        }
-        if (status == 'applied') {
+        } else if (status == 'applied') {
             println("This run has finished applying")
             break
         }
-
-        if (count > 3600) break
-        count++
-        sleep(10)
-    }
+        else if (count > 3600) break
+            count++
+            sleep(10)
+        }
 }
 def discardRun(runid) {
     def response = httpRequest(
@@ -408,9 +400,5 @@ def discardRun(runid) {
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/discard"
     )
    println("Discard HTTP response:" + response)
-   if ( response == 'Status: 409') {
-        println("The run was not passed for confirmation; discard not allowed")
-        break
-   }
    waitForApply("${runid}")
 }
