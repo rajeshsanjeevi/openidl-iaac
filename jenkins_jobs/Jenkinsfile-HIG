@@ -128,7 +128,7 @@ def planResult(runid){
         customHeaders: [
                 [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
                 [ name: "Content-Type", value: "application/vnd.api+json" ]],
-        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${run_id}?include=plan"
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}?include=plan"
     )
     def data = new JsonSlurper().parseText(response.content)
     println("plan Result HTTP response:" + response)
