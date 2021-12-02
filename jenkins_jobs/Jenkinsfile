@@ -24,14 +24,14 @@ def buildInfra() {
         def (config_version, upload_url) = createConfig("${ws_id}")
         def upload_status = uploadAWSConfig("${upload_url}")
         environment {
-            aws_wsid = ws_id 
+            aws_wsid = ${ws_id} 
         }
     }
     stage('AWS-Plan') {
         def runid = ""
         runid = plan("${env.aws_wsid}") 
         environment {
-            aws_runid = runid 
+            aws_runid = ${runid} 
         } 
     }
     stage('AWS-Apply') {
