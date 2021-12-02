@@ -295,7 +295,7 @@ def waitForPlan(runid) {
         } else if(status == "planned_and_finished") {
             planResult("${runid}")
             println("The environment is up to date and there are no changes to apply.")
-            break   
+               
         } else if (count > 60) break
         count++
         sleep(5)
