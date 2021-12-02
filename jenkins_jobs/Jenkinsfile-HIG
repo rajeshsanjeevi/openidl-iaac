@@ -20,6 +20,7 @@ def checkout() {
             else 
                 echo "There is mismatch in workspace names in Terraform, hence pipeline fails"
                 continue=0
+            fi
         '''
     }
 }
