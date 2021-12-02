@@ -8,27 +8,30 @@ node('master') {
 def checkout() {
     stage('Clone') {
         git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
-        sh '''
-            if ["$param.TF_WORKSPACE" == *AWS*]; then
+        if ("${params.TF_WORKSPACE}" ==~ "*AWS") {
+            sh '''
                 cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
                 tar -czf content.tar.gz -C aws/aws_resources --exclude .git .
                 echo "Successfully prepared the AWS resources code bundle"
-            elif ["$param.TF_WORKSPACE" == *k8*]; then
+            '''
+        } else if ("${params.TF_WORKSPACE}" ==~ "*K8s") {
+            sh '''
                 cp ./aws/carrier.tfvars ./aws/k8s_resources/carrier.auto.tfvars
                 tar -czf content.tar.gz -C aws/k8s_resources --exclude .git .
                 echo "Successfully prepared the K8s resources code bundle"
-            else 
-                echo "There is mismatch in workspace names in Terraform, hence pipeline fails"
-                break 
-            fi
-        '''
+            '''
+        } else {
+            println("The pipeline cannot continue, mismatch with Terraform workspace naming convention")
+            error("The pipeline failed due to mismatch with Terraform workspace naming convention")
+            break
+        }
     }
 }
 def buildInfra() {
     stage('TF-Plan-Apply') {
         def ws_id = getWorkspaceId("${params.TF_WORKSPACE}")
         def (config_version, upload_url) = createConfig("${ws_id}")
-        def upload_status = uploadAWSConfig("${upload_url}")
+        def upload_status = uploadConfig("${upload_url}")
         def runid = ""
         runid = Plan("${ws_id}")
         waitForPlan("${runid}")
@@ -72,7 +75,7 @@ def createConfig(ws_id) {
     println ("Upload URL: " + data.data.attributes."upload-url")
     return [data.data.id, data.data.attributes."upload-url"]
 }
-def uploadAWSConfig(url) {
+def uploadConfig(url) {
          def response = httpRequest(
         customHeaders: [
                 [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
@@ -80,18 +83,6 @@ def uploadAWSConfig(url) {
             ],
         httpMode: 'PUT', multipartName: 'content', responseHandle: 'NONE',
         uploadFile: './content.tar.gz',
-        url: "${url}"
-    )
-    println("upload completed")
-}
-def uploadK8sConfig(url) {
-         def response = httpRequest(
-        customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
-                [ name: "Content-Type", value: "application/octet-stream" ]
-            ],
-        httpMode: 'PUT', multipartName: 'aws-content', responseHandle: 'NONE',
-        uploadFile: './k8s-content.tar.gz',
         url: "${url}"
     )
     println("upload completed")
