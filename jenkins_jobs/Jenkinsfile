@@ -25,7 +25,9 @@ def buildInfra() {
         def upload_status = uploadAWSConfig("${upload_url}")
         environment {
             aws_wsid = ${ws_id} 
+            
         }
+        echo "${env.aws_wsid}"
     }
     stage('AWS-Plan') {
         def runid = ""
