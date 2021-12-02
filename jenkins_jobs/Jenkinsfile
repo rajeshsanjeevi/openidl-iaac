@@ -26,9 +26,10 @@ def buildInfra() {
         def runid = ""
         runid = plan("${ws_id}")
         waitForPlan("${runid}")
+        def ws_id = getWorkspaceId("${params.TF_K8S_WORKSPACE}")
     }
     stage('K8s-Plan-Apply') {
-        def ws_id = getWorkspaceId("${params.TF_K8S_WORKSPACE}")
+        
         def (config_version, upload_url) = createConfig("${ws_id}")
         def upload_status = uploadK8sConfig("${upload_url}")
         def runid = ""
@@ -295,7 +296,7 @@ def waitForPlan(runid) {
         } else if(status == "planned_and_finished") {
             planResult("${runid}")
             println("The environment is up to date and there are no changes to apply.")
-               
+            break    
         } else if (count > 60) break
         count++
         sleep(5)
