@@ -13,13 +13,13 @@ def checkout() {
                 cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
                 tar -czf content.tar.gz -C aws/aws_resources --exclude .git .
                 echo "Successfully prepared the AWS resources code bundle"
-            elif ["$param.TF_WORKSPACE" == *K8*]; then
+            elif ["$param.TF_WORKSPACE" == *k8*]; then
                 cp ./aws/carrier.tfvars ./aws/k8s_resources/carrier.auto.tfvars
                 tar -czf content.tar.gz -C aws/k8s_resources --exclude .git .
                 echo "Successfully prepared the K8s resources code bundle"
             else 
                 echo "There is mismatch in workspace names in Terraform, hence pipeline fails"
-                continue=0
+                break 
             fi
         '''
     }
