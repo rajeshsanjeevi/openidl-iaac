@@ -117,6 +117,7 @@ def Plan(ws_id) {
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs"
     )
     def data = new JsonSlurper().parseText(response.content)
+    println("Plan Response:", + response)
     println ("Run Id: " + data.data.id)
     return data.data.id
 }
