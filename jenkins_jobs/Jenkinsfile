@@ -30,6 +30,7 @@ def buildInfra() {
         echo "${env.aws_wsid}"
     }
     stage('AWS-Plan') {
+        echo "${env.aws_wsid}"
         def runid = ""
         runid = plan("${env.aws_wsid}") 
         environment {
