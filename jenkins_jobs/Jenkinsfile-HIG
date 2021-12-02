@@ -210,7 +210,7 @@ def waitForPlan(runid) {
         // If a policy requires an override, prompt in the pipeline
         if (status.startsWith("approve_policy")) {
             def override
-            planResult(runid)
+            planResult("${runid}")
             try {
                 override = input (message: 'Override policy?', 
                                   ok: 'Continue', 
@@ -246,7 +246,7 @@ def waitForPlan(runid) {
         // If we're ready to apply, prompt in the pipeline to do so
         if (status == "planned" || status == "cost_estimated" || status == "policy_checked") {
             def apply
-            planResult(runid)
+            planResult("${runid}")
             try {
                 apply = input (message: 'Confirm Apply', ok: 'Continue', 
                                     parameters: [booleanParam(defaultValue: false,
@@ -269,22 +269,22 @@ def waitForPlan(runid) {
             }
         }
         if (status == "errored") {
-            planResult(runid)
+            planResult("${runid}")
             println("The pipeline failed due to the plan errored")
             error("The Terraform run has encountered an error while planning, and the pipeline cannot continue.")
             break 
         } else if(status == "canceled") {
-            planResult(runid)
+            planResult("${runid}")
             println("The pipeline failed due to the plan canceled")
             error("The Terraform run has been canceled outside the pipeline, and the pipeline cannot continue.")
             break
         } else if(status == "discarded")  {
-            planResult(runid)
+            planResult("${runid}")
             println("The pipeline failed due to the plan discarded")
             error("The Terraform run has been discarded and the pipeline cannot continue.")
             break 
         } else if(status == "planned_and_finished") {
-            planResult(runid)
+            planResult("${runid}")
             println("The environment is up to date and there are no changes to apply.")
             break
         }    
