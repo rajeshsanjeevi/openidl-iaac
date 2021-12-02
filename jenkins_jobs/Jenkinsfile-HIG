@@ -88,11 +88,6 @@ def uploadConfig(url) {
         url: "${url}"
     )
     println("createConfig HTTP response:" + response)
-   if ( response == 'Status: 422') {
-        println("The code upload failed, Please retry build")
-        error("The code upload to terraform environment failed, Please retry.")
-        break
-   }
 }
 def Plan(ws_id) {
     def payload = """
@@ -151,7 +146,7 @@ def getPlanStatus(runid) {
             result = "costing"
             break 
         case 'cost_estimated':
-            result = "costing_finished"
+            result = "cost_estimated"
             break
         case 'policy_checking':
             result = "policy_checking"
@@ -163,14 +158,14 @@ def getPlanStatus(runid) {
             result = "confirmed"
             break 
         case 'planned_and_finished':
-            result = "planning_finished"
+            result = "planned_and_finished"
             break 
         case 'policy_override':
             println(response.content)
             result = "approve_policy:" + data.data.relationships["policy-checks"].data[0].id
             break
         case 'policy_checked':
-            result = "policy_check_finished"
+            result = "policy_checked"
             break
         case 'discarded':
             result = "discarded"
@@ -232,7 +227,7 @@ def waitForPlan(runid) {
         }
 
         // If we're ready to apply, prompt in the pipeline to do so
-        if (status == "planning_finished" || status == "costing_finished" || status == "policy_check_finished") {
+        if (status == "planned" || status == "cost_estimated" || status == "policy_checked") {
             def apply
             try {
                 apply = input (message: 'Confirm Apply', ok: 'Continue', 
@@ -267,8 +262,9 @@ def waitForPlan(runid) {
             println("The pipeline failed due to the plan discarded")
             error("The Terraform run has been discarded and the pipeline cannot continue.")
             break 
-        }
-
+        } else if(status == "planned_and_finished")
+            println("The environment is up to date and there are no changes to apply.")
+            break
         if (count > 60) break
         count++
         sleep(5)
