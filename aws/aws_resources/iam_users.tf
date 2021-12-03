@@ -1,6 +1,6 @@
 #IAM user and relevant credentials required for BAF automation
 resource "aws_iam_user" "baf_user" {
-  name = "${local.std_name}-baf-automation-1"
+  name = "${local.std_name}-baf-automation"
   force_destroy = true
   tags = merge(local.tags, { Name = "${local.std_name}-baf-automation", Cluster_type = "both" })
 }
