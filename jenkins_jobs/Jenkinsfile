@@ -382,26 +382,6 @@ def waitForApply(runid) {
             break
         } else if (status == 'applied') {
             println("This run has finished applying")
-            def response_id = httpRequest(
-                customHeaders: [
-                    [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
-                    [ name: "Content-Type", value: "application/vnd.api+json" ]
-                ],
-                url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}?include=apply"
-                )
-            def apply_data = new JsonSlurper().parseText(response_id.content)
-            def apply_id = apply_data.included[0].id
-            println("Apply ID:" + apply_id)
-            def response_log = httpRequest(
-                customHeaders: [
-                    [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
-                    [ name: "Content-Type", value: "application/vnd.api+json" ]
-                ],
-                url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/applies/${apply_id}"
-            )
-            def apply_log = new JsonSlurper().parseText(response_log.content)
-            def apply_log_url = apply_log.data.attributes."log-read-url"
-            println("Click the URL to review terraform apply log in detail:\n" + apply_log_url)
             break
         }
         else if (count > 3600) break
