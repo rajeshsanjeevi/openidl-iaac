@@ -397,7 +397,7 @@ def waitForApply(runid) {
                     [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                     [ name: "Content-Type", value: "application/vnd.api+json" ]
                 ],
-                url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/applies/${apply_id}"
+                url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/applies/:${apply_id}"
             )
             def apply_log = new JsonSlurper().parseText(response_log.content)
             def apply_log_url = apply_log.data.attributes."log-read-url"
