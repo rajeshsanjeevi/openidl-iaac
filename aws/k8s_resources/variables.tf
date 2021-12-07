@@ -92,12 +92,16 @@ variable "bastion_host_nlb_external" {
 variable "aws_access_key" {
   type = string
   default = ""
+  description = "IAM user access key"
 }
 variable "aws_secret_key" {
   type = string
   default = ""
+  description = "IAM user secret key"
 }
 variable "aws_external_id" {
   type = string
-  default = ""
+  default = "terraform"
+  description = "ExternalID setup while setting up IAM user and relevant IAM roles"
+
 }

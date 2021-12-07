@@ -1,38 +1,3 @@
-#The following inputs should be via git secrets as they contain sensitive data. refer to README.md
-##################start of sensitive data that goes to git secrets###################
-aws_account_number = "572551282206" #mandatory
-##aws_access_key = ""     #mandatory
-##aws_secret_key = ""     #mandatory
-aws_user_arn = "arn:aws:iam::572551282206:user/terraform_user"       #mandatory
-aws_role_arn = "arn:aws:iam::572551282206:role/tf_automation"       #mandatory
-aws_region = "us-east-2"         #mandatory
-#aws_external_id = ""    #mandatory
-app_bastion_ssh_key = "123"    #mandatory
-blk_bastion_ssh_key = "123"    #mandatory
-app_eks_worker_nodes_ssh_key = "123"   #mandatory
-blk_eks_worker_nodes_ssh_key = "123"   #mandatory
-
-#Cognito specifications
-#When email_sending_account = "COGNITO_DEFAULT", set the below to empty in git secrets
-#When email_sending_account = "DEVELOPER", setup verified email address in AWS SES on cognito supported region and update the below in git secrets
-##ses_email_identity = "" #email address verified in AWS SES
-##userpool_email_source_arn ="" #arn of the email address configured in aws SES service
-
-#List of iam users and their relevant groups mapping in EKS for its access
-#When no additional IAM users are required to enable EKS access, set the below as empty in git secrets
-##app_cluster_map_users = ["<userarn>","<userarn>"] #Optional, if not required set to empty in git secrets
-##app_cluster_map_roles = ["<rolearn>","<rolearn>"] #Optional, if not required set to emtpy in git secrets
-
-#List of iam roles and their relevant group mapping in EKS for its access
-#When no additional IAM roles are required to enable EKS access, set the below as empty in git secrets
-##blk_cluster_map_users = ["<userarn>","<userarn>"] #Optional, if not required set to empty in git secrets
-##blk_cluster_map_roles = ["<rolearn>","<rolearn>"] #Optional, if not required set to empty in git secrets
-
-#Name of S3 bucket to hold terraform input file
-##aws_input_bucket = ""
-
-################end of sensitive data that goes to git secrets#####################
-
 #set org name as below
 #when nodetype is aais set org_name="aais"
 #when nodetype is analytics set org_name="analytics"
@@ -171,8 +136,10 @@ cw_logs_retention_period = "90" #example 90 days
 s3_bucket_name_cloudtrail = "carrier-dev-hig-triallogs" #s3 bucket name to manage cloudtrail logs
 
 #--------------------------------------------------------------------------------------------------------------------
-#Name of the S3 bucket managing terraform state files
+#Name of the S3 bucket managing terraform state files - applicable when backend is S3
 #terraform_state_s3_bucket_name = "carrier-dev-hig-tfstate-backend"
+
+#Applicable when backend environment is Terraform Cloud/Enterprise
 tfc_org_name = "openidl-aais"
 tfc_workspace_name_aws_resources = "hig-openidl-demo-aws-resources"
 

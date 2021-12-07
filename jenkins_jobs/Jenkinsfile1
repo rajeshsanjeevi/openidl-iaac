@@ -1,4 +1,5 @@
 #!groovy
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 node('slave') {
     checkout()
@@ -23,15 +24,16 @@ def buildInfra() {
         def (config_version, upload_url) = createConfig("${ws_id}")
         def upload_status = uploadAWSConfig("${upload_url}")
         def runid = ""
-        runid = plan("${ws_id}") 
-        waitForPlan("${runid}") 
+        runid = plan("${ws_id}")
+        waitForPlan("${runid}")
+        def ws_id1 = getWorkspaceId("${params.TF_K8S_WORKSPACE}")
     }
     stage('K8s-Plan-Apply') {
-        def ws_id = getWorkspaceId("${params.TF_K8S_WORKSPACE}")
-        def (config_version, upload_url) = createConfig("${ws_id}")
+        
+        def (config_version, upload_url) = createConfig("${ws_id1}")
         def upload_status = uploadK8sConfig("${upload_url}")
         def runid = ""
-        runid = plan("${ws_id}")
+        runid = plan("${ws_id1}")
         waitForPlan("${runid}")
     }
 }

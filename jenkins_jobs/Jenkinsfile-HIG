@@ -1,35 +1,37 @@
 #!groovy
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 node('slave') {
     checkout()
     buildInfra()
 }
 def checkout() {
-    stage('Checkout Code') {
+    stage('Clone') {
         git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
-        sh '''
-            cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
-            tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
-            echo "Successfully prepared the AWS resources code bundle"
-            cp ./aws/carrier.tfvars ./aws/k8s_resources/carrier.auto.tfvars
-            tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
-            echo "Successfully prepared the K8s resources code bundle"
-        '''
+        if ("${params.TF_WORKSPACE}" ==~ ".*aws.*") {
+            sh '''
+                cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
+                tar -czf content.tar.gz -C aws/aws_resources --exclude .git .
+                echo "Successfully prepared the AWS resources code bundle"
+            '''
+        } else if ("${params.TF_WORKSPACE}" ==~ ".*k8s.*") {
+            sh '''
+                cp ./aws/carrier.tfvars ./aws/k8s_resources/carrier.auto.tfvars
+                tar -czf content.tar.gz -C aws/k8s_resources --exclude .git .
+                echo "Successfully prepared the K8s resources code bundle"
+            '''
+        } else {
+            println("The pipeline cannot continue, mismatch with Terraform workspace naming convention")
+            error("The pipeline failed due to mismatch with Terraform workspace naming convention")
+            break
+        }
     }
 }
 def buildInfra() {
-    stage('AWS-Plan-Apply') {
-        def ws_id = getWorkspaceId("${params.TF_AWS_WORKSPACE}")
+    stage('Terraform Run') {
+        def ws_id = getWorkspaceId("${params.TF_WORKSPACE}")
         def (config_version, upload_url) = createConfig("${ws_id}")
-        def upload_status = uploadAWSConfig("${upload_url}")
-        def runid = ""
-        runid = plan("${ws_id}") 
-        waitForPlan("${runid}") 
-    }
-    stage('K8s-Plan-Apply') {
-        def ws_id = getWorkspaceId("${params.TF_K8S_WORKSPACE}")
-        def (config_version, upload_url) = createConfig("${ws_id}")
-        def upload_status = uploadK8sConfig("${upload_url}")
+        def upload_status = uploadConfig("${upload_url}")
         def runid = ""
         runid = plan("${ws_id}")
         waitForPlan("${runid}")
@@ -45,7 +47,7 @@ def getWorkspaceId(workspace) {
     )
     def data = new JsonSlurper().parseText(response.content)
     println("Workspace Id: " + data.data.id)
-    println("HTTP response for getWorkspaceId:" + response)
+    println("Get workspaceId HTTP response:" + response)
     return data.data.id
 }
 def createConfig(ws_id) {
@@ -72,35 +74,20 @@ def createConfig(ws_id) {
     println("Config Version: " + data.data.id)
     def upload_url = data.data.attributes."upload-url"
     println("Upload URL: " + data.data.attributes."upload-url")
-    println("HTTP response for createConfig:" + response)
+    println("createConfig HTTP response:" + response)
     return [data.data.id, data.data.attributes."upload-url"]
 }
-def uploadAWSConfig(url) {
+def uploadConfig(url) {
          def response = httpRequest(
         customHeaders: [
                 [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/octet-stream" ]
             ],
-        httpMode: 'PUT', multipartName: 'aws-content', responseHandle: 'NONE',
-        uploadFile: './aws-content.tar.gz',
+        httpMode: 'PUT', multipartName: 'content', responseHandle: 'NONE',
+        uploadFile: './content.tar.gz',
         url: "${url}"
     )
-    println("HTTP response for uploadAWSConfig:" + response)
-    println("Code for AWS resources uploaded successfully")
-    
-}
-def uploadK8sConfig(url) {
-         def response = httpRequest(
-        customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
-                [ name: "Content-Type", value: "application/octet-stream" ]
-            ],
-        httpMode: 'PUT', multipartName: 'aws-content', responseHandle: 'NONE',
-        uploadFile: './k8s-content.tar.gz',
-        url: "${url}"
-    )
-    println("HTTP response for uploadK8sConfig:" + response)
-    println("Code for K8s resources uploaded successfully")
+    println("createConfig HTTP response:" + response)
 }
 def plan(ws_id) {
     def payload = """
@@ -133,7 +120,7 @@ def plan(ws_id) {
     )
     def data = new JsonSlurper().parseText(response.content)
     println("Run Id: " + data.data.id)
-    println("HTTP response for Plan:" + response)
+    println("Plan HTTP response:" + response)
     return data.data.id
 }
 def planResult(runid){
@@ -144,9 +131,10 @@ def planResult(runid){
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}?include=plan"
     )
     def data = new JsonSlurper().parseText(response.content)
-    println("HTTP response for planResult:" + response)
+    println("plan Result HTTP response:" + response)
+    println("Plan log")
     def plan_log_url = data.included[0].attributes."log-read-url"
-    println("Click the URL to review terraform plan details:\n" + plan_log_url)
+    println("Click below URL to review terraform plan:\n" + plan_log_url)
 }
 def getPlanStatus(runid) {
     def result = ""
@@ -269,7 +257,8 @@ def waitForPlan(runid) {
                 println('Applying plan')
                 applyRun(runid)
                 break
-            } else {
+            }
+            else {
                 println('Rejecting!')
                 discardRun(runid)
                 error("The pipeline failed due to a manual rejection of the plan.")
@@ -294,8 +283,10 @@ def waitForPlan(runid) {
         } else if(status == "planned_and_finished") {
             planResult("${runid}")
             println("The environment is up to date and there are no changes to apply.")
-            break    
-        } else if (count > 60) break
+            break
+        }    
+
+        if (count > 60) break
         count++
         sleep(5)
     }
@@ -313,7 +304,8 @@ def overridePolicy(policyid) {
     def data = new JsonSlurper().parseText(response.content)
     if (data.data.attributes.status != "overridden") {
         return false
-    } else {
+    }
+    else {
         return true
     }
 }
@@ -327,7 +319,11 @@ def applyRun(runid) {
         requestBody: '{ "comment": "Apply confirmed" }',
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/apply"
     )
-    println("HTTP response for Apply:" + response)
+    println("Apply HTTP response:" + response)
+   if ( response == 'Status: 409') {
+        println("The run was not paused for confirmation; apply not allowed")
+        break
+   }
     waitForApply("${runid}")
 }
 def getApplyStatus(runid) {
@@ -371,22 +367,26 @@ def waitForApply(runid) {
             println("This run has been discarded")
             error("The Terraform run has been discarded, and the pipeline cannot continue.")
             break
-        } else if (status == 'canceled') {
+        }
+        if (status == 'canceled') {
             println("This run has been canceled outside the pipeline")
             error("The Terraform run has been canceled outside the pipeline, and the pipeline cannot continue.")
             break
-        } else if (status == 'errored') {
+        }
+        if (status == 'errored') {
             println("This run has encountered an error while applying")
             error("The Terraform run has encountered an error while applying, and the pipeline cannot continue.")
             break
-        } else if (status == 'applied') {
+        }
+        if (status == 'applied') {
             println("This run has finished applying")
             break
         }
-        else if (count > 3600) break
-            count++
-            sleep(10)
-        }
+
+        if (count > 3600) break
+        count++
+        sleep(10)
+    }
 }
 def discardRun(runid) {
     def response = httpRequest(
@@ -399,5 +399,14 @@ def discardRun(runid) {
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}/actions/discard"
     )
    println("Discard HTTP response:" + response)
+   if ( response == 'Status: 409') {
+        println("The run was not passed for confirmation; discard not allowed")
+        break
+   }
    waitForApply("${runid}")
 }
+
+
+
+
+
