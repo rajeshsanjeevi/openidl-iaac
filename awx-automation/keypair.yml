@@ -4,6 +4,7 @@
   tasks:
   - name: create aws ec2 keypairs
     ec2_key:
+      name: awx-keypair
       aws_access_key: "{{ access_key }}"
       aws_secret_key: "{{ secret_key }}"
       key_material: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user'
