@@ -54,5 +54,27 @@
     debug:
       msg: '{{ get-caller-identity-result }}'
 
+  - name: Download kubectl utility
+    shell: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    register: kubectl_download
+
+  - name: Setup execute permissions to kubectl
+    shell: chmod +x kubectl
+    when: kubectl_download.changed
+    register: kubectl_permission
+
+ - name: Set kubectl in right executable path
+   shell: mv ./kubectl /usr/local/bin
+   when: kubectl_permission.unchanged
+   register: kubectl_ready
+
+  - name: Update kubeconfig and set context to openidl application cluster
+    shell: aws eks update-kubeconfig --region ${{ aws_region }} -- name ${{ app_cluster_name }}
+    when: kubectl_ready.changed
+    register: kubeconfig_update
+
+
+
+
 
 
