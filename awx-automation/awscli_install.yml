@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: ec2-18-119-105-48.us-east-2.compute.amazonaws.com
   gather_facts: no
   become: true
   tasks:
@@ -63,10 +63,10 @@
     when: kubectl_download.changed
     register: kubectl_permission
 
- - name: Set kubectl in right executable path
-   shell: mv ./kubectl /usr/local/bin
-   when: kubectl_permission.unchanged
-   register: kubectl_ready
+  - name: Set kubectl in right executable path
+    shell: mv ./kubectl /usr/local/bin
+    when: kubectl_permission.unchanged
+    register: kubectl_ready
 
   - name: Update kubeconfig and set context to openidl application cluster
     shell: aws eks update-kubeconfig --region ${{ aws_region }} -- name ${{ app_cluster_name }}
