@@ -1,0 +1,10 @@
+---
+- tasks:
+  - name: Install httpd
+    yum:
+      name: httpd 
+      state: latest
+  - name: check httpd status 
+    service:
+      name: httpd 
+      state: started
