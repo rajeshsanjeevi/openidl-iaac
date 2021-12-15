@@ -58,6 +58,6 @@
     register: kubectl_setup
 
   - name: Update kubeconfig and set context to openidl application cluster
-    shell: aws eks update-kubeconfig --region {{ aws_region }} --name {{ app_cluster_name }} 
+    shell: export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ app_cluster_name }}
     register: app_cluster_context_set
 
