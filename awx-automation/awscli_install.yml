@@ -61,6 +61,11 @@
     shell: export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ app_cluster_name }}
     register: app_cluster_context_set
 
+  - name: Install ansible galaxy collection for docker and k8s
+    run: |
+      ansible-galaxy collection install community.docker
+      ansible-galaxy collection install community.kubernetes:==1.2.1
+
   - name: Create a k8s namespace
     community.kubernetes.k8s:
       name: database
@@ -68,5 +73,5 @@
       kind: Namespace
       state: present
 
-  
+
 
