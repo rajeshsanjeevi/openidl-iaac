@@ -62,9 +62,8 @@
 
   - name: Intall helm
     shell: |
-      sudo mv /tmp-linux-amd64/helm /usr/local/bin
+      sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm
       sudo chmod +x /usr/local/bin/helm
-      sudo rm
 
   - name: Create a k8s namespace
     kubernetes.core.k8s:
