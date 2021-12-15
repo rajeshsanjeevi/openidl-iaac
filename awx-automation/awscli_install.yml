@@ -2,6 +2,8 @@
 - hosts: ec2-18-119-105-48.us-east-2.compute.amazonaws.com
   gather_facts: no
   become: true
+  collections:
+    - community.kubernetes
   tasks:
   - name: Install package dependencies
     package:
