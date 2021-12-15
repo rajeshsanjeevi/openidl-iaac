@@ -65,7 +65,7 @@
 
   - name: Set kubectl in right executable path
     shell: mv ./kubectl /usr/local/bin
-    when: kubectl_permission.unchanged
+    when: kubectl_permission.changed
     register: kubectl_ready
 
   - name: Update kubeconfig and set context to openidl application cluster
