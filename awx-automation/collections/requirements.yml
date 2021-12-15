@@ -1,0 +1,5 @@
+---
+collections:
+  - name: community.kubernetes
+    verion: 1.2.1
+  - name: community.docker
