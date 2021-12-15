@@ -2,8 +2,7 @@
 - hosts: ec2-18-119-105-48.us-east-2.compute.amazonaws.com
   gather_facts: no
   become: true
-  collections:
-    - community.kubernetes
+
   tasks:
   - name: Install package dependencies
     package:
@@ -80,7 +79,7 @@
       ansible-galaxy collection install community.kubernetes:==1.2.1
 
   - name: Create a k8s namespace
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       name: database
       api_version: v1
       kind: Namespace
