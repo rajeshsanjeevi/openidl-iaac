@@ -62,7 +62,7 @@
     register: app_cluster_context_set
 
   - name: Install ansible galaxy collection for docker and k8s
-    run: |
+    shell: |
       ansible-galaxy collection install community.docker
       ansible-galaxy collection install community.kubernetes:==1.2.1
 
