@@ -6,7 +6,7 @@
   - name: Install package dependencies
     package:
       name: "{{ item }}"
-      state: absent
+      state: present
     with_items:
       - python3
       - unzip
