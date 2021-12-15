@@ -68,11 +68,9 @@
   - name: Install ansible and its dependencies
     shell: |
       pip3 install openshift
-      sudo apt-get install python3-requests-oauthlib python-yaml jq ansible -y
+      sudo apt-get install python3-requests-oauthlib python-yaml jq -y
       pip install --user ansible==2.9.11
       pip3 install docker
-      ansible-galaxy collection install community.docker
-      ansible-galaxy collection install community.kubernetes:==1.2.1
 
   - name: Create a k8s namespace
     community.kubernetes.k8s:

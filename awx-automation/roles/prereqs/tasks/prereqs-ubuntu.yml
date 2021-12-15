@@ -1,0 +1,69 @@
+---
+- name: Install package dependencies
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - unzip
+    - python3
+    - python3-pip
+    - curl
+    - awscli
+
+- name: Configure awscli credentials for IAM user
+  shell: aws configure set {{ item.key }} {{ item.value }} --profile cicd-user
+  no_log: True
+  with_dict:
+    aws_access_key_id: "{{ aws_access_key }}"
+    aws_secret_access_key: "{{ aws_secret_key }}"
+    region: "{{ aws_region }}"
+    format: "table"
+    external_id: "{{ aws_external_id }}"
+  changed_when: false
+
+- name: Configure awscli credentials for IAM role
+  shell: aws configure set {{ item.key }} {{ item.value }} --profile cicd-role
+  no_log: True
+  with_dict:
+    external_id: "{{ aws_external_id }}"
+    source_profile: "cicd-user"
+    role_arn: "{{ aws_iam_role }}"
+  changed_when: false
+
+- name: Test AWS CLI is functioning
+  shell: export AWS_PROFILE=cicd-role; aws sts get-caller-identity
+  register: aws_caller_identity
+
+- name: Setup kubectl utility
+  shell: |
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    chmod +x kubectl
+    mv ./kubectl /usr/local/bin
+  register: kubectl_setup
+
+- name: Update kubeconfig and set context to openidl application cluster
+  shell: export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ app_cluster_name }}
+  register: app_cluster_context_set
+
+- name: Download the helm bundle
+  get_url: url=https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz dest=/tmp/helm-bundle.zip
+  register: helm_download_bundle
+
+- name: Unarchive the helm installer
+  unarchive: src=/tmp/helm-bundle.zip dest=/tmp copy=no creates=/tmp/
+  register: helm_unarchive_installer
+  when: helm_download_bundle.changed
+
+- name: Intall helm
+  shell: |
+    sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm
+    sudo chmod +x /usr/local/bin/helm
+  when: helm_unarchive_installer.changed
+
+- name: Install ansible and its dependencies
+  shell: |
+    pip3 install openshift
+    sudo apt-get install python3-requests-oauthlib python-yaml jq -y
+    pip install --user ansible==2.9.11
+    pip3 install docker
+
