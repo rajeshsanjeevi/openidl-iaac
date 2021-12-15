@@ -3,15 +3,12 @@
   gather_facts: no
   become: true
   tasks:
-  - name: apt update
-    shell: sudo apt update
-
   - name: Install package dependencies
     package:
       name: "{{ item }}"
       state: absent
     with_items:
-      - python
+      - python3
       - unzip
 
   - name: Download the awscli bundle
@@ -51,11 +48,11 @@
 
   - name: Test AWS CLI is working
     shell: aws sts get-caller-identity
-    register: get-caller-identity-result
+    register: aws_caller_identity
 
   - name: Print get caller identity
     debug:
-      msg: '{{ get-caller-identity-result }}'
+      msg: "{{ aws_caller_identity }}"
 
   - name: Download kubectl utility
     shell: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
