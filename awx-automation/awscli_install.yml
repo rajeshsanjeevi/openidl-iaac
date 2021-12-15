@@ -65,7 +65,6 @@
       sudo mv /tmp-linux-amd64/helm /usr/local/bin
       sudo chmod +x /usr/local/bin/helm
       sudo rm
-    when: helm_unarchive_installer.changed
 
   - name: Create a k8s namespace
     kubernetes.core.k8s:
