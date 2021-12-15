@@ -8,9 +8,11 @@
       name: "{{ item }}"
       state: present
     with_items:
-      - python3
       - unzip
-
+      - python
+      - curl
+      - python3
+      
   - name: Download the awscli bundle
     get_url: url=https://s3.amazonaws.com/aws-cli/awscli-bundle.zip dest=/tmp/awscli-bundle.zip
     register: aws_cli_download_bundle
@@ -21,10 +23,16 @@
     register: aws_cli_unarchive_installer
 
   - name: Install awscli package
-    shell: python /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/bin/aws
+    shell: |
+      python /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/bin/aws
     args:
       creates: /usr/bin/aws
     when: aws_cli_unarchive_installer.changed
+
+  - name: Remove awscli installer downlaoded
+    shell: |
+      rm -rf /tmp/awscli-bundle
+      rm -rf /tmp/awscli-bundle.zip
 
   - name: Configure awscli credentials for IAM user
     shell: aws configure set {{ item.key }} {{ item.value }} --profile cicd-user
@@ -46,7 +54,7 @@
       role_arn: "{{ aws_iam_role }}"
     changed_when: false
 
-  - name: Test AWS CLI is working
+  - name: Test AWS CLI is functioning
     shell: export AWS_PROFILE=cicd-role; aws sts get-caller-identity
     register: aws_caller_identity
 
@@ -61,12 +69,25 @@
     shell: export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ app_cluster_name }}
     register: app_cluster_context_set
 
+  - name: Download the helm bundle
+      get_url: url=https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz dest=/tmp/helm-bundle.zip
+      register: helm_download_bundle
+
+  - name: Unarchive the helm installer
+    unarchive: src=/tmp/helm-bundle.zip dest=/tmp copy=no creates=/tmp/helm-bundle
+    when: helm_download_bundle.changed
+    register: helm_unarchive_installer
+
+  - name: Intall helm
+    shell: |
+      sudo mv /tmp/helm-bundle/helm /usr/local/bin
+      sudo chmod +x /usr/local/bin/helm
+
   - name: Create a k8s namespace
     kubernetes.core.k8s:
       name: database
       api_version: v1
       kind: Namespace
       state: present
-
 
 
