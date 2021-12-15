@@ -3,6 +3,15 @@
   gather_facts: no
   become: true
   tasks:
+  - name: Install software-properties-common
+    shell: sudo apt install software-properties-common
+
+  - name: Add Deadsnakes PPA
+    shell: sudo add-apt-repository ppa:deadsnakes/ppa
+
+  - name: apt update
+    shell: sudo apt update
+
   - name: Install package dependencies
     package:
       name: "{{ item }}"
