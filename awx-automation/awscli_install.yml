@@ -57,13 +57,15 @@
     register: helm_download_bundle
 
   - name: Unarchive the helm installer
-    unarchive: src=/tmp/helm-bundle.zip dest=/tmp copy=no creates=/tmp/helm-bundle
+    unarchive: src=/tmp/helm-bundle.zip dest=/tmp copy=no creates=/tmp/
     when: helm_download_bundle.changed
     register: helm_unarchive_installer
 
   - name: Intall helm
     shell: |
-      ls - l /tmp
+      sudo mv /tmp-linux-amd64/helm /usr/local/bin
+      sudo chmod +x /usr/local/bin/helm
+    when: helm_unarchive_installer.changed 
 
   - name: Create a k8s namespace
     kubernetes.core.k8s:
