@@ -52,13 +52,11 @@
 - name: Unarchive the helm installer
   unarchive: src=/tmp/helm-bundle.zip dest=/tmp copy=no creates=/tmp/
   register: helm_unarchive_installer
-  when: helm_download_bundle.changed
 
 - name: Intall helm
   shell: |
     sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm
     sudo chmod +x /usr/local/bin/helm
-  when: helm_unarchive_installer.changed
 
 - name: Install ansible and its dependencies
   shell: |
