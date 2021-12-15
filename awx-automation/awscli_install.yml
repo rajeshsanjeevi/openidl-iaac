@@ -61,3 +61,12 @@
     shell: export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ app_cluster_name }}
     register: app_cluster_context_set
 
+  - name: Create a k8s namespace
+    community.kubernetes.k8s:
+      name: database
+      api_version: v1
+      kind: Namespace
+      state: present
+
+  
+
