@@ -50,31 +50,14 @@
     shell: export AWS_PROFILE=cicd-role; aws sts get-caller-identity
     register: aws_caller_identity
 
-  - name: Print get caller identity
-    debug:
-      msg: "{{ aws_caller_identity }}"
-
-  - name: Download kubectl utility
-    shell: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    register: kubectl_download
-
-  - name: Setup execute permissions to kubectl
-    shell: chmod +x kubectl
-    when: kubectl_download.changed
-    register: kubectl_permission
-
-  - name: Set kubectl in right executable path
-    shell: mv ./kubectl /usr/local/bin
-    when: kubectl_permission.changed
-    register: kubectl_ready
+  - name: Setup kubectl utility
+    shell: |
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x kubectl
+      mv ./kubectl /usr/local/bin
+    register: kubectl_setup
 
   - name: Update kubeconfig and set context to openidl application cluster
-    shell: aws eks update-kubeconfig --region ${{ aws_region }} -- name ${{ app_cluster_name }}
-    when: kubectl_ready.changed
-    register: kubeconfig_update
-
-
-
-
-
+    shell: aws eks update-kubeconfig --region "${{ aws_region }}" -- name "${{ app_cluster_name }}"
+    register: app_cluster_context_set
 
