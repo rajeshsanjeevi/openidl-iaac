@@ -15,7 +15,7 @@
 
   - name: Install aws cli
     shell: |
-      sudo apt-get install awscli
+      sudo apt-get install awscli -y
 
   - name: Configure awscli credentials for IAM user
     shell: aws configure set {{ item.key }} {{ item.value }} --profile cicd-user
