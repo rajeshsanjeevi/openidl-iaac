@@ -47,7 +47,7 @@
     changed_when: false
 
   - name: Test AWS CLI is working
-    shell: aws sts get-caller-identity
+    shell: export AWS_PROFILE=cicd-role; aws sts get-caller-identity
     register: aws_caller_identity
 
   - name: Print get caller identity
