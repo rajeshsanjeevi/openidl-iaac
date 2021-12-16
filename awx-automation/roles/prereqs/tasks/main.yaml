@@ -28,6 +28,7 @@
     external_id: "{{ aws_external_id }}"
     source_profile: "cicd-user"
     role_arn: "{{ aws_iam_role }}"
+    region: "{{ aws_region }}"
   changed_when: false
 
 - name: Test AWS CLI is functioning
