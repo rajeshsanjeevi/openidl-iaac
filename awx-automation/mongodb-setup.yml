@@ -28,4 +28,3 @@
         mongodb_user: "{{ network.org_name }}-{{ env }}-{{ user }}"
         mongodb_root_token: "{{ root_token }}"
         mongodb_database: "openidl-offchain-db"
-
