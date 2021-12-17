@@ -42,9 +42,10 @@
     mv ./kubectl /usr/local/bin
   register: kubectl_setup
 
-- name: Update kubeconfig and set context to openidl application cluster
-  shell: export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ cluster_name }}
-  register: app_cluster_context_set
+- name: Update kubeconfig and set context to openidl EKS cluster
+  shell: |
+    export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ blk_cluster_name }}
+  register: cluster_context_set
 
 - name: Download the helm bundle
   get_url: url=https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz dest=/tmp/helm-bundle.zip
