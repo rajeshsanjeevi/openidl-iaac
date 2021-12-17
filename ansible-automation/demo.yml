@@ -1,8 +1,0 @@
----
-- hosts: localhost
-  gather_facts: yes
-  tasks:
-  - name: check httpd status 
-    service:
-      name: httpd 
-      state: started
