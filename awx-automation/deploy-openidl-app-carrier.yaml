@@ -47,7 +47,6 @@
       curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
       chmod +x kubectl
       mv ./kubectl /usr/local/bin
-    register: kubectl_setup
     when: kubectl_status.stat.exists == False
 
   - name: Update kubeconfig and set context to openidl {{ app_cluster_name }}
@@ -77,8 +76,7 @@
 
   - name: Deploy openIDL app using helm
     shell: |
-      echo "Test"
-#      helm upgrade --recreate-pods --install dev-carrier ./openidl-k8s -f ./openidl-k8s/global-values-dev-carrier.yaml \
-#          -n openidl --set global.datacallapp.ingressenabled=true --set global.utilities.ingressenabled=true \
-#          --set global.carrierui.ingressenabled=true --set global.insurancedatamanager.ingressenabled=true \
-#          --set global.secrets.install=false
+      helm upgrade --recreate-pods --install dev-carrier ./openidl-k8s -f ./openidl-k8s/global-values-{{ dev }}-carrier.yaml \
+          -n openidl --set global.datacallapp.ingressenabled=true --set global.utilities.ingressenabled=true \
+          --set global.carrierui.ingressenabled=true --set global.insurancedatamanager.ingressenabled=true \
+          --set global.secrets.install=false
