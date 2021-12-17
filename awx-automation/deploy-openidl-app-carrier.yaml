@@ -76,7 +76,7 @@
 
   - name: Deploy openIDL app using helm
     shell: |
-      helm upgrade --recreate-pods --install dev-carrier ./openidl-k8s -f ./openidl-k8s/global-values-{{ dev }}-carrier.yaml \
+      helm upgrade --recreate-pods --install dev-carrier ./openidl-k8s -f ./openidl-k8s/global-values-{{ env }}-carrier.yaml \
           -n openidl --set global.datacallapp.ingressenabled=true --set global.utilities.ingressenabled=true \
           --set global.carrierui.ingressenabled=true --set global.insurancedatamanager.ingressenabled=true \
           --set global.secrets.install=false
