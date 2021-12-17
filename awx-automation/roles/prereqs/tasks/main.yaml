@@ -44,7 +44,7 @@
 
 - name: Update kubeconfig and set context to openidl EKS cluster
   shell: |
-    export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ blk_cluster_name }}
+    export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ cluster_name }}
   register: cluster_context_set
 
 - name: Download the helm bundle
