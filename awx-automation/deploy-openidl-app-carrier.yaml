@@ -50,9 +50,9 @@
     register: kubectl_setup
     when: kubectl_status.stat.exists == False
 
-  - name: Update kubeconfig and set context to openidl '{{ cluster_name }}'
+  - name: Update kubeconfig and set context to openidl {{ app_cluster_name }}
     shell: |
-      export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ cluster_name }}
+      export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ app_cluster_name }}
 
   - name: Checking helm exists
     stat:
