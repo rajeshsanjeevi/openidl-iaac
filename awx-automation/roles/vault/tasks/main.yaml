@@ -56,6 +56,7 @@
 
 - name: upload Vault unseal keys to aws secrets manager
   shell: |
+    export AWS_PROFILE=cicd-role
     aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
 
 - name: Delete unseal keys file
@@ -215,6 +216,7 @@
 
 - name: Upload config user credentials to secrets manager
   shell: |
+    export AWS_PROFILE=cicd-role
     aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-config-vault --description "Vault Credentials for config user" --secret-string file://creds.json
 
 - name: Delete config user credentials json file
@@ -239,6 +241,7 @@
 
 - name: Upload kvs user credentials to secrets manager
   shell: |
+    export AWS_PROFILE=cicd-role
     aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-kvs-vault --description "Vault Credentials for kvs user" --secret-string file://creds.json
 
 - name: Delete config user credentials json file

@@ -24,6 +24,6 @@ server:
         service_registration "kubernetes" {}
 
         seal "awskms" {
-          region = "{{ region }}"
+          region = "{{ aws_region }}"
           kms_key_id  = "{{ vault_kms_key_id | default('') }}"
         }
