@@ -23,7 +23,7 @@
       vars:
         vault_token: "{{ vault.stdout }}"
         cluster_name: "{{ blk_cluster_name }}"
-        action: "{{ action }}"
+        action: "{{ deploy_action }}"
         region: "{{ aws_region }}"
         access_id: "{{ baf_user_access_key }}"
         access_key: "{{ baf_user_secret_key }}"
