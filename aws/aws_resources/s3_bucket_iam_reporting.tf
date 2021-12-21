@@ -162,7 +162,7 @@ resource "aws_kms_key" "s3_kms_key_reporting" {
   })
 }
 #setting up an alias for the kms key used with s3 bucket data encryption which is used for reporting
-resource "aws_kms_alias" "s3_kms_key" {
+resource "aws_kms_alias" "kms_alias_reporting" {
   count = var.org_name == "aais" ? 0 : 1
   name          = "alias/${local.std_name}-${var.s3_bucket_name_reporting}"
   target_key_id = aws_kms_key.s3_kms_key_reporting.id
