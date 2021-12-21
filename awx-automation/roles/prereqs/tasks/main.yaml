@@ -59,7 +59,7 @@
 - name: Download the helm bundle
   get_url: url=https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz dest=/tmp/helm-bundle.zip
   register: helm_bundle_download
-  when: helm_status.stats.exists == False
+  when: helm_status.stat.exists == False
 
 - name: Unarchive the helm installer
   unarchive: src=/tmp/helm-bundle.zip dest=/tmp copy=no creates=/tmp/linux-amd64/helm
