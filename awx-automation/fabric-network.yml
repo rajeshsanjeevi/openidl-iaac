@@ -5,11 +5,11 @@
     - include_role:
         name: "prereqs"
       vars:
-        aws_access_key: "{{ aws_access_key }}"
-        aws_secret_key: "{{ aws_secret_key }}"
+        aws_access_key: "{{ gitactions_user_access_key }}"
+        aws_secret_key: "{{ gitactions_user_secret_key }}"
         aws_region: "{{ aws_region }}"
-        aws_external_id: "{{ aws_external_id }}"
-        aws_iam_role: "{{ aws_iam_role }}"
+        aws_external_id: "{{ gitactions_user_external_id }}"
+        aws_iam_role: "{{ gitactions_user_iam_role }}"
         cluster_name: "{{ blk_cluster_name }}"
 
     - name: Get vault root token
@@ -22,3 +22,15 @@
         name: "baf/network"
       vars:
         vault_token: "{{ vault.stdout }}"
+        cluster_name: "{{ blk_cluster_name }}"
+        action: "{{ action }}"
+        region: "{{ aws_region }}"
+        access_id: "{{ baf_user_access_key }}"
+        access_key: "{{ baf_user_secret_key }}"
+        account: "{{ aws_account_number }}"
+        registry: "ghcr.io/{{ baf_image_repo }}"
+        add_org: "{{ add_org_name }}"
+
+
+
+
