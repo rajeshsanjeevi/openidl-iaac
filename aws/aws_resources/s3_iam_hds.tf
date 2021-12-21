@@ -1,4 +1,4 @@
-#creating an s3 bucket for reporting
+#creating an s3 bucket for HDS data extract for analytics node
 resource "aws_s3_bucket" "s3_bucket_hds" {
   count = var.org_name == "aais" ? 0 : 1
   bucket = "${local.std_name}-${var.s3_bucket_name_hds_analytics}"
@@ -21,7 +21,7 @@ resource "aws_s3_bucket" "s3_bucket_hds" {
     }
   }
 }
-#blocking public access to s3 bucket used for reporting
+#blocking public access to s3 bucket used for HDS data extract for analytics node
 resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_hds" {
   count = var.org_name == "aais" ? 0 : 1
   block_public_acls       = true
@@ -31,7 +31,7 @@ resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_hds"
   bucket                  = aws_s3_bucket.s3_bucket_hds[0].id
   depends_on              = [aws_s3_bucket.s3_bucket_hds, aws_s3_bucket_policy.s3_bucket_policy_hds]
 }
-#setting up a bucket policy to restrict access to s3 bucket used for reporting
+#setting up a bucket policy to restrict access to s3 bucket used for HDS data extract for analytics node
 resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
   count = var.org_name == "aais" ? 0 : 1
   bucket     = "${local.std_name}-${var.s3_bucket_name_hds_analytics}"
@@ -73,7 +73,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
     ]
 })
 }
-#creating kms key that is used to encrypt data at rest in S3 bucket used for reporting
+#creating kms key that is used to encrypt data at rest in S3 bucket used for HDS data extract for analytics node
 resource "aws_kms_key" "s3_kms_key_hds" {
   count = var.org_name == "aais" ? 0 : 1
   description             = "The kms key for s3 bucket used for HDS"
@@ -161,13 +161,13 @@ resource "aws_kms_key" "s3_kms_key_hds" {
     ]
   })
 }
-#setting up an alias for the kms key used with s3 bucket data encryption which is used for reporting
+#setting up an alias for the kms key used with s3 bucket data encryption which is used for HDS data extract for analytics node
 resource "aws_kms_alias" "kms_alias_hds" {
   count = var.org_name == "aais" ? 0 : 1
   name          = "alias/${local.std_name}-${var.s3_bucket_name_hds_analytics}"
   target_key_id = aws_kms_key.s3_kms_key_hds[0].id
 }
-#IAM user and relevant credentials used for S3 bucket access which is used for reporting
+#IAM user and relevant credentials used for S3 bucket access which is used for HDS data extract for analytics node
 resource "aws_iam_user" "hds_user" {
   count = var.org_name == "aais" ? 0 : 1
   name = "${local.std_name}-hds-user"
