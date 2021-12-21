@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "s3_bucket_hds" {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm     = "aws:kms"
-        kms_master_key_id = aws_kms_key.s3_kms_key_hds.id
+        kms_master_key_id = aws_kms_key.s3_kms_key_hds[0].id
       }
     }
   }
@@ -185,7 +185,7 @@ resource "aws_iam_access_key" "hds_user_access_key" {
 resource "aws_iam_user_policy" "hds_user_policy" {
   count = var.org_name == "aais" ? 0 : 1
   name = "${local.std_name}-hds-user-policy"
-  user = aws_iam_user[0].hds_user
+  user = aws_iam_user.hds_user[0].name
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
