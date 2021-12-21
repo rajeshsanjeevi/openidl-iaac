@@ -28,7 +28,7 @@ resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_hds"
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-  bucket                  = aws_s3_bucket.s3_bucket_hds.id
+  bucket                  = aws_s3_bucket.s3_bucket_hds[0].id
   depends_on              = [aws_s3_bucket.s3_bucket_hds, aws_s3_bucket_policy.s3_bucket_policy_hds]
 }
 #setting up a bucket policy to restrict access to s3 bucket used for reporting
@@ -43,7 +43,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
             "Sid": "AllowGetAndPutObjects",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "${aws_iam_user.hds_user.arn}"
+                "AWS": "${aws_iam_user.hds_user[0].arn}"
             },
             "Action": [
                 "s3:GetObject",
@@ -76,14 +76,14 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
 #creating kms key that is used to encrypt data at rest in S3 bucket used for reporting
 resource "aws_kms_key" "s3_kms_key_hds" {
   count = var.org_name == "aais" ? 0 : 1
-  description             = "The kms key for s3 bucket reporting"
+  description             = "The kms key for s3 bucket used for HDS"
   deletion_window_in_days = 30
   key_usage               = "ENCRYPT_DECRYPT"
   enable_key_rotation     = true
   tags = merge(
     local.tags,
     {
-      "Name" = "s3-bucket-reporting-kms-key"
+      "Name" = "s3-bucket-hds-kms-key"
     },)
   policy = jsonencode({
     "Id" : "${local.std_name}-${var.s3_bucket_name_hds_analytics}",
@@ -131,7 +131,7 @@ resource "aws_kms_key" "s3_kms_key_hds" {
         "Sid" : "EnableAccess",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "${aws_iam_user.hds_user.arn}"
+          "AWS" : "${aws_iam_user.hds_user[0].arn}"
         },
         "Action" : [
 			"kms:Encrypt",
@@ -165,18 +165,18 @@ resource "aws_kms_key" "s3_kms_key_hds" {
 resource "aws_kms_alias" "kms_alias_hds" {
   count = var.org_name == "aais" ? 0 : 1
   name          = "alias/${local.std_name}-${var.s3_bucket_name_hds_analytics}"
-  target_key_id = aws_kms_key.s3_kms_key_hds.id
+  target_key_id = aws_kms_key.s3_kms_key_hds[0].id
 }
 #IAM user and relevant credentials used for S3 bucket access which is used for reporting
 resource "aws_iam_user" "hds_user" {
   count = var.org_name == "aais" ? 0 : 1
-  name = "${local.std_name}-reporting-user"
+  name = "${local.std_name}-hds-user"
   force_destroy = true
-  tags = merge(local.tags, { Name = "${local.std_name}-reporting-user", Cluster_type = "both" })
+  tags = merge(local.tags, { Name = "${local.std_name}-hds-user", Cluster_type = "both" })
 }
 resource "aws_iam_access_key" "hds_user_access_key" {
   count = var.org_name == "aais" ? 0 : 1
-  user = aws_iam_user.hds_user.name
+  user = aws_iam_user.hds_user[0].name
   status = "Active"
   lifecycle {
     ignore_changes = [status]
@@ -184,8 +184,8 @@ resource "aws_iam_access_key" "hds_user_access_key" {
 }
 resource "aws_iam_user_policy" "hds_user_policy" {
   count = var.org_name == "aais" ? 0 : 1
-  name = "${local.std_name}-reporting-user-policy"
-  user = aws_iam_user.hds_user
+  name = "${local.std_name}-hds-user-policy"
+  user = aws_iam_user[0].hds_user
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -220,7 +220,7 @@ resource "aws_iam_user_policy" "hds_user_policy" {
                 "kms:DescribeKey"
             ],
             "Resource": [
-                "${aws_kms_key.s3_kms_key_hds.arn}"
+                "${aws_kms_key.s3_kms_key_hds[0].arn}"
             ]
         }
     ]
