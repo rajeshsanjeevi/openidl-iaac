@@ -60,6 +60,9 @@ output "git_actions_iam_user_arn" {
 output "baf_automation_user_arn" {
   value = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
 }
+output "reporting_user_arn" {
+  value = data.terraform_remote_state.base_setup.outputs.reporting_user_arn
+}
 output "eks_admin_role_arn" {
   value = data.terraform_remote_state.base_setup.outputs.eks_admin_role_arn
 }
@@ -86,6 +89,9 @@ output "blk_cluster_name" {
 #cloudtrail related
 output "cloudtrail_s3_bucket_name" {
   value = data.terraform_remote_state.base_setup.outputs.cloudtrail_s3_bucket_name
+}
+output "reporting_s3_bucket_name" {
+  value = data.terraform_remote_state.base_setup.outputs.reporting_s3_bucket_name
 }
 #Route53 entries
 output "private_app_bastion_nlb_private_fqdn" {
