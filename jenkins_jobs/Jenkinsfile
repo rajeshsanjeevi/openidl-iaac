@@ -1,3 +1,4 @@
+
 #!groovy
 import groovy.json.JsonSlurper
 node('slave') {
@@ -6,7 +7,7 @@ node('slave') {
 }
 def checkout() {
     stage('Checkout Code') {
-        git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
+        git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
         sh '''
             cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
             tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
@@ -23,8 +24,8 @@ def buildInfra() {
         def (config_version, upload_url) = createConfig("${ws_id}")
         def upload_status = uploadAWSConfig("${upload_url}")
         def runid = ""
-        runid = plan("${ws_id}") 
-        waitForPlan("${runid}") 
+        runid = plan("${ws_id}")
+        waitForPlan("${runid}")
     }
     stage('K8s-Plan-Apply') {
         def ws_id = getWorkspaceId("${params.TF_K8S_WORKSPACE}")
@@ -87,7 +88,7 @@ def uploadAWSConfig(url) {
     )
     println("HTTP response for uploadAWSConfig:" + response)
     println("Code for AWS resources uploaded successfully")
-    
+
 }
 def uploadK8sConfig(url) {
          def response = httpRequest(
@@ -124,7 +125,7 @@ def plan(ws_id) {
     """
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
@@ -139,7 +140,7 @@ def plan(ws_id) {
 def planResult(runid){
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]],
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}?include=plan"
     )
@@ -169,7 +170,7 @@ def getPlanStatus(runid) {
             break
         case 'cost_estimating':
             result = "costing"
-            break 
+            break
         case 'cost_estimated':
             result = "cost_estimated"
             break
@@ -181,10 +182,10 @@ def getPlanStatus(runid) {
             break
         case 'confirmed':
             result = "confirmed"
-            break 
+            break
         case 'planned_and_finished':
             result = "planned_and_finished"
-            break 
+            break
         case 'policy_override':
             println(response.content)
             result = "approve_policy:" + data.data.relationships["policy-checks"].data[0].id
@@ -194,16 +195,16 @@ def getPlanStatus(runid) {
             break
         case 'discarded':
             result = "discarded"
-            break 
+            break
         case 'errored':
             result = "errored"
-            break 
+            break
         case 'canceled':
             result = "canceled"
-            break 
+            break
         case "force_canceled":
             result = "canceled"
-            break 
+            break
         default:
             result = "running"
             break
@@ -221,11 +222,11 @@ def waitForPlan(runid) {
             def override
             planResult("${runid}")
             try {
-                override = input (message: 'Override policy?', 
-                                  ok: 'Continue', 
+                override = input (message: 'Override policy?',
+                                  ok: 'Continue',
                                   parameters: [ booleanParam(
                                       defaultValue: false,
-                                      description: 'A policy restriction is enforced on this workspace. Check the box to approve overriding the policy.', 
+                                      description: 'A policy restriction is enforced on this workspace. Check the box to approve overriding the policy.',
                                       name: 'Override')
                                   ])
             } catch (err) {
@@ -257,7 +258,7 @@ def waitForPlan(runid) {
             def apply
             planResult("${runid}")
             try {
-                apply = input (message: 'Confirm Apply', ok: 'Continue', 
+                apply = input (message: 'Confirm Apply', ok: 'Continue',
                                     parameters: [booleanParam(defaultValue: false,
                                     description: 'Would you like to continue to apply this run?', name: 'Apply')])
             } catch (err) {
@@ -280,7 +281,7 @@ def waitForPlan(runid) {
             planResult("${runid}")
             println("The pipeline failed due to the plan errored")
             error("The Terraform run has encountered an error while planning, and the pipeline cannot continue.")
-            break 
+            break
         } else if(status == "canceled") {
             planResult("${runid}")
             println("The pipeline failed due to the plan canceled")
@@ -290,11 +291,11 @@ def waitForPlan(runid) {
             planResult("${runid}")
             println("The pipeline failed due to the plan discarded")
             error("The Terraform run has been discarded and the pipeline cannot continue.")
-            break 
+            break
         } else if(status == "planned_and_finished") {
             planResult("${runid}")
             println("The environment is up to date and there are no changes to apply.")
-            break    
+            break
         } else if (count > 60) break
         count++
         sleep(5)
@@ -303,7 +304,7 @@ def waitForPlan(runid) {
 def overridePolicy(policyid) {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
@@ -320,7 +321,7 @@ def overridePolicy(policyid) {
 def applyRun(runid) {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
@@ -350,7 +351,7 @@ def getApplyStatus(runid) {
         case 'errored':
             result = data.data.attributes.status
             break
-        case 'force_canceled':  
+        case 'force_canceled':
             result = data.data.attributes.status
             break
         case 'canceled':
@@ -391,7 +392,7 @@ def waitForApply(runid) {
 def discardRun(runid) {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ], 
+                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
