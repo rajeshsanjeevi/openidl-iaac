@@ -60,14 +60,14 @@ output "git_actions_iam_user_arn" {
 output "baf_automation_user_arn" {
   value = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
 }
-output "reporting_user_arn" {
-  value = data.terraform_remote_state.base_setup.outputs.reporting_user_arn
-}
 output "eks_admin_role_arn" {
   value = data.terraform_remote_state.base_setup.outputs.eks_admin_role_arn
 }
 output "git_actions_admin_role_arn" {
   value = data.terraform_remote_state.base_setup.outputs.git_actions_admin_role_arn
+}
+output "hds_iam_user" {
+  value = var.org_name == "aais" ? null : data.terraform_remote_state.base_setup.outputs.hds_iam_user_arn
 }
 #-----------------------------------------------------------------------------------------------------------------
 #application cluster (EKS) outputs
@@ -90,9 +90,9 @@ output "blk_cluster_name" {
 output "cloudtrail_s3_bucket_name" {
   value = data.terraform_remote_state.base_setup.outputs.cloudtrail_s3_bucket_name
 }
-output "reporting_s3_bucket_name" {
-  value = data.terraform_remote_state.base_setup.outputs.reporting_s3_bucket_name
-}
+output "hds_data_s3_bucket_name" {
+  value = var.org_name == "aais" ? null : data.terraform_remote_state.base_setup.outputs.hds_data_s3_bucket_name
+}        
 #Route53 entries
 output "private_app_bastion_nlb_private_fqdn" {
   value = var.bastion_host_nlb_external ? null : data.terraform_remote_state.base_setup.outputs.private_app_bastion_nlb_private_fqdn

@@ -643,7 +643,11 @@ variable "blk_worker_nodes_ami_id" {
   description = "The AMI id of the blk cluster worker nodes"
   default = ""
 }
-variable "s3_bucket_name_reporting" {
+variable "s3_bucket_name_hds_analytics" {
+  type = string
+  description = "The name of s3 bucket for reporting relevant only to carrier and analytics node"
+}
+variable "s3_bucket_name_hds_analytics" {
   type = string
   description = "The name of s3 bucket for reporting relevant only to carrier and analytics node"
 }
