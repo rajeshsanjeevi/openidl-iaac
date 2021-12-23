@@ -632,6 +632,7 @@ variable "vault_password_reset" {
 variable "terraform_state_s3_bucket_name" {
   type = string
   description = "The name of the s3 bucket will manage terraform state files"
+  default = ""
 }
 variable "app_worker_nodes_ami_id" {
   type = string
