@@ -2,12 +2,12 @@
 import groovy.json.JsonSlurper
     properties([
         parameters([
-            string defaultValue: 'app.terraform.io', description: 'Terraform endpoint', name: 'TF_ADDRESS')
-            string defaultValue: 'openidl-aais', description: 'TF Organization', name: 'TF_ORGNAME'
-            string defaultValue: 'hig-carrier', description: 'GitHub Branch', name: 'GITHUB_BRANCH'
-            string defaultValue: '', description: 'AWS resources workspace', name: 'TF_AWS_WORKSPACE'
-            string defaultValue: '', description: 'K8s resources workspace', name: 'TF_K8S_WORKSPACE'
-            password defaultValue: '', description: 'TF Bearer Token', name: 'TF_BEARER_TOKEN'
+            string(defaultValue: 'app.terraform.io', description: 'Terraform endpoint', name: 'TF_ADDRESS'),
+            string(defaultValue: 'openidl-aais', description: 'TF Organization', name: 'TF_ORGNAME'),
+            string(defaultValue: 'hig-carrier', description: 'GitHub Branch', name: 'GITHUB_BRANCH'),
+            string(defaultValue: '', description: 'AWS resources workspace', name: 'TF_AWS_WORKSPACE'),
+            string(defaultValue: '', description: 'K8s resources workspace', name: 'TF_K8S_WORKSPACE'),
+            password(defaultValue: '', description: 'TF Bearer Token', name: 'TF_BEARER_TOKEN')
         ])
 	])
 node('slave') {
