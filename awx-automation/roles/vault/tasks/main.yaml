@@ -11,7 +11,6 @@
     kind: Namespace
     state: present
 
-
 - name: Add vault Helm chart repo
   shell: |
     helm repo add hashicorp https://helm.releases.hashicorp.com
@@ -49,11 +48,6 @@
   slurp:
     src: "./vault-unseal-keys.txt"
   register: unsealkey
-
-# - name: delete Vault unseal keys from aws secrets manager
-#   shell: |
-#     aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key --force-delete-without-recovery
-#   ignore_errors: yes
 
 - name: upload Vault unseal keys to aws secrets manager
   shell: |
@@ -210,11 +204,6 @@
     vault_user_token: "{{ vault_config_user_token }}"
     vault_org_name: "config"
 
-# - name: delete config user credentials from secrets manager
-#   shell: |
-#     aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-config-vault --force-delete-without-recovery
-#   ignore_errors: yes
-
 - name: Upload config user credentials to secrets manager
   shell: |
     export AWS_PROFILE=cicd-role
@@ -234,11 +223,6 @@
     vault_user: "{{ vault_kvs_user }}"
     vault_user_token: "{{ vault_kvs_user_token }}"
     vault_org_name: "kvs"
-
-# - name: delete kvs user credentials from secrets manager
-#   shell: |
-#     aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-kvs-vault --force-delete-without-recovery
-#   ignore_errors: yes
 
 - name: Upload kvs user credentials to secrets manager
   shell: |

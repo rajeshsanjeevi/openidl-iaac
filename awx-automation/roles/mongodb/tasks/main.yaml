@@ -23,6 +23,7 @@
     - mongodb
 
 - name: Install mongodb helm chart
+  no_log: true
   shell: |
     helm --namespace database install {{ network.org_name }} bitnami/mongodb \
     --set architecture=replicaset \
