@@ -23,7 +23,7 @@
 
 - name: Configure awscli credentials for IAM role
   shell: aws configure set {{ item.key }} {{ item.value }} --profile cicd-role
-  no_log: True
+  no_log: false
   with_dict:
     external_id: "{{ aws_external_id }}"
     source_profile: "cicd-user"

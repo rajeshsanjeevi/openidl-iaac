@@ -60,7 +60,7 @@ pipeline {
                         towerServer: 'AWX',
                         towerCredentialsId: 'AWX',
                         templateType: 'job',
-                        jobTemplate: "openidl-vault-cleanup",
+                        jobTemplate: "Openidl-Mongodb-Cleanup",
                         jobType: "run",
                         towerLogLevel: 'full',
                         importTowerLogs: true,
