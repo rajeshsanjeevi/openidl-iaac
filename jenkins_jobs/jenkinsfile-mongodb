@@ -72,11 +72,11 @@ pipeline {
     }
     post {
         success {
-            echo "The vault action is successful"
+            echo "The mongodb action is successful"
 
         }
         failure {
-            echo "The vault action is failed, Please investigate"
+            echo "The mongodb action is failed, Please investigate"
 
         }
     }
