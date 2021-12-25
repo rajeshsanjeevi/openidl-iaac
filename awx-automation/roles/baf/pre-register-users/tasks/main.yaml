@@ -129,6 +129,7 @@
 
 - name: delete ca user token to aws secrets manager
   shell: |
+    export AWS_PROFILE=cicd-role
     aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-app-user-token --force-delete-without-recovery
   ignore_errors: yes
 
