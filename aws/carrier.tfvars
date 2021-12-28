@@ -59,8 +59,8 @@ blk_bastion_sg_egress =   [
 #Route53 (PUBLIC) DNS domain related specifications
 domain_info = {
   r53_public_hosted_zone_required = "yes" #Options: yes | no
-  domain_name = "hig.aaisdirect.com", #primary domain registered
-  sub_domain_name = "carrier" #sub domain
+  domain_name = "thetech.digital", #primary domain registered
+  sub_domain_name = "hig" #sub domain
   comments = "hig carrier domain"
 }
 
