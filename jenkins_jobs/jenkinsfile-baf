@@ -21,7 +21,7 @@ pipeline {
 
         }
     stages{
-        stage('BAF-${params.deploy_action}'){
+        stage('BAF-deploy-network'){
             when {
                 expression { "${params.deploy_action}" == "deploy_network" }
             }
