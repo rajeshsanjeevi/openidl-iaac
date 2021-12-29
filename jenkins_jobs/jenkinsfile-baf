@@ -78,11 +78,11 @@ pipeline {
     }
     post {
         success {
-            echo "The mongodb action is successful"
+            echo "The ${params.deploy_action} action is successful"
 
         }
         failure {
-            echo "The mongodb action is failed, Please investigate"
+            echo "The ${params.deploy_action} is failed, Please investigate"
 
         }
     }
