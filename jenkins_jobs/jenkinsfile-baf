@@ -4,9 +4,6 @@ pipeline {
             label 'slave'
         }
     }
-    tools {
-        git 'git'
-    }
     parameters {
         string description: 'Organization name of the node', name: 'org_name', trim: true
         string description: 'Environment (dev | test | prod)', name: 'env', trim: true
@@ -21,11 +18,14 @@ pipeline {
 
         }
     stages{
-        stage('BAF-deploy-network'){
+        stage('deploy-network'){
             when {
                 expression { "${params.deploy_action}" == "deploy_network" }
             }
             steps {
+                script {
+                    def data = readYaml file: './${params.org_name}-config-${params.env}'
+                }
                 wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                     ansibleTower(
                         towerServer: 'AWX',
@@ -48,7 +48,7 @@ pipeline {
                 }
             }
         }
-        stage('BAF-reset-network'){
+        stage('reset-network'){
             when {
                 expression { "${params.deploy_action}" == "reset" }
             }
@@ -75,15 +75,184 @@ pipeline {
                 }
             }
         }
+        stage('deploy-chaincode'){
+            when {
+                expression { "${params.deploy_action}" == "chaincode" }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-deploy-blockchain-network",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        action: '${params.deploy_action}'
+                        cluster_name: '${params.blk_cluster_name}'
+                        region: '${params.aws_region}'
+                        account: '${params.aws_account_number}'
+                        registry: '${params.baf_image_repo}'
+                        channel_name: '${params.channel_name}'
+                        chaincode_version: '${params.chaincode_version}'
+                        """
+                        )
+                }
+            }
+        }
+        stage('add-new-channel'){
+            when {
+                expression { "${params.deploy_action}" == "add_new_channel" }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-deploy-blockchain-network",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        action: '${params.deploy_action}'
+                        cluster_name: '${params.blk_cluster_name}'
+                        region: '${params.aws_region}'
+                        account: '${params.aws_account_number}'
+                        registry: '${params.baf_image_repo}'
+                        channel_name: '${params.channel_name}'
+                        """
+                        )
+                }
+            }
+        }
+        stage('add-new-org'){
+            when {
+                expression { "${params.deploy_action}" == "add_new_org" }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-deploy-blockchain-network",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        action: '${params.deploy_action}'
+                        cluster_name: '${params.blk_cluster_name}'
+                        region: '${params.aws_region}'
+                        account: '${params.aws_account_number}'
+                        registry: '${params.baf_image_repo}'
+                        channel_name: '${params.channel_name}'
+                        add_org: '${params.add_org_name}'
+                        """
+                        )
+                }
+            }
+        }
+        stage('join-peer'){
+            when {
+                expression { "${params.deploy_action}" == "join_peer" }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-deploy-blockchain-network",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        action: '${params.deploy_action}'
+                        cluster_name: '${params.blk_cluster_name}'
+                        region: '${params.aws_region}'
+                        account: '${params.aws_account_number}'
+                        registry: '${params.baf_image_repo}'
+                        channel_name: '${params.channel_name}'
+                        """
+                        )
+                }
+            }
+        }
+        stage('new-org-prereqs'){
+            when {
+                expression { "${params.deploy_action}" == "new_org" }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-deploy-blockchain-network",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        action: "new_org_prereq"
+                        cluster_name: '${params.blk_cluster_name}'
+                        region: '${params.aws_region}'
+                        account: '${params.aws_account_number}'
+                        channel_name: '${params.channel_name}'
+                        org_json: '${params.org_json}'
+                        registry: '${params.baf_image_repo}'
+                        """
+                        )
+                }
+            }
+        }
+        stage('new-org'){
+            when {
+                expression { "${params.deploy_action}" == "new_org" }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-deploy-blockchain-network",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        action: '${params.deploy_action}'
+                        cluster_name: '${params.blk_cluster_name}'
+                        region: '${params.aws_region}'
+                        account: '${params.aws_account_number}'
+                        channel_name: '${params.channel_name}'
+                        registry: '${params.baf_image_repo}'
+                        """
+                        )
+                }
+            }
+        }
     }
     post {
         success {
-            echo "The ${params.deploy_action} action is successful"
-
+            echo "The BAF action: ${params.deploy_action} action is successful"
         }
         failure {
-            echo "The ${params.deploy_action} is failed, Please investigate"
-
+            echo "The BAF action: ${params.deploy_action} is failed, Please investigate"
         }
     }
 }

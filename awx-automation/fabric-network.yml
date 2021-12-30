@@ -1,6 +1,7 @@
 - hosts: ec2-18-119-105-48.us-east-2.compute.amazonaws.com
   gather_facts: no
   no_log: "{{ no_ansible_log | default(false) }}"
+  include_vars: '{{ org_name }}-config-{{ env }}.yml'
   tasks:
     - include_role:
         name: "prereqs"
@@ -33,10 +34,9 @@
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
         chaincode_version: "${{ chaincode_version }}"
-        org_json: "${{ orderer-tls.stdout }}"
+        org_json: "{{ orderer-tls.stdout }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
-#        extravars: "${{ extravars }}" - fix this later.
 
 
 
