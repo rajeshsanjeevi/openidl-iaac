@@ -35,10 +35,10 @@ pipeline {
                         async: false,
                         importTowerLogs: true,
                         extraVars: """---
-                        action: '${params.deploy_action}'
-                        cluster_name: '${params.blk_cluster_name}'
-                        region: '${params.aws_region}'
-                        account: '${params.aws_account_number}'
+                        deploy_action: '${params.deploy_action}'
+                        blk_cluster_name: '${params.blk_cluster_name}'
+                        aws_regionregion: '${params.aws_region}'
+                        aws_account_number: '${params.aws_account_number}'
                         registry: '${params.baf_image_repo}'
                         """
                         )
