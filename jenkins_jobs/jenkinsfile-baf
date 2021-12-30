@@ -23,9 +23,6 @@ pipeline {
                 expression { "${params.deploy_action}" == "deploy_network" }
             }
             steps {
-                script {
-                    def data = readYaml file: './${params.org_name}-config-${params.env}'
-                }
                 wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                     ansibleTower(
                         towerServer: 'AWX',
