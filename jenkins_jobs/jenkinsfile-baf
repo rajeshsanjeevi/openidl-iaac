@@ -41,6 +41,7 @@ pipeline {
                         aws_account_number: '${params.aws_account_number}'
                         registry: '${params.baf_image_repo}'
                         channel_name: '{params.channel_name}'
+                        add_org_name: '{params.add_org_name}'
                         """
                         )
                 }
