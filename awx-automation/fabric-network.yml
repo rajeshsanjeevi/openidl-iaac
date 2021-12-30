@@ -3,7 +3,7 @@
   no_log: "{{ no_ansible_log | default(false) }}"
 
   vars_files:
-    - "./hig-config-dev.yml"
+    - "./{{ org_name }}-config-{{ env }}.yml"
 
   tasks:
 
