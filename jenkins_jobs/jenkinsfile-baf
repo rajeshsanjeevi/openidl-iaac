@@ -37,7 +37,7 @@ pipeline {
                         extraVars: """---
                         deploy_action: '${params.deploy_action}'
                         blk_cluster_name: '${params.blk_cluster_name}'
-                        aws_regionregion: '${params.aws_region}'
+                        aws_region: '${params.aws_region}'
                         aws_account_number: '${params.aws_account_number}'
                         registry: '${params.baf_image_repo}'
                         """
