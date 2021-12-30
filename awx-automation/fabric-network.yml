@@ -6,6 +6,8 @@
     - "./{{ org_name }}-config-{{ env }}.yml"
 
   tasks:
+    - include_vars: "./{{ org_name }}-config-{{ env }}.yml"
+      
     - include_role:
         name: "prereqs"
       vars:
