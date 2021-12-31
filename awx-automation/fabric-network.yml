@@ -1,13 +1,10 @@
 - hosts: ec2-18-119-105-48.us-east-2.compute.amazonaws.com
   gather_facts: no
   no_log: "{{ no_ansible_log | default(false) }}"
-  vars:
-    orgjson: "null"
   vars_files:
     - "./{{ org_name }}-config-{{ env }}.yml"
 
   tasks:
-
     - include_role:
         name: "prereqs"
       vars:
@@ -53,11 +50,9 @@
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
         chaincode_version: "${{ chaincode_version }}"
-        org_json: "{{ orgjson.stdout }}"
+        org_json: "{{ orgjson.stdout | default('') }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
         env: "{{ env }}"
         org_name: "{{ org_name }}"
-
-
 
