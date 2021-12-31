@@ -45,7 +45,6 @@ pipeline {
 }
     def neworgPrereqs(thestage){
         stage('neworgPrereqs') {
-            steps {
                 wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                     ansibleTower(
                         towerServer: 'AWX',
@@ -70,13 +69,11 @@ pipeline {
                         """
                     )
                 }
-            }
         }
     }
     def deployBAF(thestage){
         stage(thestage){
-            steps {
-                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+               wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                     ansibleTower(
                         towerServer: 'AWX',
                         towerCredentialsId: 'AWX',
@@ -100,8 +97,7 @@ pipeline {
                         env: '${params.env}'
                         """
                     )
-                }
-            }
+               }
         }
     }
 
