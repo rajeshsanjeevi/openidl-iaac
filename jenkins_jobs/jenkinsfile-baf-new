@@ -77,9 +77,9 @@ pipeline {
                         importTowerLogs: true,
                         extraVars: """---
                         deploy_action: '${params.deploy_action}'
-                        channel_name: '{params.channel_name}'
+                        channel_name: '${params.channel_name}'
                         chaincode_version: '${params.chaincode_version}'
-                        add_org_name: '{params.add_org_name}'
+                        add_org_name: '${params.add_org_name}'
                         org_name: '${params.org_name}'
                         env: '${params.env}'
                         """
