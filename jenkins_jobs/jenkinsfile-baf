@@ -42,6 +42,8 @@ pipeline {
                         channel_name: '${params.channel_name}'
                         org_json: '${params.org_json}'
                         registry: '${params.baf_image_repo}'
+                        org_name: '${org_name}'
+                        env: '${params.env}'
                         """
                         )
                 }
@@ -69,6 +71,8 @@ pipeline {
                         channel_name: '{params.channel_name}'
                         chaincode_version: '${params.chaincode_version}'
                         add_org_name: '{params.add_org_name}'
+                        org_name: '${params.org_name}'
+                        env: '${params.env}'
                         """
                         )
                 }

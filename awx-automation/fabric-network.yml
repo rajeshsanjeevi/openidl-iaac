@@ -41,6 +41,8 @@
         org_json: "{{ orderer-tls.stdout }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
+        env: "{{ env }}"
+        org_name: "{{ org_name }}"
 
 
 
