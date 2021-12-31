@@ -28,14 +28,14 @@
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT | jq -r .SecretString
       register: org-json
-      when: "{{ deploy_action }}" == "new_org"
+      when: deploy_action == "new_org"
 
     - name: Export ORG_MSP
       shell: |
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT | jq -r .SecretString
       register: org-json
-      when: "{{ deploy_action }}" == "add_new_org"
+      when: deploy_action == "add_new_org"
 
     - include_role:
         name: "baf/network"
