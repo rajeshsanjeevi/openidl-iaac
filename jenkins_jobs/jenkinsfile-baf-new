@@ -1,3 +1,4 @@
+def buildType
 pipeline {
     agent {
         node {
@@ -17,11 +18,24 @@ pipeline {
         string description: 'Registry to locate BAF Docker image', name: 'baf_image_repo', trim: true
 
         }
-    stages{
-        stage('new-org-prerequisites'){
-            when {
-                expression { "${params.deploy_action}" == "new_org" }
+    stages {
+        stage('Prepare') {
+            steps {
+                script {
+                    if( '${params.deploy_action}' == "new_org") {
+                        buildType = "${params.deploy_action}"
+                        neworg_prereqs(buildType)
+                        deploy_baf(buildType)
+                    } else {
+                        buildType = "${params.deploy_action}"
+                        deploy_baf(buildType)
+                    }
+                }
             }
+        }
+    }
+    def neworg_prereqs(thestage){
+        stage('new-org-prereqs') {
             steps {
                 wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                     ansibleTower(
@@ -45,11 +59,13 @@ pipeline {
                         org_name: '${org_name}'
                         env: '${params.env}'
                         """
-                        )
+                    )
                 }
             }
         }
-        stage('baf-deployment'){
+    }
+    def deploy_baf(thestage){
+        stage(thestage){
             steps {
                 wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                     ansibleTower(
@@ -74,7 +90,7 @@ pipeline {
                         org_name: '${params.org_name}'
                         env: '${params.env}'
                         """
-                        )
+                    )
                 }
             }
         }
