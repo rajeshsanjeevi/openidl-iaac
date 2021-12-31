@@ -23,6 +23,20 @@
         aws secretsmanager get-secret-value --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key --version-stage AWSCURRENT | jq -r .SecretString
       register: vault
 
+    - name: Export Orderer TLS Cert
+      shell: |
+        export AWS_PROFILE=cicd-role
+        aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT | jq -r .SecretString
+      register: org-json
+      when: "{{ deploy_action }}" == "new_org"
+
+    - name: Export ORG_MSP
+      shell: |
+        export AWS_PROFILE=cicd-role
+        aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT | jq -r .SecretString
+      register: org-json
+      when: "{{ deploy_action }}" == "add_new_org"
+
     - include_role:
         name: "baf/network"
       vars:
@@ -38,7 +52,7 @@
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
         chaincode_version: "${{ chaincode_version }}"
-        org_json: "{{ orderer-tls.stdout }}"
+        org_json: "{{ org-json.stdout }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
         env: "{{ env }}"
