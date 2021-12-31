@@ -2,7 +2,7 @@
   gather_facts: no
   no_log: "{{ no_ansible_log | default(false) }}"
   vars:
-    org-json: ""
+    - org-json: default("")
   vars_files:
     - "./{{ org_name }}-config-{{ env }}.yml"
 
