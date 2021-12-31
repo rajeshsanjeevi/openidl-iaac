@@ -34,6 +34,15 @@ pipeline {
             }
         }
     }
+    post {
+        success {
+            echo "The BAF action: ${params.deploy_action} action is successful"
+        }
+        failure {
+            echo "The BAF action: ${params.deploy_action} is failed, Please investigate"
+        }
+    }
+}
     def neworgPrereqs(thestage){
         stage('neworgPrereqs') {
             steps {
@@ -95,12 +104,5 @@ pipeline {
             }
         }
     }
-    post {
-        success {
-            echo "The BAF action: ${params.deploy_action} action is successful"
-        }
-        failure {
-            echo "The BAF action: ${params.deploy_action} is failed, Please investigate"
-        }
-    }
-}
+
+
