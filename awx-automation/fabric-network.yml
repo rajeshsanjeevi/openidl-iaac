@@ -2,7 +2,7 @@
   gather_facts: no
   no_log: "{{ no_ansible_log | default(false) }}"
   vars:
-    org-json: "null"
+    orgjson: "null"
   vars_files:
     - "./{{ org_name }}-config-{{ env }}.yml"
 
@@ -28,14 +28,14 @@
       shell: |
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT | jq -r .SecretString
-      register: org-json
+      register: orgjson
       when: deploy_action == "new_org"
 
     - name: Export ORG_MSP
       shell: |
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT | jq -r .SecretString
-      register: org-json
+      register: orgjson
       when: deploy_action == "add_new_org"
 
     - include_role:
@@ -53,7 +53,7 @@
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
         chaincode_version: "${{ chaincode_version }}"
-        org_json: "{{ org-json.stdout }}"
+        org_json: "{{ orgjson.stdout }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
         env: "{{ env }}"
