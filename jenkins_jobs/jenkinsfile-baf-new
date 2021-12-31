@@ -24,18 +24,18 @@ pipeline {
                 script {
                     if( '${params.deploy_action}' == "new_org") {
                         buildType = "${params.deploy_action}"
-                        neworg_prereqs(buildType)
-                        deploy_baf(buildType)
+                        neworgPrereqs(buildType)
+                        deployBAF(buildType)
                     } else {
                         buildType = "${params.deploy_action}"
-                        deploy_baf(buildType)
+                        deployBAF(buildType)
                     }
                 }
             }
         }
     }
-    def neworg_prereqs(thestage){
-        stage('new-org-prereqs') {
+    def neworgPrereqs(thestage){
+        stage('neworgPrereqs') {
             steps {
                 wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                     ansibleTower(
@@ -64,7 +64,7 @@ pipeline {
             }
         }
     }
-    def deploy_baf(thestage){
+    def deployBAF(thestage){
         stage(thestage){
             steps {
                 wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
