@@ -1,3 +1,4 @@
+def buildType
 pipeline {
     agent {
         node {
@@ -11,70 +12,19 @@ pipeline {
         string description: 'Channel name', name: 'channel_name', trim: true
         string description: 'Chaincode version', name: 'chaincode_version', trim: true
         string description: 'New organization name to be added to channel(when action=add_new_org)', name: 'add_org_name', trim: true
-        string description: 'Name of the blockchain cluster(EKS)', name: 'blk_cluster_name', trim: true
-        string description: 'AWS account number', name: 'aws_account_number', trim: true
-        string description: 'AWS region', name: 'aws_region', trim: true
-        string description: 'Registry to locate BAF Docker image', name: 'baf_image_repo', trim: true
-
         }
-    stages{
-        stage('new-org-prerequisites'){
-            when {
-                expression { "${params.deploy_action}" == "new_org" }
-            }
+    stages {
+        stage('Prepare') {
             steps {
-                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
-                    ansibleTower(
-                        towerServer: 'AWX',
-                        towerCredentialsId: 'AWX',
-                        templateType: 'job',
-                        jobTemplate: "openidl-deploy-blockchain-network",
-                        jobType: "run",
-                        towerLogLevel: 'full',
-                        removeColor: false,
-                        async: false,
-                        importTowerLogs: true,
-                        extraVars: """---
-                        action: "new_org_prereq"
-                        cluster_name: '${params.blk_cluster_name}'
-                        region: '${params.aws_region}'
-                        account: '${params.aws_account_number}'
-                        channel_name: '${params.channel_name}'
-                        org_json: '${params.org_json}'
-                        registry: '${params.baf_image_repo}'
-                        org_name: '${org_name}'
-                        env: '${params.env}'
-                        """
-                        )
-                }
-            }
-        }
-        stage('baf-deployment'){
-            steps {
-                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
-                    ansibleTower(
-                        towerServer: 'AWX',
-                        towerCredentialsId: 'AWX',
-                        templateType: 'job',
-                        jobTemplate: "openidl-deploy-blockchain-network",
-                        jobType: "run",
-                        towerLogLevel: 'full',
-                        removeColor: false,
-                        async: false,
-                        importTowerLogs: true,
-                        extraVars: """---
-                        deploy_action: '${params.deploy_action}'
-                        blk_cluster_name: '${params.blk_cluster_name}'
-                        aws_region: '${params.aws_region}'
-                        aws_account_number: '${params.aws_account_number}'
-                        registry: '${params.baf_image_repo}'
-                        channel_name: '{params.channel_name}'
-                        chaincode_version: '${params.chaincode_version}'
-                        add_org_name: '{params.add_org_name}'
-                        org_name: '${params.org_name}'
-                        env: '${params.env}'
-                        """
-                        )
+                script {
+                    if( "${params.deploy_action}" == "new_org") {
+                        buildType = "${params.deploy_action}"
+                        neworgPrereqs()
+                        deployBAF(buildType)
+                    } else {
+                        buildType = "${params.deploy_action}"
+                        deployBAF(buildType)
+                    }
                 }
             }
         }
@@ -88,3 +38,54 @@ pipeline {
         }
     }
 }
+    def neworgPrereqs(){
+        stage('neworgPrereqs') {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-deploy-blockchain-network",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        action: "new_org_prereq"
+                        channel_name: '${params.channel_name}'
+                        org_json: '${params.org_json}'
+                        org_name: '${org_name}'
+                        env: '${params.env}'
+                        """
+                    )
+                }
+        }
+    }
+    def deployBAF(thestage){
+        stage(thestage){
+               wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-deploy-blockchain-network",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        deploy_action: '${params.deploy_action}'
+                        channel_name: '${params.channel_name}'
+                        chaincode_version: '${params.chaincode_version}'
+                        add_org_name: '${params.add_org_name}'
+                        org_name: '${params.org_name}'
+                        env: '${params.env}'
+                        """
+                    )
+               }
+        }
+    }
+
+
