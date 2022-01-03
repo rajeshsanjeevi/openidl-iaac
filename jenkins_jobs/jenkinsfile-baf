@@ -38,54 +38,54 @@ pipeline {
         }
     }
 }
-    def neworgPrereqs(){
-        stage('neworgPrereqs') {
-                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
-                    ansibleTower(
-                        towerServer: 'AWX',
-                        towerCredentialsId: 'AWX',
-                        templateType: 'job',
-                        jobTemplate: "openidl-deploy-blockchain-network",
-                        jobType: "run",
-                        towerLogLevel: 'full',
-                        removeColor: false,
-                        async: false,
-                        importTowerLogs: true,
-                        extraVars: """---
-                        action: "new_org_prereq"
-                        channel_name: '${params.channel_name}'
-                        org_json: '${params.org_json}'
-                        org_name: '${org_name}'
-                        env: '${params.env}'
-                        """
-                    )
-                }
+def neworgPrereqs(){
+    stage('neworgPrereqs') {
+        wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+            ansibleTower(
+                towerServer: 'AWX',
+                towerCredentialsId: 'AWX',
+                templateType: 'job',
+                jobTemplate: "openidl-deploy-blockchain-network",
+                jobType: "run",
+                towerLogLevel: 'full',
+                removeColor: false,
+                async: false,
+                importTowerLogs: true,
+                extraVars: """---
+                org_name: '${params.org_name}'
+                env: '${params.env}'
+                deploy_action: "new_org_prereq"
+                channel_name: '${params.channel_name}'
+                org_json: '${params.org_json}'
+                """
+            )
         }
     }
-    def deployBAF(thestage){
-        stage(thestage){
-               wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
-                    ansibleTower(
-                        towerServer: 'AWX',
-                        towerCredentialsId: 'AWX',
-                        templateType: 'job',
-                        jobTemplate: "openidl-deploy-blockchain-network",
-                        jobType: "run",
-                        towerLogLevel: 'full',
-                        removeColor: false,
-                        async: false,
-                        importTowerLogs: true,
-                        extraVars: """---
-                        deploy_action: '${params.deploy_action}'
-                        channel_name: '${params.channel_name}'
-                        chaincode_version: '${params.chaincode_version}'
-                        add_org_name: '${params.add_org_name}'
-                        org_name: '${params.org_name}'
-                        env: '${params.env}'
-                        """
-                    )
-               }
+}
+def deployBAF(thestage){
+    stage(thestage){
+        wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+            ansibleTower(
+                towerServer: 'AWX',
+                towerCredentialsId: 'AWX',
+                templateType: 'job',
+                jobTemplate: "openidl-deploy-blockchain-network",
+                jobType: "run",
+                towerLogLevel: 'full',
+                removeColor: false,
+                async: false,
+                importTowerLogs: true,
+                extraVars: """---
+                org_name: '${params.org_name}'
+                env: '${params.env}'
+                deploy_action: '${params.deploy_action}'
+                channel_name: '${params.channel_name}'
+                chaincode_version: '${params.chaincode_version}'
+                add_org_name: '${params.add_org_name}'
+                """
+            )
         }
     }
+}
 
 
