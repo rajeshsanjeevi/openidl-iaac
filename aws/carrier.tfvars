@@ -4,7 +4,7 @@
 #when nodetype is aais's dummy carrier set org_name="carrier" and for other carriers refer to next line.
 #when nodetype is other carrier set org_name="<carrier_org_name>" , example: org_name = "travelers" etc.,
 
-org_name = "analytics" #Its an example
+org_name = "carrier" #Its an example
 aws_env = "dev" #set to dev|test|prod
 
 #--------------------------------------------------------------------------------------------------------------------
