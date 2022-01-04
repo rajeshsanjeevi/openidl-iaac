@@ -122,13 +122,13 @@ blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 # application cluster EKS specifications
 app_cluster_name              = "app-cluster"
 app_cluster_version           = "1.20"
-app_worker_nodes_ami_id = "ami-09fd0b5dd68327412"
+app_worker_nodes_ami_id = "ami-02da3146d735616ea"
 
 #--------------------------------------------------------------------------------------------------------------------
 # blockchain cluster EKS specifications
 blk_cluster_name              = "blk-cluster"
 blk_cluster_version           = "1.20"
-blk_worker_nodes_ami_id = "ami-09fd0b5dd68327412"
+blk_worker_nodes_ami_id = "ami-02da3146d735616ea"
 
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related
