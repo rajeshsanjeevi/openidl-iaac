@@ -4,7 +4,7 @@
 #when nodetype is aais's dummy carrier set org_name="carrier" and for other carriers refer to next line.
 #when nodetype is other carrier set org_name="<carrier_org_name>" , example: org_name = "travelers" etc.,
 
-org_name = "hig" #Its an example
+org_name = "aais" #Its an example
 aws_env = "dev" #set to dev|test|prod
 
 #--------------------------------------------------------------------------------------------------------------------
@@ -60,8 +60,8 @@ blk_bastion_sg_egress =   [
 domain_info = {
   r53_public_hosted_zone_required = "yes" #Options: yes | no
   domain_name = "thetech.digital", #primary domain registered
-  sub_domain_name = "hig" #sub domain
-  comments = "hig carrier domain"
+  sub_domain_name = "aais" #sub domain
+  comments = "aais node domain"
 }
 
 #-------------------------------------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ client_app_name              = "openidl-client" #a name of the application that 
 client_callback_urls         = ["https://dev-carrier.hig.aaisdirect.com/callback", "https://dev-carrier.hig.aaisdirect.com/redirect"] #ensure to add redirect url part of callback urls, as this is required
 client_default_redirect_url  = "https://dev-carrier.hig.aaisdirect.com/redirect" #redirect url
 client_logout_urls           = ["https://dev-carrier.hig.aaisdirect.com/signout"] #logout url
-cognito_domain               = "hig-aaisdirect" #unique domain name
+cognito_domain               = "aais-openidl" #unique domain name
 
 # COGNITO_DEFAULT - Uses cognito default. When set to cognito default SES related inputs goes empty in git secrets
 # DEVELOPER - Ensure inputs ses_email_identity and userpool_email_source_arn are setup in git secrets
@@ -133,7 +133,7 @@ blk_worker_nodes_ami_id = "ami-09fd0b5dd68327412"
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related
 cw_logs_retention_period = "90" #example 90 days
-s3_bucket_name_cloudtrail = "carrier-dev-hig-triallogs" #s3 bucket name to manage cloudtrail logs
+s3_bucket_name_cloudtrail = "aais-dev-environment-trial-logs" #s3 bucket name to manage cloudtrail logs
 
 #--------------------------------------------------------------------------------------------------------------------
 #Name of the S3 bucket managing terraform state files - applicable when backend is S3
@@ -141,8 +141,8 @@ s3_bucket_name_cloudtrail = "carrier-dev-hig-triallogs" #s3 bucket name to manag
 
 #Applicable when backend environment is Terraform Cloud/Enterprise
 tfc_org_name = "openidl-aais"
-tfc_workspace_name_aws_resources = "hig-openidl-demo-aws-resources"
+tfc_workspace_name_aws_resources = "openidl-aais-aws-resources"
 
 #Name of the S3 bucket used to store the data extracted from HDS for analytics
-s3_bucket_name_hds_analytics = "openidl-hds-analytics"
+s3_bucket_name_hds_analytics = "openidl-aais-hds-analytics-data"
 
