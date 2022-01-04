@@ -114,7 +114,7 @@ blk_eks_workers_app_sg_ingress = [
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "172.21.0/16"
+    cidr_blocks = "172.21.0.0/16"
    }]
 blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
