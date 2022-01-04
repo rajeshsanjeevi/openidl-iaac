@@ -309,7 +309,7 @@ def waitForPlan(runid) {
             break
         } else if (count > 60) break
         count++
-        sleep(5)
+        sleep(10)
     }
 }
 def overridePolicy(policyid) {
@@ -395,9 +395,9 @@ def waitForApply(runid) {
             println("This run has finished applying")
             break
         }
-        else if (count > 3600) break
+        else if (count > 120) break
             count++
-            sleep(10)
+            sleep(60)
         }
 }
 def discardRun(runid) {
