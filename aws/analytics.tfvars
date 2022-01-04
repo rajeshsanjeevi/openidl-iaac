@@ -70,12 +70,12 @@ tgw_amazon_side_asn = "64532" #default is 64532
 
 #--------------------------------------------------------------------------------------------------------------------
 #Cognito specifications
-userpool_name                = "openidl-pool" #unique user_pool name
-client_app_name              = "openidl-client" #a name of the application that uses user pool
+userpool_name                = "openidl-anal" #unique user_pool name
+client_app_name              = "openidl-anal-client" #a name of the application that uses user pool
 client_callback_urls         = ["https://dev-carrier.hig.aaisdirect.com/callback", "https://dev-carrier.hig.aaisdirect.com/redirect"] #ensure to add redirect url part of callback urls, as this is required
 client_default_redirect_url  = "https://dev-carrier.hig.aaisdirect.com/redirect" #redirect url
 client_logout_urls           = ["https://dev-carrier.hig.aaisdirect.com/signout"] #logout url
-cognito_domain               = "aais-openidl" #unique domain name
+cognito_domain               = "anal-openidl" #unique domain name
 
 # COGNITO_DEFAULT - Uses cognito default. When set to cognito default SES related inputs goes empty in git secrets
 # DEVELOPER - Ensure inputs ses_email_identity and userpool_email_source_arn are setup in git secrets
@@ -96,7 +96,7 @@ app_eks_workers_app_sg_ingress = [
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "172.20.0.0/16"
+    cidr_blocks = "172.21.0.0/16"
    }]
 app_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
@@ -114,7 +114,7 @@ blk_eks_workers_app_sg_ingress = [
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "172.21.0.0/16"
+    cidr_blocks = "172.20.0.0/16"
    }]
 blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
