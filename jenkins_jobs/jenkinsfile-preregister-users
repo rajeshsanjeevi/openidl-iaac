@@ -4,9 +4,6 @@ pipeline {
             label 'slave'
         }
     }
-    tools {
-        git 'git'
-    }
     parameters {
         string description: 'Organization name of the node', name: 'org_name', trim: true
         string description: 'Environment (dev | test | prod)', name: 'env', trim: true
