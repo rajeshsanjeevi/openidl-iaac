@@ -2,14 +2,14 @@
 import groovy.json.JsonSlurper
     properties([
         parameters([
-            string(defaultValue: 'app.terraform.io', description: 'Terraform endpoint', name: 'TF_ADDRESS'),
+            string(defaultValue: 'app.terraform.io', description: 'Terraform endpoint', name: 'TF_ADDRESS', trim: true),
             password(description: 'TF Bearer Token', name: 'TF_BEARER_TOKEN'),
-            string(defaultValue: 'openidl-aais', description: 'TF Organization', name: 'TF_ORG_NAME'),
-            string(defaultValue: '', description: 'AWS resources workspace', name: 'TF_AWS_WORKSPACE'),
-            string(defaultValue: '', description: 'K8s resources workspace', name: 'TF_K8S_WORKSPACE'),
-            string(defaultValue: 'https://github.com/rajeshsanjeevi/openidl-iaac.git', description: 'GitHub URL', name: 'GITHUB_URL'),
-            string(defaultValue: 'hig-carrier', description: 'GitHub Branch', name: 'GITHUB_BRANCH'),
-            string(defaultValue: '', description: 'Terraform Input File', name: 'TF_INPUT_FILE'),
+            string(defaultValue: 'openidl-aais', description: 'TF Organization', name: 'TF_ORG_NAME', trim: true),
+            string(defaultValue: '', description: 'AWS resources workspace', name: 'TF_AWS_WORKSPACE', trim: true),
+            string(defaultValue: '', description: 'K8s resources workspace', name: 'TF_K8S_WORKSPACE', trim: true),
+            string(defaultValue: 'https://github.com/rajeshsanjeevi/openidl-iaac.git', description: 'GitHub URL', name: 'GITHUB_URL', trim: true),
+            string(defaultValue: 'hig-carrier', description: 'GitHub Branch', name: 'GITHUB_BRANCH', trim: true),
+            string(defaultValue: '', description: 'Terraform Input File', name: 'TF_INPUT_FILE', trim: true),
         ])
 	])
 node('slave') {
