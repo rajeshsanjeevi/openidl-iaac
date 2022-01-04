@@ -20,10 +20,10 @@ def checkout() {
     stage('Checkout Code') {
         git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
         sh '''
-            cp ./aws/${params.TF_INPUT_FILE} ./aws/aws_resources/input.auto.tfvars
+            cp ./aws/${TF_INPUT_FILE} ./aws/aws_resources/input.auto.tfvars
             tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
             echo "Successfully prepared the AWS resources code bundle"
-            cp ./aws/${params.TF_INPUT_FILE} ./aws/k8s_resources/input.auto.tfvars
+            cp ./aws/${TF_INPUT_FILE} ./aws/k8s_resources/input.auto.tfvars
             tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
             echo "Successfully prepared the K8s resources code bundle"
         '''
