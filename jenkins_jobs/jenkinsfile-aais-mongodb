@@ -1,0 +1,77 @@
+pipeline {
+    agent {
+        node {
+            label 'slave'
+        }
+    }
+    parameters {
+        string description: 'Organization name of the node', name: 'org_name', trim: true
+        string description: 'Environment (dev | test | prod)', name: 'env', trim: true
+        choice choices: ['setup', 'cleanup'], description: 'Choose setup/clean mongodb instance', name: 'action'
+        }
+    stages{
+        stage('MongoDB-Setup'){
+            when {
+                expression { "${params.action}" == "setup" }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-aais-mongodb-setup",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        org_name: '${params.org_name}'
+                        env: '${params.env}'
+                        network:
+                            org_name: '${params.org_name}'
+                        """
+                        )
+                }
+            }
+        }
+        stage('MongoDB-Cleanup'){
+            when {
+                expression { "${params.action}" == "cleanup" }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-aais-mongodb-cleanup",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        importTowerLogs: true,
+                        removeColor: false,
+                        async: false,
+                        extraVars: """---
+                        org_name: '${params.org_name}'
+                        env: '${params.env}'
+                        network:
+                            org_name: '${params.org_name}'
+                        """
+                        )
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo "The mongodb action is successful. Please review logs"
+
+        }
+        failure {
+            echo "The mongodb action is failed, Please investigate"
+
+        }
+    }
+}
+
