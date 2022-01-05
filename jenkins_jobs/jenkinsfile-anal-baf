@@ -57,6 +57,7 @@ def neworgPrereqs(){
                 deploy_action: "new_org_prereq"
                 channel_name: '${params.channel_name}'
                 org_json: '${params.org_json}'
+                add_org_name: '${params.add_org_name}'
                 """
             )
         }
