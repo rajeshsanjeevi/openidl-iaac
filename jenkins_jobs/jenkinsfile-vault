@@ -39,13 +39,13 @@ def setupVault(){
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: '${params.org_name}-${params.env}-openidl-vault-deploy',
+                jobTemplate: "${params.org_name}-${params.env}-openidl-vault-deploy",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
                 async: false,
                 importTowerLogs: true,
-                credential: '${params.org_name}-${params.env}-openidl-iac',
+                credential: "${params.org_name}-${params.env}-openidl-iac",
                 extraVars: """---
                 org_name: '${params.org_name}'
                 env: '${params.env}'
@@ -61,13 +61,13 @@ def cleanupVault(){
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: '${params.org_name}-${params.env}-openidl-vault-cleanup',
+                jobTemplate: "${params.org_name}-${params.env}-openidl-vault-cleanup",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
                 async: false,
                 importTowerLogs: true,
-                credential: '${params.org_name}-${params.env}-openidl-iac',
+                credential: "${params.org_name}-${params.env}-openidl-iac",
                 extraVars: """---
                 org_name: '${params.org_name}'
                 env: '${params.env}'
