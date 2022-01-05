@@ -2,7 +2,7 @@ def buildType
 pipeline {
     agent {
         node {
-            label 'slave'
+            label 'openidl'
         }
     }
     parameters {

@@ -12,7 +12,7 @@ import groovy.json.JsonSlurper
             string(defaultValue: '', description: 'Terraform Input File', name: 'TF_INPUT_FILE', trim: true),
         ])
 	])
-node('slave') {
+node('openidl') {
     checkout()
     buildInfra()
 }
