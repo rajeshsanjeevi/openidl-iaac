@@ -9,14 +9,14 @@ pipeline {
         string description: 'Environment (dev | test | prod)', name: 'env', trim: true
         }
     stages{
-        stage('Preregister-Users'){
+        stage('PreregisterUsers'){
            steps {
                 wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                     ansibleTower(
                         towerServer: 'AWX',
                         towerCredentialsId: 'AWX',
                         templateType: 'job',
-                        jobTemplate: "openidl-preregister-users",
+                        jobTemplate: "${params.org_name}-${params.env}-openidl-preregister-users",
                         jobType: "run",
                         towerLogLevel: 'full',
                         removeColor: false,
@@ -35,11 +35,11 @@ pipeline {
     }
     post {
         success {
-            echo "The preregister users action is successful. Please review logs"
+            echo "The PreregisterUsers action is successful. Review logs"
 
         }
         failure {
-            echo "The preregister users action is failed, Please investigate"
+            echo "The PreregisterUsers action is failed, Please investigate"
 
         }
     }
