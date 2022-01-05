@@ -45,7 +45,6 @@ def setupVault(){
                 removeColor: false,
                 async: false,
                 importTowerLogs: true,
-                credential: "${params.org_name}-${params.env}-openidl-iac",
                 extraVars: """---
                 org_name: '${params.org_name}'
                 env: '${params.env}'
@@ -67,7 +66,6 @@ def cleanupVault(){
                 removeColor: false,
                 async: false,
                 importTowerLogs: true,
-                credential: "${params.org_name}-${params.env}-openidl-iac",
                 extraVars: """---
                 org_name: '${params.org_name}'
                 env: '${params.env}'
