@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     if( "${params.action}" == "deploy") {
-                        setupVault()
+                        deployVault()
                     } else {
                         cleanupVault()
                     }
@@ -25,14 +25,14 @@ pipeline {
     }
     post {
         success {
-            echo "The BAF action: ${params.action} action is successful. Review logs for details"
+             echo "The vault ${params.action} action is successful. Review logs"
         }
         failure {
-            echo "The BAF action: ${params.action} is failed, Please investigate"
+            echo "The vault ${params.action} action is failed, Please investigate"
         }
     }
 }
-def setupVault(){
+def deployVault(){
     stage('DeployVault') {
         wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
             ansibleTower(
