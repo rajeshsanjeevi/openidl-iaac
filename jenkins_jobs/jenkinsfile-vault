@@ -10,65 +10,74 @@ pipeline {
         string description: 'Environment (dev | test | prod)', name: 'env', trim: true
         choice choices: ['setup', 'cleanup'], description: 'Choose setup/clean vault instance', name: 'action'
         }
-    stages{
-        stage('Vault-Setup'){
-            when {
-                expression { "${params.action}" == "setup" }
-            }
+    stages {
+        stage('Prepare') {
             steps {
-                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
-                    ansibleTower(
-                        towerServer: 'AWX',
-                        towerCredentialsId: 'AWX',
-                        templateType: 'job',
-                        jobTemplate: "openidl-vault-setup",
-                        jobType: "run",
-                        towerLogLevel: 'full',
-                        removeColor: false,
-                        async: false,
-                        importTowerLogs: true,
-                        extraVars: """---
-                        org_name: '${params.org_name}'
-                        env: '${params.env}'
-                        """
-                        )
-                }
-            }
-        }
-        stage('Vault-Cleanup'){
-            when {
-                expression { "${params.action}" == "cleanup" }
-            }
-            steps {
-                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
-                    ansibleTower(
-                        towerServer: 'AWX',
-                        towerCredentialsId: 'AWX',
-                        templateType: 'job',
-                        jobTemplate: "openidl-vault-cleanup",
-                        jobType: "run",
-                        towerLogLevel: 'full',
-                        importTowerLogs: true,
-                        removeColor: false,
-                        async: false,
-                        extraVars: """---
-                        org_name: '${params.org_name}'
-                        env: '${params.env}'
-                        """
-                        )
+                script {
+                    if( "${params.action}" == "setup") {
+                        buildType = "${params.action}"
+                        setupVault(buildType)
+                    } else {
+                        buildType = "${params.action}"
+                        cleanupVault(buildType)
+                    }
                 }
             }
         }
     }
     post {
         success {
-            echo "The vault action is successful. Review logs for details"
-
+            echo "The BAF action: ${params.action} action is successful. Review logs for details"
         }
         failure {
-            echo "The vault action is failed, Please investigate"
-
+            echo "The BAF action: ${params.action} is failed, Please investigate"
         }
     }
 }
+def setupVault(){
+    stage('DeployVault') {
+        wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+            ansibleTower(
+                towerServer: 'AWX',
+                towerCredentialsId: 'AWX',
+                templateType: 'job',
+                jobTemplate: '${params.org_name}-${params.env}-openidl-vault-deploy',
+                jobType: "run",
+                towerLogLevel: 'full',
+                removeColor: false,
+                async: false,
+                importTowerLogs: true,
+                credential: '${params.org_name}-${params.env}-openidl-iac',
+                extraVars: """---
+                org_name: '${params.org_name}'
+                env: '${params.env}'
+                """
+            )
+        }
+    }
+}
+def cleanupVault(){
+    stage('CleanupVault') {
+        wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+            ansibleTower(
+                towerServer: 'AWX',
+                towerCredentialsId: 'AWX',
+                templateType: 'job',
+                jobTemplate: '${params.org_name}-${params.env}-openidl-vault-cleanup',
+                jobType: "run",
+                towerLogLevel: 'full',
+                removeColor: false,
+                async: false,
+                importTowerLogs: true,
+                credential: '${params.org_name}-${params.env}-openidl-iac',
+                extraVars: """---
+                org_name: '${params.org_name}'
+                env: '${params.env}'
+                """
+            )
+        }
+    }
+}
+
+
 
