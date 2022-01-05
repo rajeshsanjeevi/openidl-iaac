@@ -19,7 +19,7 @@ pipeline {
                 script {
                     if( "${params.deploy_action}" == "new_org") {
                         buildType = "${params.deploy_action}"
-                        neworgPrereqs()
+                        neworgPrepare()
                         deployBAF(buildType)
                     } else {
                         buildType = "${params.deploy_action}"
@@ -31,21 +31,21 @@ pipeline {
     }
     post {
         success {
-            echo "The BAF action: ${params.deploy_action} action is successful"
+            echo "The BAF action: ${params.deploy_action} is successful. Review logs"
         }
         failure {
             echo "The BAF action: ${params.deploy_action} is failed, Please investigate"
         }
     }
 }
-def neworgPrereqs(){
-    stage('neworgPrereqs') {
+def neworgPrepare(){
+    stage('neworgPrepare') {
         wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
             ansibleTower(
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: "openidl-deploy-blockchain-network",
+                jobTemplate: "${params.org_name}-${params.env}-openidl-baf-deploy",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
@@ -56,6 +56,8 @@ def neworgPrereqs(){
                 env: '${params.env}'
                 deploy_action: "new_org_prereq"
                 channel_name: '${params.channel_name}'
+                chaincode_version: '${params.chaincode_version}'
+                add_org_name: '${params.add_org_name}'
                 org_json: '${params.org_json}'
                 """
             )
@@ -69,7 +71,7 @@ def deployBAF(thestage){
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: "openidl-deploy-blockchain-network",
+                jobTemplate: "${params.org_name}-${params.env}-openidl-baf-deploy",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
@@ -82,6 +84,7 @@ def deployBAF(thestage){
                 channel_name: '${params.channel_name}'
                 chaincode_version: '${params.chaincode_version}'
                 add_org_name: '${params.add_org_name}'
+                org_json: '${params.org_json}'
                 """
             )
         }
