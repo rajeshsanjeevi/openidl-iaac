@@ -102,7 +102,7 @@
             mkdir /home/blockchain-automation-framework/build
             touch /home/blockchain-automation-framework/build/orderer1.crt
             aws eks --region {{ region }} update-kubeconfig --name {{ cluster_name }}
-            cd /home/openidl-aais-gitops/
+            cd /home/openidl-iaac/
             ansible-playbook blockchain-automation-framework/platforms/shared/configuration/environment-setup.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true"
             if [ ${ACTION} != "deploy_network" ] || [ ${ACTION} != "reset" ] || [ ${ACTION} != "new_org" ]; then
               POD_NAME=$(kubectl -n ${ORG_NAME}-net get pods --selector=name=ca-tools --output=jsonpath={.items..metadata.name})
