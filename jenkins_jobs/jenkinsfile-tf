@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
     properties([
         parameters([
             string(defaultValue: 'app.terraform.io', description: 'Terraform endpoint', name: 'TF_ADDRESS', trim: true),
-            credentials(credentialType: 'org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl', defaultValue: 'tfc', description: 'TF Bearer Token', name: 'TF_BEARER_TOKEN', required: true),
+            credentials(credentialType: 'org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl', defaultValue: 'TF_BEARER_TOKEN', name: 'TF_BEARER_TOKEN', required: true),
             string(defaultValue: 'openidl-aais', description: 'TF Organization', name: 'TF_ORG_NAME', trim: true),
             string(defaultValue: '', description: 'AWS resources workspace', name: 'TF_AWS_WORKSPACE', trim: true),
             string(defaultValue: '', description: 'K8s resources workspace', name: 'TF_K8S_WORKSPACE', trim: true),
