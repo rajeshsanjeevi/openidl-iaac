@@ -15,11 +15,9 @@ pipeline {
             steps {
                 script {
                     if( "${params.action}" == "setup") {
-                        buildType = "${params.action}"
-                        setupVault(buildType)
+                        setupVault()
                     } else {
-                        buildType = "${params.action}"
-                        cleanupVault(buildType)
+                        cleanupVault()
                     }
                 }
             }
