@@ -58,6 +58,7 @@ def neworgPrereqs(){
                 channel_name: '${params.channel_name}'
                 org_json: '${params.org_json}'
                 add_org_name: '${params.add_org_name}'
+                chaincode_version: '${params.chaincode_version}'
                 """
             )
         }
