@@ -1,5 +1,6 @@
 ---
 - name: Install package dependencies
+  become: true
   package:
     name: "{{ item }}"
     state: present
@@ -9,6 +10,9 @@
     - python3-pip
     - curl
     - awscli
+    - python3-requests-oauthlib
+    - python-yaml
+    - jq
 
 - name: Configure awscli credentials for IAM user
   shell: aws configure set {{ item.key }} {{ item.value }} --profile cicd-user
@@ -41,6 +45,7 @@
   register: kubectl_status
 
 - name: Setup kubectl utility
+  become: true
   shell: |
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
     chmod +x kubectl
@@ -67,15 +72,21 @@
   when: helm_bundle_download.changed
 
 - name: Intall helm
+  become: true
   shell: |
     sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm
     sudo chmod +x /usr/local/bin/helm
   when: helm_installer_unarchive.changed
 
-- name: Install ansible and its dependencies
-  shell: |
-    pip3 install openshift
-    sudo apt-get install python3-requests-oauthlib python-yaml jq -y
-    pip install --user ansible==2.9.11
-    pip3 install docker
+- name: Install Pip modules
+  become: true
+  pip:
+    name: "{{  item.pkg_name }}"
+    extra_args: "{{ item.args }}"
+    executable: "{{  item.exec }}"
+  loop:
+    - { pkg_name: "ansible==2.9.11", exec: "pip", args: "--user" }
+    - { pkg_name: "openshift", exec: "pip3", args: "" }
+    - { pkg_name: "docker", exec: "pip3", args: "" }
+
 
