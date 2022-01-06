@@ -1,5 +1,5 @@
 ---
-- name: Install package dependencies
+- name: Install package dependencies - ubuntu
   become: true
   package:
     name: "{{ item }}"
@@ -9,10 +9,26 @@
     - python3
     - python3-pip
     - curl
-    - awscli # not working, check the solution
+    - awscli
     - python3-requests-oauthlib
-    - python-yaml # not avaialble find the package name
+    - python-yaml
     - jq
+  when: "{{ ansible_os_family }}" == "ubuntu"
+
+- name: Install package dependencies - redhat
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - unzip
+    - python3
+    - python3-pip
+    - curl
+    - python3-requests-oauthlib
+    - jq
+  when: "{{ ansible_os_family }}" == "redhat"
 
 - name: Configure awscli credentials for IAM user
   shell: aws configure set {{ item.key }} {{ item.value }} --profile cicd-user
@@ -78,9 +94,6 @@
     sudo chmod +x /usr/local/bin/helm
   when: helm_installer_unarchive.changed
 
-#identity ways to set this up in RHEL.
-#pip3 openshift, docker are available in RHEL
-#
 - name: Install Pip modules
   become: true
   pip:
@@ -88,7 +101,7 @@
     extra_args: "{{ item.args }}"
     executable: "{{  item.exec }}"
   loop:
-    - { pkg_name: "ansible==2.9.11", exec: "pip", args: "--user" }
+    - { pkg_name: "ansible==2.9.11", exec: "pip3", args: "--user" }
     - { pkg_name: "openshift", exec: "pip3", args: "" }
     - { pkg_name: "docker", exec: "pip3", args: "" }
 
