@@ -13,7 +13,7 @@
     - python3-requests-oauthlib
     - python-yaml
     - jq
-  when: "{{ ansible_os_family }}" == "ubuntu"
+  when: ansible_os_family == "ubuntu" )
 
 - name: Install package dependencies - redhat
   become: true
@@ -28,7 +28,7 @@
     - curl
     - python3-requests-oauthlib
     - jq
-  when: "{{ ansible_os_family }}" == "redhat"
+  when: ansible_os_family == "redhat"
 
 - name: Configure awscli credentials for IAM user
   shell: aws configure set {{ item.key }} {{ item.value }} --profile cicd-user
