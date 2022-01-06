@@ -13,7 +13,7 @@
     - python3-requests-oauthlib
     - python-yaml
     - jq
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_distribution == "Debian"
 
 - name: Install package dependencies - redhat
   become: true
