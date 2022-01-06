@@ -41,11 +41,12 @@
     - { pkg_name: "openshift", exec: "pip3", args: "" }
     - { pkg_name: "docker", exec: "pip3", args: "" }
 
-- name: Install awscli - redhat
+- name: Install awscli and pyyaml - redhat
   become: true
   pip:
     name: "{{ item_pkg_name }}"
     executable: "{{ item.exec }}"
+    extra_args: "{{ item.args }}"
   loop:
     - { pkg_name: "awscli", exec: "pip", args: "" }
     - { pkg_name: "pyyaml", exec: "pip3", args: "--user" }
