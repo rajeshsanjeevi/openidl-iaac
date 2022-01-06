@@ -44,9 +44,12 @@
 - name: Install awscli - redhat
   become: true
   pip:
-    name: awscli
-    executable: pip
-  when: ansible_distribution == "Redhat"
+    name: "{{ item_pkg_name }}"
+    executable: "{{ item.exec }}"
+  loop:
+    - { pkg_name: "awscli", exec: "pip", args: "" }
+    - { pkg_name: "pyyaml", exec: "pip3", args: "--user" }
+  when: ansible_distribution == "RedHat"
 
 - name: Configure awscli credentials for IAM user
   shell: aws configure set {{ item.key }} {{ item.value }} --profile cicd-user
