@@ -12,6 +12,7 @@ pipeline {
         string description: 'Channel name', name: 'channel_name', trim: true
         string description: 'Chaincode version', name: 'chaincode_version', trim: true
         string description: 'New organization name to be added to channel(when action=add_new_org)', name: 'add_org_name', trim: true
+        booleanParam defaultValue: false, description: 'Adding new org', name: 'add_new_org'
         }
     stages {
         stage('Prepare') {
@@ -59,6 +60,7 @@ def neworgPrepare(){
                 chaincode_version: '${params.chaincode_version}'
                 add_org_name: '${params.add_org_name}'
                 org_json: '${params.org_json}'
+                add_new_org: '${params.add_new_org}'
                 """
             )
         }
@@ -85,6 +87,7 @@ def deployBAF(thestage){
                 chaincode_version: '${params.chaincode_version}'
                 add_org_name: '${params.add_org_name}'
                 org_json: '${params.org_json}'
+                add_new_org: '${params.add_new_org}'
                 """
             )
         }
