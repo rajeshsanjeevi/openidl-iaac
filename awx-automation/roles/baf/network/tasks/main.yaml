@@ -186,3 +186,8 @@
     kind: Namespace
     state: absent
     wait: yes
+
+- name: Delete network-setup.yml file
+  file:
+    state: absent
+    path: ./network-setup.yml
