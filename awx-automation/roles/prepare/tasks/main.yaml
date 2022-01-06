@@ -44,7 +44,7 @@
 - name: Install awscli and pyyaml - redhat
   become: true
   pip:
-    name: "{{ item_pkg_name }}"
+    name: "{{ item.pkg_name }}"
     executable: "{{ item.exec }}"
     extra_args: "{{ item.args }}"
   loop:
