@@ -48,7 +48,7 @@
     executable: "{{ item.exec }}"
     extra_args: "{{ item.args }}"
   loop:
-    - { pkg_name: "awscli", exec: "pip", args: "" }
+    - { pkg_name: "awscli", exec: "pip3", args: "" }
     - { pkg_name: "pyyaml", exec: "pip3", args: "--user" }
   when: ansible_distribution == "RedHat"
 
