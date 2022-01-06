@@ -7,7 +7,8 @@
   tasks:
     - name: Get KMS ID
       shell: |
-        export AWS_PROFILE=cicd-role; aws kms describe-key --key-id alias/{{ network.org_name[:4] }}-{{ env }}-vault-kmskey | jq -r .KeyMetadata.KeyId
+        export AWS_PROFILE=cicd-role
+        aws kms describe-key --key-id alias/{{ network.org_name[:4] }}-{{ env }}-vault-kmskey | jq -r .KeyMetadata.KeyId
       register: output
     
     - set_fact:
@@ -23,7 +24,7 @@
         kvs_user_token: "{{ lookup('password', '/dev/null chars=ascii_uppercase,ascii_lowercase,digits length=40') }}"
 
     - include_role:
-        name: "prereqs"
+        name: "prepare"
       vars:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
