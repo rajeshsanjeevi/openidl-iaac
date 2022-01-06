@@ -75,7 +75,7 @@ def createConfig(ws_id) {
     """
      def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
@@ -92,7 +92,7 @@ def createConfig(ws_id) {
 def uploadAWSConfig(url) {
          def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/octet-stream" ]
             ],
         httpMode: 'PUT', multipartName: 'aws-content', responseHandle: 'NONE',
@@ -106,7 +106,7 @@ def uploadAWSConfig(url) {
 def uploadK8sConfig(url) {
          def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/octet-stream" ]
             ],
         httpMode: 'PUT', multipartName: 'aws-content', responseHandle: 'NONE',
@@ -138,7 +138,7 @@ def plan(ws_id) {
     """
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
@@ -153,7 +153,7 @@ def plan(ws_id) {
 def planResult(runid){
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]],
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}?include=plan"
     )
@@ -165,7 +165,7 @@ def planResult(runid){
 def getPlanStatus(runid) {
     def result = ""
     def response = httpRequest(
-        customHeaders: [[ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ]],
+        customHeaders: [[ name: "Authorization", value: "Bearer " + "${TF_BEARER_TOKEN}" ]],
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}"
     )
     def data = new JsonSlurper().parseText(response.content)
@@ -317,7 +317,7 @@ def waitForPlan(runid) {
 def overridePolicy(policyid) {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
@@ -334,7 +334,7 @@ def overridePolicy(policyid) {
 def applyRun(runid) {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
@@ -347,7 +347,7 @@ def applyRun(runid) {
 def getApplyStatus(runid) {
     def result = ""
     def response = httpRequest(
-        customHeaders: [[ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ]],
+        customHeaders: [[ name: "Authorization", value: "Bearer " + "${TF_BEARER_TOKEN}" ]],
         url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/runs/${runid}"
     )
     def data = new JsonSlurper().parseText(response.content)
@@ -405,7 +405,7 @@ def waitForApply(runid) {
 def discardRun(runid) {
     def response = httpRequest(
         customHeaders: [
-                [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
+                [ name: "Authorization", value: "Bearer " + "${TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
         httpMode: 'POST',
