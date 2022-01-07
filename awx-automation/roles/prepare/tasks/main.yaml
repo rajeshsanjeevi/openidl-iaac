@@ -30,7 +30,7 @@
     - jq
   when: ansible_distribution == "RedHat"
 
-- name: Install Pip modules
+- name: Install ansible and its dependent modules
   become: true
   pip:
     name: "{{ item.pkg_name }}"
