@@ -1,4 +1,4 @@
-- hosts: ec2-18-119-105-48.us-east-2.compute.amazonaws.com
+- hosts: ansible_provisioners
   gather_facts: yes
   no_log: "{{ no_ansible_log | default(false) }}"
   vars_files:
