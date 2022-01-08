@@ -14,6 +14,7 @@ pipeline {
         stage('Prepare') {
             steps {
                 script {
+                    org = params.org_name.substring(0,4)
                     if( "${params.action}" == "deploy") {
                         deployVault()
                     } else {
@@ -39,7 +40,7 @@ def deployVault(){
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: "${params.org_name}-${params.env}-openidl-vault-deploy",
+                jobTemplate: "${org}-${params.env}-openidl-vault-deploy",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
@@ -60,7 +61,7 @@ def cleanupVault(){
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: "${params.org_name}-${params.env}-openidl-vault-cleanup",
+                jobTemplate: "${org}-${params.env}-openidl-vault-cleanup",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
