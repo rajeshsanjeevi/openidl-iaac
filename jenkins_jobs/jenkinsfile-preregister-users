@@ -11,22 +11,25 @@ pipeline {
     stages{
         stage('PreregisterUsers'){
            steps {
+                script {
+                    org = params.org_name.substring(0,4)
+                }
                 wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                     ansibleTower(
                         towerServer: 'AWX',
                         towerCredentialsId: 'AWX',
                         templateType: 'job',
-                        jobTemplate: "${params.org_name}-${params.env}-openidl-preregister-users",
+                        jobTemplate: "${org}-${params.env}-openidl-preregister-users",
                         jobType: "run",
                         towerLogLevel: 'full',
                         removeColor: false,
                         async: false,
                         importTowerLogs: true,
                         extraVars: """---
-                        org_name: '${params.org_name}'
+                        org_name: '${org}'
                         env: '${params.env}'
                         network:
-                            org_name: '${params.org_name}'
+                            org_name: '${org}'
                         """
                         )
                 }
