@@ -18,6 +18,7 @@ pipeline {
         stage('Prepare') {
             steps {
                 script {
+                    org = params.org_name.substring(0,4)
                     if( "${params.deploy_action}" == "new_org") {
                         buildType = "${params.deploy_action}"
                         neworgPrepare()
@@ -46,14 +47,14 @@ def neworgPrepare(){
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: "${params.org_name}-${params.env}-openidl-baf-deploy",
+                jobTemplate: "${org}-${params.env}-openidl-baf-deploy",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
                 async: false,
                 importTowerLogs: true,
                 extraVars: """---
-                org_name: '${params.org_name}'
+                org_name: '${org}'
                 env: '${params.env}'
                 deploy_action: "new_org_prereq"
                 channel_name: '${params.channel_name}'
@@ -73,14 +74,14 @@ def deployBAF(thestage){
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: "${params.org_name}-${params.env}-openidl-baf-deploy",
+                jobTemplate: "${org}-${params.env}-openidl-baf-deploy",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
                 async: false,
                 importTowerLogs: true,
                 extraVars: """---
-                org_name: '${params.org_name}'
+                org_name: '${org}'
                 env: '${params.env}'
                 deploy_action: '${params.deploy_action}'
                 channel_name: '${params.channel_name}'
