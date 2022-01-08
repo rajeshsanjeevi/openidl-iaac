@@ -2,7 +2,7 @@
 - name: Vault Deployment
   hosts: ansible_provisioners
   tasks:
-    - include: "./vault_setup.yml"
+    - include: "vault_setup.yml"
       when: action == "deploy"
-    - include: "./vault_cleanup.yml"
+    - include: "vault_cleanup.yml"
       when: action == "cleanup"

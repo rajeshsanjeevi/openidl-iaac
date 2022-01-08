@@ -46,7 +46,7 @@ def vault(){
                 extraVars: """---
                 org_name: '${org}'
                 env: '${params.env}'
-                action: '{params.action}'
+                action: '${params.action}'
                 """
             )
         }
