@@ -47,7 +47,7 @@ def deployVault(){
                 async: false,
                 importTowerLogs: true,
                 extraVars: """---
-                org_name: '${params.org_name}'
+                org_name: '${org}'
                 env: '${params.env}'
                 """
             )
@@ -68,7 +68,7 @@ def cleanupVault(){
                 async: false,
                 importTowerLogs: true,
                 extraVars: """---
-                org_name: '${params.org_name}'
+                org_name: '${org}'
                 env: '${params.env}'
                 """
             )
