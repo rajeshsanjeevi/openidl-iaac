@@ -15,8 +15,11 @@ pipeline {
             steps {
                 script {
                     org = params.org_name.substring(0,4)
-                    vault()
-
+                    if( "${params.action}" == "deploy") {
+                        deployVault()
+                    } else {
+                        cleanupVault()
+                    }
                 }
             }
         }
@@ -30,14 +33,14 @@ pipeline {
         }
     }
 }
-def vault(){
+def deployVault(){
     stage('DeployVault') {
         wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
             ansibleTower(
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: "${org}-${params.env}-openidl-vault",
+                jobTemplate: "${org}-${params.env}-openidl-vault-deploy",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
@@ -46,7 +49,27 @@ def vault(){
                 extraVars: """---
                 org_name: '${org}'
                 env: '${params.env}'
-                action: '{params.action}'
+                """
+            )
+        }
+    }
+}
+def cleanupVault(){
+    stage('CleanupVault') {
+        wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+            ansibleTower(
+                towerServer: 'AWX',
+                towerCredentialsId: 'AWX',
+                templateType: 'job',
+                jobTemplate: "${org}-${params.env}-openidl-vault-cleanup",
+                jobType: "run",
+                towerLogLevel: 'full',
+                removeColor: false,
+                async: false,
+                importTowerLogs: true,
+                extraVars: """---
+                org_name: '${org}'
+                env: '${params.env}'
                 """
             )
         }

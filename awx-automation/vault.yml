@@ -5,4 +5,3 @@
       when: "{{ action }}" == "deploy"
     - include: ./vault_cleanup.yml
       when: action == "cleanup"
-        
