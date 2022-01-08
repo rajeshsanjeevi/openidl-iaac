@@ -5,6 +5,16 @@
     - "./{{ org_name }}-config-{{ env }}.yml"
 
   tasks:
+    - include_role:
+        name: "prepare"
+      vars:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        aws_region: "{{ aws_region }}"
+        aws_external_id: "{{ aws_external_id }}"
+        aws_iam_role: "{{ aws_iam_role }}"
+        cluster_name: "{{ blk_cluster_name }}"
+        
     - name: Get KMS ID
       shell: |
         export AWS_PROFILE=cicd-role
@@ -22,16 +32,6 @@
 
     - set_fact:
         kvs_user_token: "{{ lookup('password', '/dev/null chars=ascii_uppercase,ascii_lowercase,digits length=40') }}"
-
-    - include_role:
-        name: "prepare"
-      vars:
-        aws_access_key: "{{ aws_access_key }}"
-        aws_secret_key: "{{ aws_secret_key }}"
-        aws_region: "{{ aws_region }}"
-        aws_external_id: "{{ aws_external_id }}"
-        aws_iam_role: "{{ aws_iam_role }}"
-        cluster_name: "{{ blk_cluster_name }}"
 
     - include_role:
         name: "vault"
