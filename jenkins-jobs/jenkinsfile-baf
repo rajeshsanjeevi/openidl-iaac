@@ -1,5 +1,6 @@
 def buildType
 def extraVars
+import groovy.json.JsonSlurperClassic
 pipeline {
     agent {
         node {
@@ -21,8 +22,8 @@ pipeline {
             steps {
                 script {
                     org = params.org_name.substring(0,4)
-                    extraVars = [org_name: "${org}", env: "${params.env}", deploy_action: "${params.deploy_action}"]
-                    println "${dummy}"
+                    def e_vars = new JsonSlurperClassic().parseText('${params.extra_vars}')
+                    println "${e_vars}"
                     if( "${params.deploy_action}" == "new_org") {
                         buildType = "${params.deploy_action}"
                         neworgPrepare()
@@ -57,9 +58,9 @@ def neworgPrepare(){
                 removeColor: false,
                 async: false,
                 importTowerLogs: true,
-                extraVars: """---
-                '${extraVars}'
-                """
+                extraVars: ''''---
+                '${e_vars}'
+                '''
             )
         }
     }
@@ -86,7 +87,7 @@ def deployBAF(thestage){
                 add_org_name: '${params.add_org_name}'
                 org_json: '${params.org_json}'
                 add_new_org: '${params.add_new_org}'
-                '${params.extra_vars}'
+                '${e_vars}'
                 """
             )
         }
