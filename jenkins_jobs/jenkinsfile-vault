@@ -8,13 +8,13 @@ pipeline {
     parameters {
         string description: 'Organization name of the node', name: 'org_name', trim: true
         string description: 'Environment (dev | test | prod)', name: 'env', trim: true
-        choice choices: ['vault-deploy', 'vault-cleanup'], description: 'Choose setup/clean vault instance', name: 'action'
+        choice choices: ['vault-deploy', 'vault-cleanup'], description: 'Choose setup/clean vault instance', name: 'deploy_action'
         }
     stages {
         stage('Prepare') {
             steps {
                 script {
-                    buildType = "${params.action}"
+                    buildType = "${params.deploy_action}"
                     org = params.org_name.substring(0,4)
                     vault(buildType)
 
@@ -24,10 +24,10 @@ pipeline {
     }
     post {
         success {
-             echo "The vault ${params.action} action is successful. Review logs"
+             echo "The vault ${params.deploy_action} action is successful. Review logs"
         }
         failure {
-            echo "The vault ${params.action} action is failed, Please investigate"
+            echo "The vault ${params.deploy_action} action is failed, Please investigate"
         }
     }
 }
@@ -47,7 +47,7 @@ def vault(thestage){
                 extraVars: """---
                 org_name: '${org}'
                 env: '${params.env}'
-                action: '${params.action}'
+                deploy_action: '${params.deploy_action}'
                 """
             )
         }
