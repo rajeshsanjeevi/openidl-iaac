@@ -2,13 +2,13 @@
 - name: "Setting up mongodb cluster"
   include_tasks: "{{ item }}.yaml"
   with_items:
-    - "pre-tasks-deploy"
+    - "pre-tasks"
     - "deploy"
   when: deploy_action == "mongodb-deploy"
 
 - name: "Cleanup mongodb cluster"
   include_tasks: "{{ item }}.yaml"
   with_items:
-    - "pre-tasks-cleanup"
+    - "pre-tasks"
     - "cleanup"
   when: deploy_action == "mongodb-cleanup"

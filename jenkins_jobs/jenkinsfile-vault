@@ -24,10 +24,10 @@ pipeline {
     }
     post {
         success {
-             echo "The vault ${params.deploy_action} action is successful. Review logs"
+             echo "The ${params.deploy_action} action is successful. Review logs"
         }
         failure {
-            echo "The vault ${params.deploy_action} action is failed, Please investigate"
+            echo "The ${params.deploy_action} action is failed, Please investigate"
         }
     }
 }
