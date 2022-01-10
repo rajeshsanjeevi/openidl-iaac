@@ -5,9 +5,8 @@
     - "./{{ org_name }}-config-{{ env }}.yml"
 
   tasks:
-
     - include_role:
-        name: "prepare"
+        name: "prerun-job"
       vars:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
@@ -23,3 +22,7 @@
         mongodb_user: "{{ network.org_name }}-{{ env }}-{{ user }}"
         mongodb_root_token: "{{ root_token }}"
         mongodb_database: "openidl-offchain-db"
+        cluster_name: "{{ app_cluster_name }}"
+        action: "{{ action }}"
+
+

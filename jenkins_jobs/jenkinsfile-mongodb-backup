@@ -8,15 +8,18 @@ pipeline {
     parameters {
         string description: 'Organization name of the node', name: 'org_name', trim: true
         string description: 'Environment (dev | test | prod)', name: 'env', trim: true
-        choice choices: ['mongodb_deploy', 'mongodb_cleanup'], description: 'Choose setup/clean mongodb instance', name: 'action'
+        choice choices: ['deploy', 'cleanup'], description: 'Choose setup/clean mongodb instance', name: 'action'
         }
     stages {
         stage('Prepare') {
             steps {
                 script {
-                    buildType = "${params.action}"
                     org = params.org_name.substring(0,4)
-                    deployMongoDB(buildType)
+                    if( "${params.action}" == "deploy") {
+                        deployMongoDB()
+                    } else {
+                        cleanupMongoDB()
+                    }
                 }
             }
         }
@@ -30,14 +33,14 @@ pipeline {
         }
     }
 }
-def deployMongoDB(thestage){
-    stage(thestage) {
+def deployMongoDB(){
+    stage('DeployMongoDB') {
         wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
             ansibleTower(
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: "${org}-${params.env}-openidl-mongodb",
+                jobTemplate: "${org}-${params.env}-openidl-mongodb-deploy",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
@@ -48,7 +51,29 @@ def deployMongoDB(thestage){
                 env: '${params.env}'
                 network:
                     org_name: '${org}'
-                action: '${params.action}'
+                """
+            )
+        }
+    }
+}
+def cleanupMongoDB(){
+    stage('CleanupMongoDB') {
+        wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+            ansibleTower(
+                towerServer: 'AWX',
+                towerCredentialsId: 'AWX',
+                templateType: 'job',
+                jobTemplate: "${org}-${params.env}-openidl-mongodb-cleanup",
+                jobType: "run",
+                towerLogLevel: 'full',
+                importTowerLogs: true,
+                removeColor: false,
+                async: false,
+                extraVars: """---
+                org_name: '${org}'
+                env: '${params.env}'
+                network:
+                    org_name: '${org}'
                 """
             )
         }
