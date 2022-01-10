@@ -1,6 +1,6 @@
 def buildType
 def extraVars
-import groovy.json.JsonSlurperClassic
+import groovy.json.JsonSlurper
 pipeline {
     agent {
         node {
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     org = params.org_name.substring(0,4)
-                    def e_vars = new JsonSlurperClassic().parseText('${params.extra_vars}')
+                    def e_vars = new JsonSlurper().parseText('${params.extra_vars}')
                     println "${e_vars}"
                     if( "${params.deploy_action}" == "new_org") {
                         buildType = "${params.deploy_action}"
