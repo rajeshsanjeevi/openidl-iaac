@@ -1,8 +1,4 @@
 ---
-- name: Update kubeconfig and set context to openidl EKS cluster
-  shell: |
-    export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ cluster_name }}
-
 - name: delete vault secrets from aws secret manager
   shell: |
     export AWS_PROFILE=cicd-role
