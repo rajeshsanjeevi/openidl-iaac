@@ -8,7 +8,7 @@ pipeline {
     parameters {
         string description: 'Organization name of the node', name: 'org_name', trim: true
         string description: 'Environment (dev | test | prod)', name: 'env', trim: true
-        choice choices: ['mongodb_deploy', 'mongodb_cleanup'], description: 'Choose setup/clean mongodb instance', name: 'action'
+        choice choices: ['mongodb-deploy', 'mongodb-cleanup'], description: 'Choose setup/clean mongodb instance', name: 'action'
         }
     stages {
         stage('Prepare') {
@@ -16,7 +16,7 @@ pipeline {
                 script {
                     buildType = "${params.action}"
                     org = params.org_name.substring(0,4)
-                    deployMongoDB(buildType)
+                    mongoDB(buildType)
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
         }
     }
 }
-def deployMongoDB(thestage){
+def mongoDB(thestage){
     stage(thestage) {
         wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
             ansibleTower(

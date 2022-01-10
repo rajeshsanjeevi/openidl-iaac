@@ -4,11 +4,11 @@
   with_items:
     - "pre-tasks-deploy"
     - "deploy"
-  when: action == "mongodb_deploy"
+  when: action == "mongodb-deploy"
 
 - name: "Cleanup mongodb cluster"
   include_tasks: "{{ item }}.yaml"
   with_items:
     - "pre-tasks-cleanup.yaml"
     - "cleanup.yaml"
-  when: action == "mongodb_cleanup"
+  when: action == "mongodb-cleanup"

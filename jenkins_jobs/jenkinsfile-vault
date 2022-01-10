@@ -8,14 +8,15 @@ pipeline {
     parameters {
         string description: 'Organization name of the node', name: 'org_name', trim: true
         string description: 'Environment (dev | test | prod)', name: 'env', trim: true
-        choice choices: ['deploy', 'cleanup'], description: 'Choose setup/clean vault instance', name: 'action'
+        choice choices: ['vault-deploy', 'vault-cleanup'], description: 'Choose setup/clean vault instance', name: 'action'
         }
     stages {
         stage('Prepare') {
             steps {
                 script {
+                    buildType = "${params.action}"
                     org = params.org_name.substring(0,4)
-                    vault()
+                    vault(buildType)
 
                 }
             }
@@ -30,8 +31,8 @@ pipeline {
         }
     }
 }
-def vault(){
-    stage('DeployVault') {
+def vault(thestage){
+    stage(thestage) {
         wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
             ansibleTower(
                 towerServer: 'AWX',
