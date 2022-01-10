@@ -1,4 +1,5 @@
 def buildType
+def extraVars
 pipeline {
     agent {
         node {
@@ -20,7 +21,7 @@ pipeline {
             steps {
                 script {
                     org = params.org_name.substring(0,4)
-                    def dummy = "{params.org_name}" + "${params.extra_vars}"
+                    extraVars = [org_name: "${org}", env: "${params.env}", deploy_action: "${params.deploy_action}"]
                     println "${dummy}"
                     if( "${params.deploy_action}" == "new_org") {
                         buildType = "${params.deploy_action}"
@@ -57,15 +58,7 @@ def neworgPrepare(){
                 async: false,
                 importTowerLogs: true,
                 extraVars: """---
-                org_name: '${org}'
-                env: '${params.env}'
-                deploy_action: "new_org_prereq"
-                channel_name: '${params.channel_name}'
-                chaincode_version: '${params.chaincode_version}'
-                add_org_name: '${params.add_org_name}'
-                org_json: '${params.org_json}'
-                add_new_org: '${params.add_new_org}'
-                '${params.extra_vars}'
+                '${extraVars}'
                 """
             )
         }
