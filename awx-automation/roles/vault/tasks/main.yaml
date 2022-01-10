@@ -1,6 +1,6 @@
 ---
 - name: "Setting up vault cluster"
-  include_tasks: "{{ item }}".yaml
+  include_tasks: "{{ item }}.yaml"
   with_items:
     - "pre-tasks"
     - "deploy"
