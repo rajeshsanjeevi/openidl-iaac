@@ -65,6 +65,7 @@ def neworgPrepare(){
                 add_org_name: '${params.add_org_name}'
                 org_json: '${params.org_json}'
                 add_new_org: '${params.add_new_org}'
+                '${params.extra_vars}'
                 """
             )
         }
@@ -92,6 +93,7 @@ def deployBAF(thestage){
                 add_org_name: '${params.add_org_name}'
                 org_json: '${params.org_json}'
                 add_new_org: '${params.add_new_org}'
+                '${params.extra_vars}'
                 """
             )
         }
