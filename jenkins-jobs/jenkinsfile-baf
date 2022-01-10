@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     org = params.org_name.substring(0,4)
-                    def dummy = ""${params.org_name}' + '${params.extra_vars}'
+                    def dummy = "{params.org_name}" + "${params.extra_vars}"
                     println "${dummy}"
                     if( "${params.deploy_action}" == "new_org") {
                         buildType = "${params.deploy_action}"
