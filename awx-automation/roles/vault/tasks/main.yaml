@@ -4,9 +4,9 @@
   with_items:
     - "pre-tasks"
     - "deploy"
-  when: action == "vault-deploy"
+  when: deploy_action == "vault-deploy"
 
 - name: "Cleanup vault cluster"
   include_tasks: "cleanup.yaml"
-  when: action == "vault-cleanup"
+  when: deploy_action == "vault-cleanup"
 

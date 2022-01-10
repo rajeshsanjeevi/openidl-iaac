@@ -23,6 +23,6 @@
         mongodb_root_token: "{{ root_token }}"
         mongodb_database: "openidl-offchain-db"
         cluster_name: "{{ app_cluster_name }}"
-        action: "{{ action }}"
+        deploy_action: "{{ action }}"
 
 
