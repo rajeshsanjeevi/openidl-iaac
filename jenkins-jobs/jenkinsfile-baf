@@ -13,12 +13,14 @@ pipeline {
         string description: 'Chaincode version', name: 'chaincode_version', trim: true
         string description: 'New organization name to be added to channel(when action=add_new_org)', name: 'add_org_name', trim: true
         booleanParam defaultValue: false, description: 'Adding new org', name: 'add_new_org'
+        text description: 'Extra Vars', name: 'extra_vars', trim: true
         }
     stages {
         stage('Prepare') {
             steps {
                 script {
                     org = params.org_name.substring(0,4)
+                    println "${params.extra_vars}"
                     if( "${params.deploy_action}" == "new_org") {
                         buildType = "${params.deploy_action}"
                         neworgPrepare()
