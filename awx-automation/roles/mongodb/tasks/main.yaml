@@ -9,6 +9,6 @@
 - name: "Cleanup mongodb cluster"
   include_tasks: "{{ item }}.yaml"
   with_items:
-    - "pre-tasks-cleanup.yaml"
-    - "cleanup.yaml"
+    - "pre-tasks-cleanup"
+    - "cleanup"
   when: action == "mongodb-cleanup"
