@@ -1,19 +1,7 @@
-access_id: ""
-access_key: ""
-region: ""
-cluster_name: ""
-account: ""
-gitops_repo_url: "github.com/rajeshsanjeevi/openidl-iaac.git"
-gitops_repo_branch: "hig-carrier"
-gitops_repo_user: ""
-gitops_repo_user_token: ""
-gitops_repo_user_email: ""
 ordererorg_domain: "aais.thetech.digital"
 domain: "aais.thetech.digital"
 internal_domain: "aais.internal.thetech.digital"
-env: "dev"
 add_org: ""
-registry: ""
 chaincode_version: ""
 node_type: "aais"
 
@@ -23,9 +11,9 @@ network:
     ordererorg_name: "ordererorg"
     organizations:
         - name: "analytics"
-          domain: "thetech.digital"
+          domain: "analytics.thetech.digital"
         - name: "carrier"
-          domain: "thetech.digital"
+          domain: "carrier.thetech.digital"
     channels:
         - name: analytics-carrier
           chaincode:
