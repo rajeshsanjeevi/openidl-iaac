@@ -6,7 +6,7 @@ chaincode_version: ""
 node_type: "aais"
 network:
     org_name: "aais"
-    ordererorg: "true"
+    ordererorg: "false"
     ordererorg_name: "ordererorg"
     organizations:
         - name: "analytics"
