@@ -15,18 +15,9 @@ network:
         - name: "carrier"
           domain: "carrier.thetech.digital"
     channels:
-        - name: analytics-carrier
+        - name: aais-analytics
           chaincode:
-              name: openidl-cc-aais-carriers
-              repo_url: github.com/rajeshsanjeevi/openidl-main.git
-              repo_branch: hig-carrier
-              repo_path: openidl-chaincode/chaincode/openidl
-              collectionconfig:
-                - name: "analytics_carrier_pdc"
-                  policy: "OR('analyticsMSP.member', 'carrierMSP.member')"
-        - name: analytics-aais
-          chaincode:
-              name: openidl-cc-aais-carriers
+              name: openidl-cc-aais-anal
               repo_url: github.com/rajeshsanjeevi/openidl-main.git
               repo_branch: hig-carrier
               repo_path: openidl-chaincode/chaincode/openidl
