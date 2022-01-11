@@ -102,7 +102,7 @@
           - |-
             #!/bin/bash -e
             set -x
-            git clone https://{{ gitops_repo_url }} -b {{ gitops_repo_branch }} /home/gitrepo
+            git clone https://{{gitops_repo_user|urlencode()}}:{{gitops_repo_user_token|urlencode()}}@{{ gitops_repo_url }} -b {{ gitops_repo_branch }} /home/gitrepo
             mkdir /home/blockchain-automation-framework/build
             touch /home/blockchain-automation-framework/build/orderer1.crt
             aws eks --region {{ region }} update-kubeconfig --name {{ cluster_name }}
