@@ -39,11 +39,11 @@ spec:
     orderer:
       address: orderer1.ordererorg.dev.aais.thetech.digital:8443
     anchorstx: |-
-      CtUCChwKGggCGgYIrJj3jgYiDmRlZmF1bHRjaGFubmVsErQCCrECCg5kZWZhdWx0Y2hhbm5lbBJg
+      CtUCChwKGggCGgYIuqj9jgYiDmRlZmF1bHRjaGFubmVsErQCCrECCg5kZWZhdWx0Y2hhbm5lbBJg
       El4KC0FwcGxpY2F0aW9uEk8IARJLCgdhYWlzTVNQEkAaBwoDTVNQEgAiCwoHV3JpdGVycxIAIgoK
       BkFkbWlucxIAIg8KC0VuZG9yc2VtZW50EgAiCwoHUmVhZGVycxIAGrwBErkBCgtBcHBsaWNhdGlv
       bhKpAQgBEqQBCgdhYWlzTVNQEpgBCAEaTAoLQW5jaG9yUGVlcnMSPRIzCjEKLHBlZXIwLmFhaXMt
-      bmV0LmFhaXMuZGV2LmFhaXMudGhldGVjaC5kaWdpdGFsEPtBGgZBZG1pbnMaBwoDTVNQEgAiDwoL
-      RW5kb3JzZW1lbnQSACILCgdSZWFkZXJzEgAiCwoHV3JpdGVycxIAIgoKBkFkbWlucxIAKgZBZG1p
+      bmV0LmFhaXMuZGV2LmFhaXMudGhldGVjaC5kaWdpdGFsEPtBGgZBZG1pbnMaBwoDTVNQEgAiCgoG
+      QWRtaW5zEgAiDwoLRW5kb3JzZW1lbnQSACILCgdSZWFkZXJzEgAiCwoHV3JpdGVycxIAKgZBZG1p
       bnM=
 
