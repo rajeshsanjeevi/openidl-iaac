@@ -7,6 +7,10 @@
     state: absent
     wait: yes
 
+- name: Print channel name inside baf role
+  debug:
+    msg: "Channel name: {{ channel_name }}"
+    
 - name: Generate network config file
   template:
     src: templates/network-setup.yml.j2

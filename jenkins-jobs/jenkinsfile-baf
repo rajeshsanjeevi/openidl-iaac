@@ -24,6 +24,7 @@ pipeline {
                         neworgPrepare()
                         deployBAF(buildType)
                     } else {
+                        println "Channel name: ${channel_name}"
                         buildType = "${params.deploy_action}"
                         deployBAF(buildType)
                     }

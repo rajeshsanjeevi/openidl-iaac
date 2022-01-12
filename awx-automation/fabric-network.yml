@@ -38,6 +38,9 @@
       register: orgjson
       when: deploy_action == "add_new_org"
 
+    - name: Printing channel_name
+      debug:
+        msg: "Channel name: {{ channel_name }}"
     - include_role:
         name: "baf/network"
       vars:
