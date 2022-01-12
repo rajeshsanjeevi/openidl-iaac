@@ -1,5 +1,4 @@
 def buildType
-def extraVars
 pipeline {
     agent {
         node {
@@ -57,7 +56,7 @@ def neworgPrepare(){
                 extraVars: """---
                 org_name: '${org}'
                 env: '${params.env}'
-                deploy_action: '${params.deploy_action}'
+                deploy_action: "new_org_prereq"
                 channel_name: '${params.channel_name}'
                 chaincode_version: '${params.chaincode_version}'
                 add_org_name: '${params.add_org_name}'
