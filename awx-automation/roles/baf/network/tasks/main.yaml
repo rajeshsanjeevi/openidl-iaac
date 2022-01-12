@@ -10,7 +10,11 @@
 - name: Print channel name inside baf role
   debug:
     msg: "Channel name: {{ channel_name }}"
-    
+
+- name: Printing config file data
+  debug:
+    msg: "{{ network.channels }}, {{ network.channels[0].name, {{ network.channels[1].name }} }}
+
 - name: Generate network config file
   template:
     src: templates/network-setup.yml.j2
