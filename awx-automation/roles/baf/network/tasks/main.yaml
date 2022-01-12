@@ -1,7 +1,4 @@
 ---
-- name: "Include pre-tasks"
-  include_tasks: "pre-tasks.yaml"
-
 - name: Delete k8s namespace
   community.kubernetes.k8s:
     name: openidl-baf
