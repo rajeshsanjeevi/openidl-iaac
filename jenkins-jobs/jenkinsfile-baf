@@ -84,8 +84,7 @@ def deployBAF(thestage){
                 deploy_action: '${params.deploy_action}'
                 channel_name: '${params.channel_name}'
                 chaincode_version: '${params.chaincode_version}'
-                add_org_name: '${params.add_org_name}'
-                add_new_org: '${params.new_org_name}'
+                add_org_name: '${params.new_org_name}'
                 extra_vars: '${params.extra_vars}'
                 """
             )
