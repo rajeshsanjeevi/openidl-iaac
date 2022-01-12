@@ -11,7 +11,7 @@ network:
       domain: "carrier.thtetech.digital"
       org_status: ""
   channels:
-  - name: analytics-aais
+  - name: aais
     chaincode:
       name: openidl-cc-aais-anal
       repo_url: github.com/rajeshsanjeevi/openidl-main.git
