@@ -14,7 +14,7 @@ network:
     - name: "carrier"
       domain: "carrier.thetech.digital"
   channels:
-  - name: aais_anal
+  - name: aaisanal
     chaincode:
       name: openidl-cc-aais-anal
       repo_url: github.com/rajeshsanjeevi/openidl-main.git
