@@ -7,22 +7,6 @@
     state: absent
     wait: yes
 
-- name: Debug
-  debug:
-    msg: "{{ env }}, {{ ordererorg_domain }}, {{ action }}, {{ gitops_repo_url }}, {{ gitops_repo_user }}"
-
-- name: Debug
-  debug:
-    msg: "{{ access_id }}, {{ cluster_name }}, {{ vault_token }}, {{ domain }}, {{ internal_domain }}, {{ node_type }}"
-
-- name: Debug
-  debug:
-    msg: "{{ network.org_name }}, {{ network.ordererorg }}, {{ network.organizations[0].name }}, {{ network.channels[0].name }}"
-
-- name: Debug
-  debug:
-    msg: "{{ network.channels[0].chaincode.name }}, {{ network.channels[0].chaincode.collectionconfig.name }}"
-
 - name: Generate network config file
   template:
     src: templates/network-setup.yml.j2
