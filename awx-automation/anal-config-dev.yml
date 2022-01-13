@@ -9,7 +9,7 @@ network:
   organizations:
     - name: "carrier"
       domain: "carrier.thtetech.digital"
-      org_status: ""
+      org_status: "false"
   channels:
   - name: aais
     chaincode:
