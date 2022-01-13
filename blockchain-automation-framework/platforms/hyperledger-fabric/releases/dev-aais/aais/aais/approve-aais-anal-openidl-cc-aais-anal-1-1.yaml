@@ -43,8 +43,9 @@ spec:
       endorsementpolicies:  ''
       collectionconfig: |-
         WwogIHsKICAgICJuYW1lIjogImFuYWxfYWFpc19wZGMiLAogICAgInBvbGljeSI6ICJPUignYW5h
-        bE1TUC5tZW1iZXInLCAnYWFpc01TUC5tZW1iZXInKSIsCiAgICAicmVxdWlyZWRQZWVyQ291bnQi
-        OiAwLAogICAgIm1heFBlZXJDb3VudCI6IDAsCiAgICAiYmxvY2tUb0xpdmUiOiAwCiAgfQpdCgo=
+        bHl0aWNzTVNQLm1lbWJlcicsICdhYWlzTVNQLm1lbWJlcicpIiwKICAgICJyZXF1aXJlZFBlZXJD
+        b3VudCI6IDAsCiAgICAibWF4UGVlckNvdW50IjogMCwKICAgICJibG9ja1RvTGl2ZSI6IDAKICB9
+        Cl0KCg==
       usecollectionconfig: true
     channel:
       name: aais-anal
