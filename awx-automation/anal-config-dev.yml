@@ -11,6 +11,15 @@ network:
       domain: ""
       org_status: ""
   channels:
+  - name: "aais-anal"
+    chaincode:
+      name: "openidl-cc-aais-anal"
+      repo_url: "github.com/rajeshsanjeevi/openidl-main.git"
+      repo_branch: "hig-carrier"
+      repo_path: "openidl-chaincode/chaincode/openidl"
+      collectionconfig:
+        name: "anal_aais_pdc"
+        policy: "OR('analMSP.member', 'aaisMSP.member')"
   - name: "aais"
     chaincode:
       name: "openidl-cc-aais-anal"
