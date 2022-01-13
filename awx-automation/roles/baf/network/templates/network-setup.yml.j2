@@ -340,11 +340,12 @@ network:
             endorsements: "" #Endorsements (if any) provided along with the chaincode
 {% if channellist.chaincode.collectionconfig is defined %}
             collectionconfig:
-{% for collectionconfig in channellist.chaincode.collectionconfig %}
-             - name: "{{ collectionconfig.name }}"
-               policy: "{{ collectionconfig.policy }}"
+             - name: "{{ channellist.chaincode.collectionconfig.name }}"
+               policy: "{{ channellist.chaincode.collectionconfig.policy }}"
+               requiredpeercount: 0
+               maxpeercount: 0
+               blocktolive: 0
                channel_name: {{ channellist.name }}
-{% endfor %}
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -435,11 +436,12 @@ network:
             endorsements: "" #Endorsements (if any) provided along with the chaincode
 {% if channellist.chaincode.collectionconfig is defined %}
             collectionconfig:
-{% for collectionconfig in channellist.chaincode.collectionconfig %}
-             - name: "{{ collectionconfig.name }}"
-               policy: "{{ collectionconfig.policy }}"
+             - name: "{{ channellist.chaincode.collectionconfig.name }}"
+               policy: "{{ channellist.chaincode.collectionconfig.policy }}"
+               requiredpeercount: 0
+               maxpeercount: 0
+               blocktolive: 0
                channel_name: {{ channellist.name }}
-{% endfor %}
 {% endif %}
 {% endif %}
 {% endfor %}
