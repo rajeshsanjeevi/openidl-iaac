@@ -7,9 +7,9 @@ network:
   ordererorg: "false"
   ordererorg_name: "ordererorg"
   organizations:
-    - name: "carrier"
-      domain: "carrier.thtetech.digital"
-      org_status: "false"
+    - name: ""
+      domain: ""
+      org_status: ""
   channels:
   - name: aais
     chaincode:
