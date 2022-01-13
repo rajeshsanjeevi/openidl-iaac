@@ -19,7 +19,7 @@ network:
       repo_path: "openidl-chaincode/chaincode/openidl"
       collectionconfig:
         name: "anal_aais_pdc"
-        policy: "OR('analMSP.member', 'aaisMSP.member')"
+        policy: "OR('analyticsMSP.member', 'aaisMSP.member')"
   - name: "aais"
     chaincode:
       name: "openidl-cc-aais-anal"
