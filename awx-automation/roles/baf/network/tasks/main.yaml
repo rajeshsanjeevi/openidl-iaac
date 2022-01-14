@@ -14,12 +14,13 @@
     mode: 0755
   when: action != "join_peer"
 
-#- name: Generate network config file (join peer)
-#  template:
-#    src: templates/network-setup-develop.yml.j2
-#    dest: "./network-setup.yml"
-#    mode: 0755
-#    when: action == "join_peer"
+- name: Generate network config file (join peer)
+  template:
+    src: "./network-setup.yml"
+    #src: templates/network-setup-develop.yml.j2
+    dest: "./network-setup.yml"
+    mode: 0755
+    when: action == "join_peer"
 
 - name: Create a k8s namespace
   community.kubernetes.k8s:
