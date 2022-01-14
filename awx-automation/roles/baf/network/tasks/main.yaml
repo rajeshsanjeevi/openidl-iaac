@@ -7,16 +7,17 @@
     state: absent
     wait: yes
 
-- name: Generate network config file
+- name: Generate network config file (defaultchannel)
   template:
     src: templates/network-setup.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
   when: channel_name == "defaultchannel"
 
-- name: Generate network config file (non default channel)
+- name: Generate network config file (non defaultchannel)
   template:
-    src: templates/network-setup-develop.yml.j2
+    #src: templates/network-setup-develop.yml.j2
+    src: templates/network-setup-baf-automation.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
   when: channel_name != "default_channel"
