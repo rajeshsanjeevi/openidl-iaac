@@ -62,6 +62,7 @@ def neworgPrepare(){
                 deploy_action: "new_org_prereq"
                 channel_name: '${params.channel_name}'
                 chaincode_version: '${params.chaincode_version}'
+                add_org_name: '${params.new_org_name}'
                 extra_vars: '${params.extra_vars}'
                 """
             )
