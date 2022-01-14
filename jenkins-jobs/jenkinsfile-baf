@@ -101,7 +101,7 @@ def registerUsers(thestage){
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: "${org}-${params.env}-register-users",
+                jobTemplate: "${org}-${params.env}-openidl-register-users",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
