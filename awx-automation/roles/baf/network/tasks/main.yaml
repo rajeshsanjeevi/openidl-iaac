@@ -14,13 +14,21 @@
     mode: 0755
   when: channel_name == "defaultchannel"
 
-- name: Generate network config file (non defaultchannel)
+- name: Generate network config file (non defaultchannel/non join_peer action)
   template:
     #src: templates/network-setup-develop.yml.j2
     src: templates/network-setup-baf-automation.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
-  when: channel_name != "default_channel"
+  when: (channel_name != "default_channel") and (action != join_peer)
+
+- name: Generate network config file (non defaultchannel/join_peer action)
+  template:
+    #src: templates/network-setup-develop.yml.j2
+    src: templates/network-setup-baf-automation.yml.j2
+    dest: "./network-setup.yml"
+    mode: 0755
+  when: (channel_name != "default_channel") and (action == "join_peer)
 
 - name: Create a k8s namespace
   community.kubernetes.k8s:
