@@ -16,8 +16,8 @@
 
 - name: Generate network config file (join peer)
   template:
-    #src: templates/network-setup.yml.j2
-    src: templates/network-setup-develop.yml.j2
+    src: templates/network-setup.yml.j2
+    #src: templates/network-setup-develop.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
   when: action == "join_peer"
