@@ -21,20 +21,20 @@
     - name: Get vault root token
       shell: |
         export AWS_PROFILE=cicd-role
-        aws secretsmanager get-secret-value --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key --version-stage AWSCURRENT | jq -r .SecretString
+        aws secretsmanager get-secret-value --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: vault
 
     - name: Export Orderer TLS Cert
       shell: |
         export AWS_PROFILE=cicd-role
-        aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT | jq -r .SecretString
+        aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: orgjson
       when: deploy_action == "new_org"
 
     - name: Export ORG_MSP
       shell: |
         export AWS_PROFILE=cicd-role
-        aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT | jq -r .SecretString
+        aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: orgjson
       when: deploy_action == "add_new_org"
 
