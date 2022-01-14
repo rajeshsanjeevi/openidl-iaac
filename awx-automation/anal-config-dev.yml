@@ -20,15 +20,6 @@ network:
       collectionconfig:
         name: "anal_aais_pdc"
         policy: "OR('analyticsMSP.member', 'aaisMSP.member')"
-  - name: "aais"
-    chaincode:
-      name: "openidl-cc-aais-anal"
-      repo_url: "github.com/rajeshsanjeevi/openidl-main.git"
-      repo_branch: "hig-carrier"
-      repo_path: "openidl-chaincode/chaincode/openidl"
-      collectionconfig:
-        name: "analytics_aais_pdc"
-        policy: "OR('analyticsMSP.member', 'aaisMSP.member')"
   - name: "defaultchannel"
     chaincode:
       name: "openidl-cc-default"
