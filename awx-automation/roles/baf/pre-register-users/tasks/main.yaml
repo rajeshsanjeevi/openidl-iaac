@@ -132,13 +132,13 @@
 - name: delete ca user token to aws secrets manager
   shell: |
     export AWS_PROFILE=cicd-role
-    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-app-user-token --force-delete-without-recovery
+    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-app-user-token --region {{ aws_region }}--force-delete-without-recovery
   ignore_errors: yes
 
 - name: upload ca user token to aws secrets manager
   shell: |
     export AWS_PROFILE=cicd-role
-    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-ca-app-user-token --description "Ca App User token" --secret-string {{ ca_user_token }}
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-ca-app-user-token --description "Ca App User token" --secret-string {{ ca_user_token }} --region {{ aws_region }}
 
 - name: Delete user script pod
   community.kubernetes.k8s:
