@@ -12,7 +12,7 @@
     src: templates/network-setup.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
-  when: channel_name == "defaultchannel"
+#  when: channel_name == "defaultchannel"
 
 #- name: Generate network config file (non defaultchannel/non join_peer action)
 #  template:
@@ -29,7 +29,7 @@
 #    dest: "./network-setup.yml"
 #    mode: 0755
 #  when: (channel_name != "default_channel") and ((action == "join_peer") or (action == "add_new_channel"))
-
+# add_new_channel - both baf/develop network file not working
 - name: Create a k8s namespace
   community.kubernetes.k8s:
     name: openidl-baf
