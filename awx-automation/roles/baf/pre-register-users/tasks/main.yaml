@@ -22,6 +22,13 @@
     kind: ConfigMap
     state: absent
 
+- name: Create a k8s namespace
+  community.kubernetes.k8s:
+    name: vault
+    api_version: v1
+    kind: Namespace
+    state: present
+
 - name: Create configmap for network configuration file
   shell: |
     kubectl -n vault create configmap pre-register-users-script --from-file=pre-register-users.sh=./pre-register-users.sh
