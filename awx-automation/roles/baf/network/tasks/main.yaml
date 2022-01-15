@@ -28,7 +28,7 @@
     src: templates/network-setup-baf-automation.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
-  when: (channel_name != "default_channel") and ((action == "join_peer") or (action == "add_new_channel")
+  when: (channel_name != "default_channel") and ((action == "join_peer") or (action == "add_new_channel"))
 
 - name: Create a k8s namespace
   community.kubernetes.k8s:
