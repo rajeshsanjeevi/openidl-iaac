@@ -9,7 +9,7 @@
 
 - name: Generate network config file (defaultchannel)
   template:
-    src: templates/network-setup.yml.j2
+    src: templates/network-setup-develop.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
 #  when: channel_name == "defaultchannel"
