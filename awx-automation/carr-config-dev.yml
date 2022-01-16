@@ -11,7 +11,7 @@ network:
     - name: "analytics"
       domain: "analytics.thetech.digital"
       org_status: ""
-    - name: "carrier"
+    - name: "carr"
       domain: "carrier.thetech.digital"
       org_status: ""
   channels:
