@@ -40,7 +40,7 @@ spec:
     orderer:
       address: orderer1.ordererorg.dev.aais.thetech.digital:8443
     channeltx: |-
-      CqcDChwKGggCGgYIgoaJjwYiDmRlZmF1bHRjaGFubmVsEoYDCoMDCg5kZWZhdWx0Y2hhbm5lbBIu
+      CqcDChwKGggCGgYIy+6RjwYiDmRlZmF1bHRjaGFubmVsEoYDCoMDCg5kZWZhdWx0Y2hhbm5lbBIu
       EhwKC0FwcGxpY2F0aW9uEg0SCwoHYWFpc01TUBIAGg4KCkNvbnNvcnRpdW0SABrAAhKYAgoLQXBw
       bGljYXRpb24SiAIIARILCgdhYWlzTVNQEgAaJAoMQ2FwYWJpbGl0aWVzEhQSCgoICgRWMl8wEgAa
       BkFkbWlucyIgCgZBZG1pbnMSFhIMCAMSCAoGQWRtaW5zGgZBZG1pbnMiKgoLRW5kb3JzZW1lbnQS
