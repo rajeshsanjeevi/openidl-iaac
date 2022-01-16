@@ -4,18 +4,18 @@ internal_domain: "carrier.internal.thetech.digital"
 add_org: "" 
 node_type: "carrier"
 network:
-  org_name: "carr"
+  org_name: "carrier"
   ordererorg: "false"
   ordererorg_name: "ordererorg"
   organizations:
-    - name: "analytics"
-      domain: "analytics.thetech.digital"
+    - name: ""
+      domain: ""
       org_status: ""
-    - name: "carr"
-      domain: "carrier.thetech.digital"
+    - name: ""
+      domain: ""
       org_status: ""
   channels:
-  - name: anal-carr
+  - name: aais-anal
     chaincode:
       name: openidl-cc-anal-carr
       repo_url: github.com/rajeshsanjeevi/openidl-main.git
