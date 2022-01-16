@@ -143,6 +143,7 @@
 
 # This task creates the channel by consuming the configtx.yaml file
 - name: "Creating JSON configuration for new organization"
+  no_log: false
   shell: |
     cd {{ build_path }}
     export FABRIC_CFG_PATH=$PWD
