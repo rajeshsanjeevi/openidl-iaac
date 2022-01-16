@@ -9,8 +9,8 @@ network:
   ordererorg: "true"
   ordererorg_name: "ordererorg"
   organizations:
-    - name: ""
-      domain: ""
+    - name: "analytics"
+      domain: "analytics.thetech.digital"
     - name: ""
       domain: ""
   channels:
