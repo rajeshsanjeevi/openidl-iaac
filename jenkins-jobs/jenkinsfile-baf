@@ -112,7 +112,7 @@ def registerUsers(thestage){
                 org_name: '${org}'
                 env: '${params.env}'
                 network:
-                    org_name: '${org}'
+                    org_name: '${params.org_name}'
                 """
             )
         }
