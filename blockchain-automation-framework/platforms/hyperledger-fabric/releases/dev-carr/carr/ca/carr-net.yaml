@@ -1,0 +1,45 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: carr-net-ca
+  namespace: carr-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: carr-net-ca
+  chart:
+    git: https://github.com/rajeshsanjeevi/openidl-iaac.git
+    ref: hig-carrier
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/ca    
+  values:
+    metadata:
+      namespace: carr-net
+      images:
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+        ca: hyperledger/fabric-ca:1.4.8
+       
+    server:
+      name: ca
+      tlsstatus: true
+      admin: carr-admin
+    storage:
+      storageclassname: carrsc
+      storagesize: 20Gi
+    vault:
+      role: vault-role
+      address: http://vault.dev.carrier.internal.thetech.digital
+      authpath: devcarr-net-auth
+      secretcert: carr/crypto/peerOrganizations/carr-net/ca?ca.carr-net-cert.pem
+      secretkey: carr/crypto/peerOrganizations/carr-net/ca?carr-net-CA.key
+      secretadminpass: carr/credentials/carr-net/ca/carr?user
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+    service:
+      servicetype: ClusterIP
+      ports:
+        tcp:
+          port: 7054
+    proxy:
+      provider: haproxy
+      type: peer
+      external_url_suffix: carr.dev.carrier.thetech.digital
