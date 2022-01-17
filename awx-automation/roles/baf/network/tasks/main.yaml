@@ -7,12 +7,12 @@
 #    state: absent
 #    wait: yes
 
-- name: Generate network config file (defaultchannel)
-  template:
-    src: templates/network-setup.yml.j2
-    dest: "./network-setup.yml"
-    mode: 0755
-  when: channel_name == "defaultchannel"
+#- name: Generate network config file (defaultchannel)
+#  template:
+#    src: templates/network-setup.yml.j2
+#    dest: "./network-setup.yml"
+#    mode: 0755
+#  when: channel_name == "defaultchannel"
 
 #- name: Generate network config file (non defaultchannel)
 #  template:
@@ -26,8 +26,7 @@
     src: templates/network-setup-develop.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
-  when: channel_name != "defaultchannel"
-
+ 
 # chaincode for non default channel works for network-develop file
 # add_new_channel - works with network-develop file
 - name: Launch baf container
