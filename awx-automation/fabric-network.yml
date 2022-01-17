@@ -41,7 +41,8 @@
     - include_role:
         name: "baf/network"
       vars:
-        vault_token: "{{ vault.stdout }}"
+        vault_token: "test"
+        #vault_token: "{{ vault.stdout | default(test) }}"
         cluster_name: "{{ blk_cluster_name }}"
         action: "{{ deploy_action }}"
         account: "{{ aws_account_number }}"
