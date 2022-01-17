@@ -30,7 +30,23 @@
 
 # chaincode for non default channel works for network-develop file
 # add_new_channel - works with network-develop file
-
+- name: Launch baf container
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    wait_condition:
+      type: "Ready"
+    definition:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: openidl-baf
+        namespace: openidl-baf
+      spec:
+        containers:
+        - name: baf
+          image: "{{ registry }}/openidl-baf1"
+          
 - name: Create a k8s namespace
   community.kubernetes.k8s:
     name: openidl-baf
