@@ -11,8 +11,8 @@ network:
   organizations:
     - name: "analytics"
       domain: "analytics.thetech.digital"
-    - name: ""
-      domain: ""
+    - name: "carrier"
+      domain: "carrier.thetech.digital"
   channels:
   - name: defaultchannel
     chaincode:
