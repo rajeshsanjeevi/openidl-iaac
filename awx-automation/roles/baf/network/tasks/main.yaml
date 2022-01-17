@@ -26,7 +26,7 @@
     src: templates/network-setup-develop.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
-  when: ((channel_name != "defaultchannel") and ((action == "add_new_channel") and (action == "join_peer") or (action == "chaincode")))
+  when: ((channel_name != "defaultchannel") and ((action == "add_new_channel") or (action == "join_peer") or (action == "chaincode")))
 
 # chaincode for non default channel works for network-develop file
 # add_new_channel - works with network-develop file
