@@ -1,5 +1,0 @@
-[ansible_provisioners:children]
-local
-
-[local]
-ec2-18-119-105-48.us-east-2.compute.amazonaws.com
