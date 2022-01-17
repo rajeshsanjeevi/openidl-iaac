@@ -1,11 +1,11 @@
 ---
-- name: Delete k8s namespace
-  community.kubernetes.k8s:
-    name: openidl-baf
-    api_version: v1
-    kind: Namespace
-    state: absent
-    wait: yes
+#- name: Delete k8s namespace
+#  community.kubernetes.k8s:
+#    name: openidl-baf
+#    api_version: v1
+#    kind: Namespace
+#    state: absent
+#    wait: yes
 
 - name: Generate network config file (defaultchannel)
   template:
