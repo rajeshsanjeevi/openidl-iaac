@@ -9,7 +9,6 @@ network:
   organizations:
     - name: ""
       domain: ""
-      org_status: ""
   channels:
   - name: "defaultchannel"
     chaincode:
