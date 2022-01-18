@@ -4,8 +4,6 @@ ordererorg_domain: "${AAIS_ORDERERORG_DOMAIN_NAME}"
 domain: "${DOMAIN_NAME}"
 # internal domain name from internal private hosted zone in route53
 internal_domain: "${INTERNAL_DOMAIN_NAME}"
-# new organization name to be added to the channel when action=add_new_org
-add_org: "" 
 # type of the node, accepted: aais, analytics, carrier
 node_type: "carrier"
 
