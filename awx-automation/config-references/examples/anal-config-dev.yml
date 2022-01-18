@@ -7,8 +7,8 @@ network:
   ordererorg: "false"
   ordererorg_name: "ordererorg"
   organizations:
-    - name: ""
-      domain: ""
+    - name: "carrier"
+      domain: "carrier.thetech.digital"
   channels:
   - name: "defaultchannel"
     chaincode:
