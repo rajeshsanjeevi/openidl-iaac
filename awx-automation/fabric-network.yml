@@ -30,14 +30,6 @@
         aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: orgjson
       when: deploy_action == "new_org"
-    
-    - set_fact:
-        org_json: "{{ orgjson.stdout }}"
-      when: deploy_action == "new_org"
-
-    - set_fact:
-        org_json: ""
-      when: deploy_action != "new_org"
 
     - name: Export ORG_MSP
       shell: |
@@ -45,6 +37,14 @@
         aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: orgjson
       when: deploy_action == "add_new_org"
+
+    - set_fact:
+        orgjson: "{{ orgjson.stdout }}"
+      when: deploy_action == "new_org" or deploy_action == "add_new_org"
+
+    - set_fact:
+        orgjson: ""
+      when: deploy_action != "new_org" or deploy_action != "add_new_org"
 
     - include_role:
         name: "baf/network"
@@ -61,7 +61,7 @@
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
         chaincode_version: "{{ chaincode_version }}"
-        org_json: "{{ org_json }}"
+        org_json: "{{ orgjson }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
         env: "{{ env }}"
