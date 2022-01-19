@@ -28,17 +28,21 @@
       shell: |
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
-      register: orgjson_output
+      register: cert
 #      when: deploy_action == "new_org"
 
     - name: Export ORG_MSP
       shell: |
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
-      register: orgjson_output
+      register: cert
       when: deploy_action == "add_new_org"
 
-    - debug: msg="{{ orgjson_output.stdout }}"
+    - debug:
+        msg: "{{ cert }}"
+
+    - debug:
+        var: cert.stdout
 
     - include_role:
         name: "baf/network"
