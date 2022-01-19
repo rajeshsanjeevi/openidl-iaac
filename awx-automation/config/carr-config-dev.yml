@@ -7,7 +7,7 @@ network:
   ordererorg: "false"
   ordererorg_name: "ordererorg"
   organizations:
-    - name: "carr"
+    - name: "carrier"
       domain: "carrier.thetech.digital"
     - name: "analytics"
       domain: "analytics.thetech.digital"
