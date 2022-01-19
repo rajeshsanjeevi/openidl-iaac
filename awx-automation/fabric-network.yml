@@ -38,9 +38,7 @@
       register: orgjson_output
       when: deploy_action == "add_new_org"
 
-    - debug:
-        var=orgjson_output.stdout
-#      when: deploy_action == "new_org"
+    - debug: msg="{{ orgjson_output.stdout }}"
 
     - include_role:
         name: "baf/network"
