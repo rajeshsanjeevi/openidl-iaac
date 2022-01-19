@@ -23,7 +23,7 @@
 
 - name: Debug orgjson
   debug:
-    msg: "{{ orgjson }}"
+    msg: "{{ org_json }}"
     
 - name: Generate network config file 
   template:
