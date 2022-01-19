@@ -24,10 +24,6 @@
         aws secretsmanager get-secret-value --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: vault
 
-    - set_fact:
-        orgjson.stdout: ""
-      when: deploy_action != "new_org"
-      
     - name: Export Orderer TLS Cert
       shell: |
         export AWS_PROFILE=cicd-role
