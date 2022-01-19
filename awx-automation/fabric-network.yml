@@ -41,8 +41,7 @@
     - include_role:
         name: "baf/network"
       vars:
-        vault_token: "test"
-        #vault_token: "{{ vault.stdout | default(test) }}"
+        vault_token: "{{ vault.stdout }}"
         cluster_name: "{{ blk_cluster_name }}"
         action: "{{ deploy_action }}"
         account: "{{ aws_account_number }}"
@@ -54,7 +53,7 @@
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
         chaincode_version: "{{ chaincode_version }}"
-        org_json: "{{ orgjson.stdout | default('') }}"
+        org_json: "{{ orgjson.stdout }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
         env: "{{ env }}"
