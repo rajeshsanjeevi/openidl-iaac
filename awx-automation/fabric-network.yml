@@ -39,7 +39,7 @@
       when: deploy_action == "add_new_org"
 
     - set_fact:
-        org_json: '{{ lookup("env", "orgjson.stdout") or default("demo") }}'
+        org_json: "{{ lookup('env', 'orgjson.stdout') | default('', true) }}"
 
     - include_role:
         name: "baf/network"
