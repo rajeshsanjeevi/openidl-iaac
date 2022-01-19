@@ -39,7 +39,7 @@
       when: deploy_action == "add_new_org"
 
     - debug:
-        msg: "The value is {{ orgjson.stdout }}"
+        var: orgjson.stdout 
 #      when: deploy_action == "new_org"
 
     - include_role:
