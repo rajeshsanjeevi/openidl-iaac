@@ -21,8 +21,8 @@ def checkout() {
     stage('Checkout Code') {
         git credentialsId: 'openidl-aais-gitops1', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
         sh '''
-	    cp carrier.tfvars aws/aws_resources/carrier.tfvars.auto
-	    cp carrier.tfvars aws/k8s_resources/carrier.tfvars.auto
+	    cp aws/carrier.tfvars aws/aws_resources/carrier.tfvars.auto
+	    cp aws/carrier.tfvars aws/k8s_resources/carrier.tfvars.auto
             tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
             echo "Successfully prepared the AWS resources code bundle"
             tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
