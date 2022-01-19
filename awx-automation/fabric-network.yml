@@ -29,7 +29,7 @@
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: orgjson
-      when: deploy_action == "new_org"
+#      when: deploy_action == "new_org"
 
     - name: Export ORG_MSP
       shell: |
@@ -39,8 +39,8 @@
       when: deploy_action == "add_new_org"
 
     - debug:
-        msg: "{{ orgjson.stdout }}"
-      when: deploy_action == "new_org"
+        msg: "The value is {{ orgjson.stdout }}"
+#      when: deploy_action == "new_org"
 
     - include_role:
         name: "baf/network"
