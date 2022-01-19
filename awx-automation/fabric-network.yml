@@ -25,7 +25,7 @@
       register: vault
 
     - set_fact:
-        orgjson: ""
+        orgjson.stdout: ""
       when: deploy_action != "new_org"
       
     - name: Export Orderer TLS Cert
