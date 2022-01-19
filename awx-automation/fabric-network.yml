@@ -1,9 +1,6 @@
 - hosts: ansible_provisioners
   gather_facts: yes
   no_log: "{{ no_ansible_log | default(false) }}"
-  vars:
-    orgjson:
-      stdout: ""
   vars_files:
     - "./config/{{ org_name }}-config-{{ env }}.yml"
 
@@ -34,6 +31,14 @@
       register: orgjson
       when: deploy_action == "new_org"
     
+    - set_fact:
+        org_json: "{{ orgjson.stdout }}"
+      when: deploy_action == "new_org"
+
+    - set_fact:
+        org_json: ""
+      when: deploy_action != "new_org"
+
     - name: Export ORG_MSP
       shell: |
         export AWS_PROFILE=cicd-role
@@ -56,7 +61,7 @@
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
         chaincode_version: "{{ chaincode_version }}"
-        org_json: "{{ orgjson.stdout }}"
+        org_json: "{{ org_json }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
         env: "{{ env }}"
