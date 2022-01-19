@@ -19,7 +19,7 @@ node('openidl') {
 }
 def checkout() {
     stage('Checkout Code') {
-        git credentialsId: 'openidl-aais-gitops1', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
+        git credentialsId: 'openidl-aais-gitops', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
         sh '''
 	    cp aws/carrier.tfvars aws/aws_resources/carrier.tfvars.auto
 	    cp aws/carrier.tfvars aws/k8s_resources/carrier.tfvars.auto
