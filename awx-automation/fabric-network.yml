@@ -38,14 +38,6 @@
       register: orgjson
       when: deploy_action == "add_new_org"
 
-    - set_fact:
-        orgjson: "{{ orgjson.stdout }}"
-      when: deploy_action == "new_org" or deploy_action == "add_new_org"
-
-    - set_fact:
-        orgjson: ""
-      when: deploy_action != "new_org" or deploy_action != "add_new_org"
-
     - include_role:
         name: "baf/network"
       vars:
@@ -61,7 +53,7 @@
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
         chaincode_version: "{{ chaincode_version }}"
-        org_json: "{{ orgjson }}"
+        org_json: "{{ orgjson.stdout | default('demo') }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
         env: "{{ env }}"
