@@ -28,7 +28,7 @@
       shell: |
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
-      register: orgjson
+      register: orderer_tls
 #      when: deploy_action == "new_org"
 
     - name: Export ORG_MSP
@@ -39,7 +39,7 @@
       when: deploy_action == "add_new_org"
 
     - debug:
-        var: orgjson.stdout 
+        var=orderer_tls
 #      when: deploy_action == "new_org"
 
     - include_role:
