@@ -57,7 +57,7 @@
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
         chaincode_version: "{{ chaincode_version }}"
-        org_json: "{{ orgjson.stdout }}"
+        org_json: "{{ orgjson.stdout | default('') }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
         env: "{{ env }}"
