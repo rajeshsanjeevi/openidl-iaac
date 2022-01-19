@@ -28,18 +28,18 @@
       shell: |
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
-      register: orderer_tls
+      register: orgjson_output
 #      when: deploy_action == "new_org"
 
     - name: Export ORG_MSP
       shell: |
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
-      register: orgjson
+      register: orgjson_output
       when: deploy_action == "add_new_org"
 
     - debug:
-        var=orderer_tls
+        var=orgjson_output.stdout
 #      when: deploy_action == "new_org"
 
     - include_role:
@@ -57,7 +57,7 @@
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
         chaincode_version: "{{ chaincode_version }}"
-        org_json: "{{ orgjson.stdout | default('') }}"
+        org_json: "{{ orgjson_output.stdout | default('') }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
         env: "{{ env }}"
