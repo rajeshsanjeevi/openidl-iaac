@@ -23,7 +23,7 @@
 
 - name: debug
   debug:
-    var: "{{ org_json }}"
+    var: "This is a variable {{ org_json }} orgjson"
 - name: Generate network config file
   template:
     src: templates/network-setup-develop.yml.j2
