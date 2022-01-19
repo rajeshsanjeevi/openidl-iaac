@@ -23,7 +23,7 @@
 
 - name: debug orgjson
   debug:
-    var: "This is a variable: {{ org_json }}"
+    msg: "This is a variable {{ org_json }}"
 
 - name: Generate network config file
   template:
