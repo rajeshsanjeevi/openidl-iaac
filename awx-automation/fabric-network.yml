@@ -39,11 +39,11 @@
       when: deploy_action == "add_new_org"
 
     - set_fact:
-        orgjson: orderer_cert.stdout
+        orgjson: "{{ orderer_cert.stdout }}"
       when: deploy_action == "new_org"
 
     - set_fact:
-        orgjson: msp_cert.stdout
+        orgjson: "{{ msp_cert.stdout }}"
       when: deploy_action == "add_new_org"
 
     - include_role:
