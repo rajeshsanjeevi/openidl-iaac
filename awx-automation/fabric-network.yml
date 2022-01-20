@@ -36,7 +36,7 @@
         export AWS_PROFILE=cicd-role
         aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: msp_cert
-      when: deploy_action == "add_new_org"
+#      when: deploy_action == "add_new_org"
 
     - set_fact:
         orgjson: "{{ orderer_cert.stdout }}"
