@@ -673,3 +673,7 @@ variable "tfc_org_name" {
   description = "The terraform cloud organisation name"
   default = ""
 }
+variable "s3_bucket_name_logos_public" {
+  type = string
+  description = "The name of s3 bucket used to manage logos (public s3 bucket)"
+}
