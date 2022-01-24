@@ -11,7 +11,7 @@ resource "aws_iam_access_key" "openidl_apps_access_key" {
     ignore_changes = [status]
   }
 }
-resource "aws_iam_user_policy" "openidl_apps_user_policy" {
+resource "aws_iam_user_policy" "openidl_nonaais_apps_user_policy" {
   count = var.org_name == "aais" ? 0 : 1
   name = "${local.std_name}-openidl-apps-user-policy"
   user = aws_iam_user.openidl_apps_user.name
@@ -77,7 +77,7 @@ resource "aws_iam_user_policy" "openidl_apps_user_policy" {
     ]
   })
 }
-resource "aws_iam_user_policy" "openidl_apps_user_policy" {
+resource "aws_iam_user_policy" "openidl_aais_apps_user_policy" {
   count = var.org_name == "aais" ? 1 : 0
   name = "${local.std_name}-openidl-apps-user-policy"
   user = aws_iam_user.openidl_apps_user.name
