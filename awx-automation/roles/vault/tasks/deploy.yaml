@@ -235,37 +235,36 @@
     state: absent
     path: ./creds.json
 
-#- name: Delete user script pod
-#  community.kubernetes.k8s:
-#    name: vault-user-script
-#    namespace: vault
-#    api_version: v1
-#    kind: Pod
-#    state: absent
-#    wait: yes
+- name: Delete user script pod
+  community.kubernetes.k8s:
+    name: vault-user-script
+    namespace: vault
+    api_version: v1
+    kind: Pod
+    state: absent
+    wait: yes
 
-#- name: Delete Script Configmap
-#  community.kubernetes.k8s:
-#    name: add-vault-user-script
-#    namespace: vault
-#    api_version: v1
-#    kind: ConfigMap
-#    state: absent
+- name: Delete Script Configmap
+  community.kubernetes.k8s:
+    name: add-vault-user-script
+    namespace: vault
+    api_version: v1
+    kind: ConfigMap
+    state: absent
 
-#- name: Delete User Creds Secret
-#  community.kubernetes.k8s:
-#    name: vault-user-creds
-#    namespace: vault
-#    api_version: v1
-#    kind: Secret
-#    state: absent
+- name: Delete User Creds Secret
+  community.kubernetes.k8s:
+    name: vault-user-creds
+    namespace: vault
+    api_version: v1
+    kind: Secret
+    state: absent
 
-#- name: Delete add-vault-user-script
-#  file:
-#    state: absent
-#    path: ./add-vault-user.sh
-
-#- name: Delete vault values file
-#  file:
-#    state: absent
-#    path: ./vault-values.yaml
+- name: Delete add-vault-user-script
+  file:
+    state: absent
+    path: ./add-vault-user.sh
+- name: Delete vault values file
+  file:
+    state: absent
+    path: ./vault-values.yaml
