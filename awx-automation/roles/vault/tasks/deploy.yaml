@@ -241,7 +241,7 @@
     namespace: vault
     api_version: v1
     kind: Pod
-    state: absent
+    state: present
     wait: yes
 
 - name: Delete Script Configmap
@@ -250,7 +250,7 @@
     namespace: vault
     api_version: v1
     kind: ConfigMap
-    state: absent
+    state: present
 
 - name: Delete User Creds Secret
   community.kubernetes.k8s:
@@ -258,14 +258,14 @@
     namespace: vault
     api_version: v1
     kind: Secret
-    state: absent
+    state: present
 
 - name: Delete add-vault-user-script
   file:
-    state: absent
+    state: present
     path: ./add-vault-user.sh
 
 - name: Delete vault values file
   file:
-    state: absent
+    state: present
     path: ./vault-values.yaml
