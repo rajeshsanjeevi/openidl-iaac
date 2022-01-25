@@ -145,5 +145,5 @@ tfc_workspace_name_aws_resources = "openidl-aais-aws-resources"
 
 #Name of the S3 bucket used to store the data extracted from HDS for analytics
 s3_bucket_name_hds_analytics = "openidl-hds-analytics-data"
-s3_bucket_name_logos_public = "demo-data-logos"
+s3_bucket_name_logos = "demo-data-logos"
 
