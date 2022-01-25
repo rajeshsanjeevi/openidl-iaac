@@ -8,7 +8,7 @@ resource "aws_iam_access_key" "openidl_apps_access_key" {
   user = aws_iam_user.openidl_apps_user.name
   status = "Active"
   lifecycle {
-    ignore_changes = "all"
+    ignore_changes = [all]
   }
 }
 resource "aws_iam_user_policy" "openidl_nonaais_apps_user_policy" {
