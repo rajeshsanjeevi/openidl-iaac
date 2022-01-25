@@ -131,7 +131,7 @@ resource "aws_kms_key" "s3_kms_key_hds" {
         "Sid" : "EnableAccess",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "${aws_iam_user.openidl_apps_user[0].arn}"
+          "AWS" : "${aws_iam_user.openidl_apps_user.arn}"
         },
         "Action" : [
 			"kms:Encrypt",
