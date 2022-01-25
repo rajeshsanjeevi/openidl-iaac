@@ -23,10 +23,10 @@ def checkout() {
         git credentialsId: 'openidl-aais-gitops', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
         sh '''
 	    cp aws/$TF_INPUT_FILE aws/aws_resources/inputs.auto.tfvars
-	    cp aws/$TF_INPUT_FILE aws/k8s_resources/inputs.auto.tfvars
-            tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
+	    tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
             echo "Successfully prepared the AWS resources code bundle"
-            tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
+            cp aws/$TF_INPUT_FILE aws/k8s_resources/inputs.auto.tfvars
+	    tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
             echo "Successfully prepared the K8s resources code bundle"
         '''
     }
