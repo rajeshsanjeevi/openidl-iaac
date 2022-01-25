@@ -72,7 +72,7 @@ output "hds_data_s3_bucket_name" {
   value = var.org_name == "aais" ? null : aws_s3_bucket.s3_bucket_hds[0].bucket
 }
 output "s3_public_bucket_logos_name" {
-  value = aws_s3_bucket.s3_bucket_logos_public
+  value = aws_s3_bucket.s3_bucket_logos_public.bucket
 }
 #-----------------------------------------------------------------------------------------------------------------
 #Route53 entries
