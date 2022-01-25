@@ -55,8 +55,8 @@ resource "aws_iam_user_policy" "openidl_nonaais_apps_user_policy" {
             "Effect": "Allow",
             "Action": "s3:GetObject",
             "Resource": [
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos_public}",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos_public}/*"
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*"
             ]
         },
         {
@@ -105,8 +105,8 @@ resource "aws_iam_user_policy" "openidl_aais_apps_user_policy" {
             "Effect": "Allow",
             "Action": "s3:GetObject",
             "Resource": [
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos_public}",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos_public}/*"
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*"
             ]
         },
         {
