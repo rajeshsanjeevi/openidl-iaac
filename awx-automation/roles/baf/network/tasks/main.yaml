@@ -103,7 +103,6 @@
           command: ["sh", "-c"]
           args: 
           - |-
-            set -x
             #!/bin/bash -e
             export LOCAL_PATH=/home/gitrepo
             git clone https://{{ gitops_repo_user|urlencode() }}:${PAT}@{{ gitops_repo_url }} -b {{ gitops_repo_branch }} $LOCAL_PATH
