@@ -63,7 +63,6 @@
           args:
             - |-
               #!/bin/bash -e
-              set -x
               export LOCAL_PATH=/home/gitrepo
               yum install tar git -y /dev/null 2&>1
               git clone https://{{gitrepo_username|urlencode()}}:{{gitrepo_password|urlencode()}}@{{ gitrepo_name }} -b {{ gitrepo_branch }} $LOCAL_PATH
