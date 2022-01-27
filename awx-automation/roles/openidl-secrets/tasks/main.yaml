@@ -1,0 +1,90 @@
+---
+- name: Update kubeconfig and set context to openidl {{ app_cluster_name }}
+  shell: |
+    export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ app_cluster_name }}
+
+- name: Delete deploy-secrets pod
+  community.kubernetes.k8s:
+    name: deploy-secrets
+    namespace: openidl
+    api_version: v1
+    kind: Pod
+    state: absent
+    wait: yes
+
+- name: Create secret for credentials
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      type: Opaque
+      metadata:
+        name: deploy-secrets-creds
+        namespace: openidl
+      data:
+        ACCESS_KEY: "{{ aws_access_key | b64encode }}"
+        SECRET_KEY: "{{ aws_secret_key | b64encode }}"
+        GITREPO_PASSWORD: "{{ gitrepo_password | b64encode }}"
+
+- name: Launch Pod for Deploy Secrets
+  community.kubernetes.k8s:
+    state: present
+    wait: yes
+    wait_condition:
+      type: "Ready"
+    definition:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: deploy-secrets
+        namespace: openidl
+      spec:
+        containers:
+        - name: deploysecrets
+          image: amazonlinux:latest
+          env:
+          - name: ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: deploy-secrets-creds
+                key: ACCESS_KEY
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: deploy-secrets-creds
+                key: SECRET_KEY
+          - name: GITREPO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: deploy-secrets-creds
+                key: GITREPO_PASSWORD
+          command: ["sh", "-c"]
+          args:
+            - |-
+              #!/bin/bash -e
+              set -x
+              export LOCAL_PATH=/home/gitrepo
+              yum install tar git -y /dev/null 2&>1
+              git clone https://{{gitrepo_username|urlencode()}}:{{gitrepo_password|urlencode()}}@{{ gitrepo_name }} -b {{ gitrepo_branch }} $LOCAL_PATH
+              chmod +x $LOCAL_PATH/openidl-test-network/vault/*.sh
+              mkdir -p $LOCAL_PATH/openidl-k8s/charts/openidl-secrets/config-{{ env }}-{{ org_name }}
+              .$LOCAL_PATH/openidl-test-network/vault/deploy-utilities.sh \
+              -a ${ACCESS_KEY} -s ${SECRET_KEY} -r {{ aws_region }} -o {{ aws_iam_role }}
+              .$LOCAL_PATH/openidl-test-network/vault/pull-aws-vault-config.sh -s {{ vault_secret_name }} \
+              -r {{ aws_region }} -a config-{{ org_name }} \
+              -c $LOCAL_PATH/openidl-k8s/charts/openidl-secrets/config-{{ env }}-{{ org_name }}
+              export AWS_PROFILE=git-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ app_cluster_name }}
+              helm upgrade --install {{ env }}-{{ org_name }}-secrets .$LOCAL_PATH/openidl-k8s \
+              -f .$LOCAL_PATH/openidl-k8s/global-values-secrets.yaml -n openidl \
+              --set global.configpath=config-{{ env }}-{{ org_name }}
+          restartPolicy: Never
+          backoffLimit: 0
+- name: deploy-secrets pod logs
+  shell: |
+    kubectl -n openidl logs -f deploy-secrets
+  register: pod_logs
+
+- name: deploy-secrets pod logs
+  debug:
+    msg: '{{ pod_logs.stdout_lines }}'
