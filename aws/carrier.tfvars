@@ -58,7 +58,7 @@ blk_bastion_sg_egress =   [
 #--------------------------------------------------------------------------------------------------------------------
 #Route53 (PUBLIC) DNS domain related specifications
 domain_info = {
-  r53_public_hosted_zone_required = "yes" #Options: yes | no
+  r53_public_hosted_zone_required = "no" #Options: yes | no
   domain_name = "thetech.digital", #primary domain registered
   sub_domain_name = "carrier" #sub domain
   comments = "carrier node domain"
