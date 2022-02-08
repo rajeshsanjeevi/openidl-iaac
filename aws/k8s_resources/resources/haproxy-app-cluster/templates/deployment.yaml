@@ -14,6 +14,10 @@ spec:
     metadata:
       labels:
         run: ingress-default-backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "1024"
+        prometheus.io/path: "/metrics"
     spec:
       containers:
       - name: ingress-default-backend
@@ -43,6 +47,10 @@ spec:
     metadata:
       labels:
         run: haproxy-ingress
+      annotations:
+       prometheus.io/scrape: "true"
+       prometheus.io/port: "1024"
+       prometheus.io/path: "/metrics"
     spec:
       hostNetwork: true
       serviceAccountName: ingress-controller
