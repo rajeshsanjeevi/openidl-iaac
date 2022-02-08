@@ -62,7 +62,7 @@ action() {
         exit 1
     fi
     echo "awscli unzipped"
-    ./aws/install --update
+    ./aws/install
     result=$?
     if [ $result -ne 0 ]; then
         echo "Failed to install awscli"

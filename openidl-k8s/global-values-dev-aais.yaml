@@ -8,8 +8,8 @@ global:
         targetport: 8080
         servicename: data-call-app-service
         ingressenabled: false
-        ingresshostname: data-call-app-service.dev.aais.internal.thetech.digital
-        publicingresshostname: data-call-app-service.dev.aais.thetech.digital
+        ingresshostname: data-call-app-service.dev.openidl.internal.aaisdirect.com
+        publicingresshostname: data-call-app-service.dev.openidl.aaisdirect.com
         image:
             repository: ghcr.io/openidl-org/openidl-data-call-app
             pullPolicy: IfNotPresent
@@ -20,10 +20,10 @@ global:
         targetport: 8080
         servicename: utilities-service
         ingressenabled: false
-        ingresshostname: utilities-service.dev.aais.internal.thetech.digital
-        publicingresshostname: utilities-service.dev.aais.thetech.digital
+        ingresshostname: utilities-service.dev.openidl.internal.aaisdirect.com
+        publicingresshostname: utilities-service.dev.openidl.aaisdirect.com
         image:
-            repository: ghcr.io/openidl-org/aais-utilities
+            repository: ghcr.io/openidl-org/openidl-utilities
             pullPolicy: IfNotPresent
             tag: 17-cognito-fabric-node14-helm-f84a367-093020211950
     ui:
@@ -32,9 +32,9 @@ global:
         port: 8080
         targetport: 8080
         ingressenabled: false
-        ingresshostname: aais.dev.aais.thetech.digital
+        ingresshostname: openidl.dev.openidl.aaisdirect.com
         image:
-            repository: ghcr.io/openidl-org/aais-ui
+            repository: ghcr.io/openidl-org/openidl-ui
             pullPolicy: IfNotPresent
             tag: 9-cognito-fabric-node14-helm-f84a367-093020211950
     insurancedatamanager:
@@ -43,9 +43,9 @@ global:
         targetport: 8080
         servicename: insurance-data-manager-service
         ingressenabled: false
-        ingresshostname: insurance-data-manager-service.dev.aais.thetech.digital
+        ingresshostname: insurance-data-manager-service.dev.openidl.aaisdirect.com
         image:
-            repository: ghcr.io/openidl-org/aais-insurance-data-manager
+            repository: ghcr.io/openidl-org/openidl-insurance-data-manager
             pullPolicy: IfNotPresent
             tag: 5-cognito-fabric-node14-helm-f84a367-093020211950
     datacallprocessor:
@@ -54,7 +54,7 @@ global:
         targetport: 8080
         servicename: data-call-processor-service
         image:
-            repository: ghcr.io/openidl-org/aais-data-call-processor
+            repository: ghcr.io/openidl-org/openidl-data-call-processor
             pullPolicy: IfNotPresent
             tag: 5-cognito-fabric-node14-helm-f84a367-093020211950
     upload:
@@ -63,7 +63,7 @@ global:
         targetport: 80
         servicename: upload-service
         image:
-            repository: ghcr.io/openidl-org/aais-upload
+            repository: ghcr.io/openidl-org/openidl-upload
             pullPolicy: IfNotPresent
             tag: latest
     datacallmoodlistener:
@@ -72,7 +72,7 @@ global:
         targetport: 8080
         servicename: data-call-mood-listener-service
         image:
-            repository: ghcr.io/openidl-org/aais-data-call-mood-listener
+            repository: ghcr.io/openidl-org/openidl-data-call-mood-listener
             pullPolicy: IfNotPresent
             tag: 5-cognito-fabric-node14-helm-f84a367-093020211950
     transactionaldataeventlistener:
@@ -81,7 +81,7 @@ global:
         targetport: 8080
         servicename: transactional-data-event-listener-service
         image:
-            repository: ghcr.io/openidl-org/aais-transactional-data-event-listener
+            repository: ghcr.io/openidl-org/openidl-transactional-data-event-listener
             pullPolicy: IfNotPresent
             tag: 5-cognito-fabric-node14-helm-f84a367-093020211950
     carrierui:
@@ -90,9 +90,9 @@ global:
         port: 8080
         targetport: 8080
         ingressenabled: false
-        ingresshostname: aais.dev.aais.aais.thetech.digital
+        ingresshostname: openidl.dev.aais.openidl.aaisdirect.com
         image:
-            repository: ghcr.io/openidl-org/aais-carrier-ui
+            repository: ghcr.io/openidl-org/openidl-carrier-ui
             pullPolicy: IfNotPresent
             tag: 9-cognito-fabric-node14-helm-f84a367-093020211950
     secrets:

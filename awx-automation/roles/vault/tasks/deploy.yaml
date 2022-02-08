@@ -264,6 +264,7 @@
   file:
     state: absent
     path: ./add-vault-user.sh
+
 - name: Delete vault values file
   file:
     state: absent
