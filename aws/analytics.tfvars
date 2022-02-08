@@ -10,14 +10,14 @@ aws_env = "dev" #set to dev|test|prod
 #--------------------------------------------------------------------------------------------------------------------
 #Application cluster VPC specifications
 app_vpc_cidr           = "172.20.0.0/16"
-app_availability_zones = ["us-east-2a", "us-east-2b"]
+app_availability_zones = ["us-east-1a", "us-east-1b"]
 app_public_subnets     = ["172.20.1.0/24", "172.20.2.0/24"]
 app_private_subnets    = ["172.20.3.0/24", "172.20.4.0/24"]
 
 #-------------------------------------------------------------------------------------------------------------------
 #Blockchain cluster VPC specifications
 blk_vpc_cidr           = "172.21.0.0/16"
-blk_availability_zones = ["us-east-2a", "us-east-2b"]
+blk_availability_zones = ["us-east-1a", "us-east-1b"]
 blk_public_subnets     = ["172.21.1.0/24", "172.21.2.0/24"]
 blk_private_subnets    = ["172.21.3.0/24", "172.21.4.0/24"]
 
