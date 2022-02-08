@@ -72,7 +72,7 @@ tgw_amazon_side_asn = "64532" #default is 64532
 #Cognito specifications
 userpool_name                = "openidl-pool" #unique user_pool name
 client_app_name              = "openidl-client" #a name of the application that uses user pool
-client_callback_urls         = ["https://openidl-dev-aais.thetech.digital/callback", "https://openidl-dev.aais.thetech.digital/redirect"] #ensure to add redirect url part of callback urls, as this is required
+client_callback_urls         = ["https://openidl-dev-aais.thetech.digital/callback", "https://openidl-dev-aais.thetech.digital/redirect"] #ensure to add redirect url part of callback urls, as this is required
 client_default_redirect_url  = "https://openidl-dev-aais.thetech.digital/redirect" #redirect url
 client_logout_urls           = ["https://openidl-dev-aais.thetech.digital/signout"] #logout url
 cognito_domain               = "aais-openidl" #unique domain name
