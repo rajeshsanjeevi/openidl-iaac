@@ -1,41 +1,50 @@
-ordererorg_domain: ""
-domain: ""
-internal_domain: ""
+ordererorg_domain: "aais.thetech.digital"
+domain: "aais.thetech.digital"
+internal_domain: "aais.internal.thetech.digital"
+add_org: ""
+chaincode_version: ""
 node_type: "aais"
 network:
-  org_name: ""
-  ordererorg: ""
-  ordererorg_name: ""
+  org_name: "aais"
+  ordererorg: "true"
+  ordererorg_name: "ordererorg"
   organizations:
-    - name: ""
-      domain: ""
-    - name: ""
-      domain: ""
+    - name: "analytics"
+      domain: "analytics.thetech.digital"
+    - name: "carrier"
+      domain: "carrier.thetech.digital"
   channels:
-  - name: ""
+  - name: defaultchannel
     chaincode:
-      name: ""
-      repo_url: ""
-      repo_branch: "" 
-      repo_path: ""
-  - name: ""
+      name: openidl-cc-default
+      repo_url: github.com/rajeshsanjeevi/openidl-main.git
+      repo_branch: develop-jenkins
+      repo_path: openidl-chaincode/chaincode/openidl
+  - name: anal-aais
     chaincode:
-      name: ""
-      repo_url: ""
-      repo_branch: "" 
-      repo_path: ""
+      name: openidl-cc-aais-carriers
+      repo_url: github.com/rajeshsanjeevi/openidl-main.git
+      repo_branch: develop-jenkins
+      repo_path: openidl-chaincode/chaincode/openidl
       collectionconfig:
-        - name: ""
-          policy: ""
-  - name: ""
+        - name: "anal_aais_pdc"
+          policy: "OR('analyticsMSP.member', 'aaisMSP.member')"
+  - name: anal-carr
     chaincode:
-      name: ""
-      repo_url: ""
-      repo_branch: "" 
-      repo_path: ""
+      name: openidl-cc-aais-carriers
+      repo_url: github.com/rajeshsanjeevi/openidl-main.git
+      repo_branch: develop-jenkins
+      repo_path: openidl-chaincode/chaincode/openidl
       collectionconfig:
-        - name: ""
-          policy: ""
-
-
-
+        - name: "anal_carr_pdc"
+          policy: "OR('analyticsMSP.member', 'carrierMSP.member')"
+    
+  - name: anal-caru
+    chaincode:
+      name: openidl-cc-aais-carriers
+      repo_url: github.com/rajeshsanjeevi/openidl-main.git
+      repo_branch: develop-jenkins
+      repo_path: openidl-chaincode/chaincode/openidl
+      collectionconfig:
+        - name: "anal_caru_pdc"
+          policy: "OR('analyticsMSP.member', 'caruMSP.member')"
