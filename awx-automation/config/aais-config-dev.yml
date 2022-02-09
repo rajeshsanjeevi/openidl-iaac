@@ -38,13 +38,3 @@ network:
       collectionconfig:
         - name: "anal_carr_pdc"
           policy: "OR('analyticsMSP.member', 'carrierMSP.member')"
-    
-  - name: anal-caru
-    chaincode:
-      name: openidl-cc-aais-carriers
-      repo_url: github.com/rajeshsanjeevi/openidl-main.git
-      repo_branch: develop-jenkins
-      repo_path: openidl-chaincode/chaincode/openidl
-      collectionconfig:
-        - name: "anal_caru_pdc"
-          policy: "OR('analyticsMSP.member', 'caruMSP.member')"
