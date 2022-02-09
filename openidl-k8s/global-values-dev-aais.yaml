@@ -32,7 +32,7 @@ global:
         port: 8080
         targetport: 8080
         ingressenabled: false
-        ingresshostname: aais.dev.aais.thetech.digital
+        ingresshostname: openidl.dev.aais.thetech.digital
         image:
             repository: ghcr.io/openidl-org/openidl-ui
             pullPolicy: IfNotPresent
