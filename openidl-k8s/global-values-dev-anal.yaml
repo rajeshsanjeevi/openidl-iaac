@@ -34,9 +34,9 @@ global:
         ingressenabled: false
         ingresshostname: openidl.dev.analytics.thetech.digital
         image:
-            repository: ghcr.io/openidl-org/openidl-ui
+            repository: ghcr.io/rajeshsanjeevi/openidl-main/openidl-org/openidl-ui
             pullPolicy: IfNotPresent
-            tag: 1-git-actions-helm-3b27ace-091420211922
+            tag: 12-develop-jenkins-792d1bb-021120221556
     datacallmoodlistener:
         install: true
         port: 8080
