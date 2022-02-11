@@ -1,5 +1,0 @@
-{
-    "persistentStore": "mongo",
-    "mongodb": "openidl-offchain-db",
-    "simpleURI": "mongodb://analytics-dev-Le8aujEqc8kdqJRG:3LdZsEqzFSjBKcnSxmPmBcUSRo5RoimTn3DcSkJE@analytics-mongodb-0.analytics-mongodb-headless.database.svc.cluster.local:27017,analytics-mongodb-1.analytics-mongodb-headless.database.svc.cluster.local:27017,analytics-mongodb-2.analytics-mongodb-headless.database.svc.cluster.local:27017/openidl-offchain-db?authSource=openidl-offchain-db"
-}
