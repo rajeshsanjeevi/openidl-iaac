@@ -39,11 +39,11 @@ spec:
     orderer:
       address: orderer1.ordererorg.dev.aais.thetech.digital:8443
     anchorstx: |-
-      CtUCChwKGggCGgYI3LqNkAYiDmRlZmF1bHRjaGFubmVsErQCCrECCg5kZWZhdWx0Y2hhbm5lbBJg
-      El4KC0FwcGxpY2F0aW9uEk8IARJLCgdhYWlzTVNQEkAaBwoDTVNQEgAiCwoHUmVhZGVycxIAIgsK
-      B1dyaXRlcnMSACIKCgZBZG1pbnMSACIPCgtFbmRvcnNlbWVudBIAGrwBErkBCgtBcHBsaWNhdGlv
+      CtUCChwKGggCGgYI46yVkAYiDmRlZmF1bHRjaGFubmVsErQCCrECCg5kZWZhdWx0Y2hhbm5lbBJg
+      El4KC0FwcGxpY2F0aW9uEk8IARJLCgdhYWlzTVNQEkAaBwoDTVNQEgAiCgoGQWRtaW5zEgAiDwoL
+      RW5kb3JzZW1lbnQSACILCgdSZWFkZXJzEgAiCwoHV3JpdGVycxIAGrwBErkBCgtBcHBsaWNhdGlv
       bhKpAQgBEqQBCgdhYWlzTVNQEpgBCAEaTAoLQW5jaG9yUGVlcnMSPRIzCjEKLHBlZXIwLmFhaXMt
-      bmV0LmFhaXMuZGV2LmFhaXMudGhldGVjaC5kaWdpdGFsEPtBGgZBZG1pbnMaBwoDTVNQEgAiCwoH
-      UmVhZGVycxIAIgsKB1dyaXRlcnMSACIKCgZBZG1pbnMSACIPCgtFbmRvcnNlbWVudBIAKgZBZG1p
+      bmV0LmFhaXMuZGV2LmFhaXMudGhldGVjaC5kaWdpdGFsEPtBGgZBZG1pbnMaBwoDTVNQEgAiCgoG
+      QWRtaW5zEgAiDwoLRW5kb3JzZW1lbnQSACILCgdSZWFkZXJzEgAiCwoHV3JpdGVycxIAKgZBZG1p
       bnM=
 

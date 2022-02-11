@@ -39,7 +39,7 @@ spec:
     orderer:
       address: orderer1.ordererorg.dev.aais.thetech.digital:8443
     anchorstx: |-
-      CssCChcKFQgCGgYIs6SQkAYiCWFuYWwtYWFpcxKvAgqsAgoJYW5hbC1hYWlzEmASXgoLQXBwbGlj
+      CssCChcKFQgCGgYInvCVkAYiCWFuYWwtYWFpcxKvAgqsAgoJYW5hbC1hYWlzEmASXgoLQXBwbGlj
       YXRpb24STwgBEksKB2FhaXNNU1ASQBoHCgNNU1ASACIKCgZBZG1pbnMSACIPCgtFbmRvcnNlbWVu
       dBIAIgsKB1JlYWRlcnMSACILCgdXcml0ZXJzEgAavAESuQEKC0FwcGxpY2F0aW9uEqkBCAESpAEK
       B2FhaXNNU1ASmAEIARpMCgtBbmNob3JQZWVycxI9EjMKMQoscGVlcjAuYWFpcy1uZXQuYWFpcy5k

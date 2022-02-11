@@ -40,11 +40,11 @@ spec:
     orderer:
       address: orderer1.ordererorg.dev.aais.thetech.digital:8443
     channeltx: |-
-      Cp0DChcKFQgCGgYIqMeSkAYiCWFuYWwtY2FychKBAwr+AgoJYW5hbC1jYXJyEi4SHAoLQXBwbGlj
+      Cp0DChcKFQgCGgYI+aKWkAYiCWFuYWwtY2FychKBAwr+AgoJYW5hbC1jYXJyEi4SHAoLQXBwbGlj
       YXRpb24SDRILCgdhYWlzTVNQEgAaDgoKQ29uc29ydGl1bRIAGsACEpgCCgtBcHBsaWNhdGlvbhKI
-      AggBEgsKB2FhaXNNU1ASABokCgxDYXBhYmlsaXRpZXMSFBIKCggKBFYyXzASABoGQWRtaW5zIioK
-      C0VuZG9yc2VtZW50EhsSEQgDEg0KC0VuZG9yc2VtZW50GgZBZG1pbnMiMwoUTGlmZWN5Y2xlRW5k
-      b3JzZW1lbnQSGxIRCAMSDQoLRW5kb3JzZW1lbnQaBkFkbWlucyIiCgdSZWFkZXJzEhcSDQgDEgkK
-      B1JlYWRlcnMaBkFkbWlucyIiCgdXcml0ZXJzEhcSDQgDEgkKB1dyaXRlcnMaBkFkbWlucyIgCgZB
-      ZG1pbnMSFhIMCAMSCAoGQWRtaW5zGgZBZG1pbnMqBkFkbWlucxojCgpDb25zb3J0aXVtEhUSEwoR
+      AggBEgsKB2FhaXNNU1ASABokCgxDYXBhYmlsaXRpZXMSFBIKCggKBFYyXzASABoGQWRtaW5zIiIK
+      B1dyaXRlcnMSFxINCAMSCQoHV3JpdGVycxoGQWRtaW5zIiAKBkFkbWlucxIWEgwIAxIICgZBZG1p
+      bnMaBkFkbWlucyIqCgtFbmRvcnNlbWVudBIbEhEIAxINCgtFbmRvcnNlbWVudBoGQWRtaW5zIjMK
+      FExpZmVjeWNsZUVuZG9yc2VtZW50EhsSEQgDEg0KC0VuZG9yc2VtZW50GgZBZG1pbnMiIgoHUmVh
+      ZGVycxIXEg0IAxIJCgdSZWFkZXJzGgZBZG1pbnMqBkFkbWlucxojCgpDb25zb3J0aXVtEhUSEwoR
       T3BlbklETENvbnNvcnRpdW0=
