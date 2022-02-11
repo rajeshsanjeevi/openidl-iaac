@@ -15,4 +15,8 @@
 		"value": "debug",
 		"env": "LOG_LEVEL"
 	}
+	"icon-bucket-url": {
+		"value": "<S3_BUCKET_URL_ICONS>",
+		"env": "ICON_BUCKET_URL"
+	}
 }
