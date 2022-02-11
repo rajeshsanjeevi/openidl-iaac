@@ -1,9 +1,0 @@
-{
-    "adminlist": [
-        {
-            "user": "carrier-admin",
-            "secret": "carrier-adminpw",
-            "org": "carrier"
-        }
-    ]
-}

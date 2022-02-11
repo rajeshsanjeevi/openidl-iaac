@@ -1,5 +1,0 @@
-{
-    "persistentStore": "mongo",
-    "mongodb": "openidl-offchain-db",
-    "simpleURI": "mongodb://carrier-dev-2RhaEVB1bCPRsmsw:mAHOP58mRgzBf1DvtTH6xEL3HZ2rtBztZgmd1Qza@carrier-mongodb-0.carrier-mongodb-headless.database.svc.cluster.local:27017,carrier-mongodb-1.carrier-mongodb-headless.database.svc.cluster.local:27017,carrier-mongodb-2.carrier-mongodb-headless.database.svc.cluster.local:27017/openidl-offchain-db?authSource=openidl-offchain-db"
-}
