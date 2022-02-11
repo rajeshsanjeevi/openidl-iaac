@@ -1,7 +1,7 @@
 {
     "listenerChannels": [
         {
-            "channelName": "${ANALYTICS_ORGNAME_SHORT}-${AAIS_ORGNAME_SHORT}",
+            "channelName": "anal-aais",
             "events": [
                 {
                     "ConsentedEvent": "ConsentedEvent"
@@ -12,7 +12,7 @@
             ]
         },
         {
-            "channelName": "${ANALYTICS_ORGNAME_SHORT}-${CARRIER_ORGNAME_SHORT}",
+            "channelName": "anal-carr",
             "events": [
                 {
                     "ConsentedEvent": "ConsentedEvent"
@@ -24,7 +24,7 @@
         }
     ],
     "identity": {
-        "user": "openidl-${ANALYTICS_ORGNAME}-data-call-mood-listener-ibp-2.0",
+        "user": "openidl-analytics-data-call-mood-listener-ibp-2.0",
         "wallet": "&wallet"
     },
     "applicationName": "openidl-data-call-mood-listener"

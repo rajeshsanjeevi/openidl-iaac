@@ -1,7 +1,7 @@
 {
     "walletType": "hashicorp_vault",
-    "accessKeyId": "${AWS_SECRET_MANAGER_ACCESS_KEY_ID}",
-    "secretAccessKey": "${AWS_SECRET_MANAGER_SECRET_ACCESS_KEY}",
-    "region": "${AWS_SECRET_MANAGER_REGION}",
-    "secretName": "${VAULT_SECRET_NAME}"
+    "accessKeyId": "AKIAYKTVXHYPFYVAJ55M",
+    "secretAccessKey": "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",
+    "region": "us-east-2",
+    "secretName": "aais-dev-kvs-vault"
 }

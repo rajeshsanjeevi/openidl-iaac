@@ -1,9 +1,9 @@
 {
     "adminlist": [
         {
-            "user": "${CARRIER_ORGNAME}-admin",
-            "secret": "${CARRIER_ORGNAME}-adminpw",
-            "org": "${CARRIER_ORGNAME}"
+            "user": "carrier-admin",
+            "secret": "carrier-adminpw",
+            "org": "carrier"
         }
     ]
 }

@@ -5,20 +5,28 @@
             "chaincodeName": "openidl-cc-default"
         },
         {
-            "channelName": "${ANALYTICS_ORGNAME_SHORT}-${AAIS_ORGNAME_SHORT}",
+            "channelName": "anal-aais",
+            "chaincodeName": "openidl-cc-aais-carriers"
+        },
+        {
+            "channelName": "anal-carr",
             "chaincodeName": "openidl-cc-aais-carriers"
         }
     ],
     "users": [
         {
-            "org": "${ANALYTICS_ORGNAME}",
-            "user": "openidl-${ANALYTICS_ORGNAME}-data-call-app-ibp-2.0",
-            "mspId": "${ANALYTICS_ORGNAME}MSP"
+            "org": "analytics",
+            "user": "openidl-analytics-data-call-app-ibp-2.0",
+            "mspId": "analyticsMSP"
         }
     ],
     "crossChannelQueryParam": [
         {
-            "channelName": "${ANALYTICS_ORGNAME_SHORT}-${AAIS_ORGNAME_SHORT}",
+            "channelName": "anal-aais",
+            "chaincodeName": "openidl-cc-aais-carriers"
+        },
+        {
+            "channelName": "anal-carr",
             "chaincodeName": "openidl-cc-aais-carriers"
         }
     ]

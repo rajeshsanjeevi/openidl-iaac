@@ -5,20 +5,20 @@
             "chaincodeName": "openidl-cc-default"
         },
         {
-            "channelName": "${ANALYTICS_ORGNAME_SHORT}-${CARRIER_ORGNAME_SHORT}",
+            "channelName": "anal-carr",
             "chaincodeName": "openidl-cc-aais-carriers"
         }
     ],
     "users": [
         {
-            "org": "${CARRIER_ORGNAME}",
-            "user": "openidl-${CARRIER_ORGNAME}-data-call-app-ibp-2.0",
-            "mspId": "${CARRIER_ORGNAME}MSP"
+            "org": "carrier",
+            "user": "openidl-carrier-data-call-app-ibp-2.0",
+            "mspId": "carrierMSP"
         }
     ],
     "crossChannelQueryParam": [
         {
-            "channelName": "${ANALYTICS_ORGNAME_SHORT}-${CARRIER_ORGNAME_SHORT}",
+            "channelName": "anal-carr",
             "chaincodeName": "openidl-cc-aais-carriers"
         }
     ]

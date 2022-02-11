@@ -1,5 +1,5 @@
 {
-  "accessKeyId": "${AWS_COGNITO_ACCESS_KEY_ID}",
-  "secretAccessKey": "${AWS_COGNITO_SECRET_ACCESS_KEY}",
-  "region": "${AWS_COGNITO_REGION}"
+  "accessKeyId": "AKIAYKTVXHYPICA774WH",
+  "secretAccessKey": "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",
+  "region": "us-west-1"
 }

@@ -1,9 +1,9 @@
 {
     "adminlist": [
         {
-            "user": "${ANALYTICS_ORGNAME}-admin",
-            "secret": "${ANALYTICS_ORGNAME}-adminpw",
-            "org": "${ANALYTICS_ORGNAME}"
+            "user": "analytics-admin",
+            "secret": "analytics-adminpw",
+            "org": "analytics"
         }
     ]
 }

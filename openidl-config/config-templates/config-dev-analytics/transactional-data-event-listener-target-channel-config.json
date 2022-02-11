@@ -2,10 +2,18 @@
     "targetChannels": [{
         "channelName": "defaultchannel",
         "chaincodeName": "openidl-cc-default"
+    },
+    {
+        "channelName": "anal-aais",
+        "chaincodeName": "openidl-cc-aais-carriers"
+    },
+    {
+        "channelName": "anal-carr",
+        "chaincodeName": "openidl-cc-aais-carriers"
     }],
     "users": [{
-        "org": "${ANALYTICS_ORGNAME}",
-        "user": "openidl-${ANALYTICS_ORGNAME}-transactional-data-event-listener-ibp-2.0",
-        "mspId": "${ANALYTICS_ORGNAME}MSP"
+        "org": "analytics",
+        "user": "openidl-analytics-transactional-data-event-listener-ibp-2.0",
+        "mspId": "analyticsMSP"
     }]
 }

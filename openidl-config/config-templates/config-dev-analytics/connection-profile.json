@@ -1,9 +1,9 @@
 {
-    "name": "test-network-${ANALYTICS_ORGNAME}",
+    "name": "test-network-analytics",
     "version": "1.0.0",
     "isLocal": true,
     "client": {
-        "organization": "${ANALYTICS_ORGNAME}",
+        "organization": "analytics",
         "connection": {
             "timeout": {
                 "peer": {
@@ -13,21 +13,21 @@
         }
     },
     "organizations": {
-        "${ANALYTICS_ORGNAME}": {
-            "mspid": "${ANALYTICS_ORGNAME}MSP",
+        "analytics": {
+            "mspid": "analyticsMSP",
             "peers": [
-                "peer0.${ANALYTICS_ORGNAME}-net.${ANALYTICS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com"
+                "peer0.analytics-net.analytics.dev.analytics.thetech.digital"
             ],
             "certificateAuthorities": [
-                "ca.${ANALYTICS_ORGNAME}-net.${ANALYTICS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com"
+                "ca.analytics-net.analytics.dev.analytics.thetech.digital"
             ]
         }
     },
     "peers": {
-        "peer0.${ANALYTICS_ORGNAME}-net.${ANALYTICS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com": {
-            "url": "grpcs://peer0.${ANALYTICS_ORGNAME}-net.${ANALYTICS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com:8443",
+        "peer0.analytics-net.analytics.dev.analytics.thetech.digital": {
+            "url": "grpcs://peer0.analytics-net.analytics.dev.analytics.thetech.digital:8443",
             "tlsCACerts": {
-                "pem": "${TLS_CERT}"
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICWjCCAgCgAwIBAgIUSL4oI8Qe1L8GSi6NFDhhnHdhiuEwCgYIKoZIzj0EAwIw\ngYoxCzAJBgNVBAYTAlVTMREwDwYDVQQIDAhJbGxpbm9pczERMA8GA1UEBwwISWxs\naW5vaXMxEjAQBgNVBAoMCWFuYWx5dGljczFBMD8GA1UEAww4Y2EuYW5hbHl0aWNz\nLW5ldC5hbmFseXRpY3MuZGV2LmFuYWx5dGljcy50aGV0ZWNoLmRpZ2l0YWwwHhcN\nMjIwMjEwMTk0NjIxWhcNMjQxMTMwMTk0NjIxWjCBijELMAkGA1UEBhMCVVMxETAP\nBgNVBAgMCElsbGlub2lzMREwDwYDVQQHDAhJbGxpbm9pczESMBAGA1UECgwJYW5h\nbHl0aWNzMUEwPwYDVQQDDDhjYS5hbmFseXRpY3MtbmV0LmFuYWx5dGljcy5kZXYu\nYW5hbHl0aWNzLnRoZXRlY2guZGlnaXRhbDBZMBMGByqGSM49AgEGCCqGSM49AwEH\nA0IABLfVpk0OKAs5h1ujfAUByeNkD9XITVWUzO48rMixu0K2VTBEMvGwtCMxiysI\nmCY3E3rgzvcQt0zNAPE5ofil3yWjQjBAMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0P\nAQH/BAQDAgGmMB0GA1UdDgQWBBRSBjr7i/Y8a350/jiYACkTsmvR+jAKBggqhkjO\nPQQDAgNIADBFAiEA+j7JWv2FEsrtn624tiX1hxNFa2aKXgoZJWmhv4UuOR0CIERU\nzGf65IUKWLtvtdXsGpx+p4QtwCeqNPjHcrOTFY3X\n-----END CERTIFICATE-----"
             },
             "grpcOptions": {
                 "grpc.http2.keepalive_time": 36000,
@@ -35,18 +35,18 @@
                 "grpc.http2.keepalive_timeout": 18000,
                 "grpc.keepalive_timeout_ms": 180000,
                 "grpc-wait-for-ready-timeout": 30000,
-                "ssl-target-name-override": "peer0.${ANALYTICS_ORGNAME}-net.${ANALYTICS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com",
-                "hostnameOverride": "peer0.${ANALYTICS_ORGNAME}-net.${ANALYTICS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com"
+                "ssl-target-name-override": "peer0.analytics-net.analytics.dev.analytics.thetech.digital",
+                "hostnameOverride": "peer0.analytics-net.analytics.dev.analytics.thetech.digital"
             }
         }
     },
     "certificateAuthorities": {
-        "ca.${ANALYTICS_ORGNAME}-net.${ANALYTICS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com": {
-            "url": "https://ca.${ANALYTICS_ORGNAME}-net.${ANALYTICS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com:8443",
-            "caName": "ca.${ANALYTICS_ORGNAME}-net",
+        "ca.analytics-net.analytics.dev.analytics.thetech.digital": {
+            "url": "https://ca.analytics-net.analytics.dev.analytics.thetech.digital:8443",
+            "caName": "ca.analytics-net",
             "tlsCACerts": {
                 "pem": [
-                    "${TLS_CERT}"
+                    "-----BEGIN CERTIFICATE-----\nMIICWjCCAgCgAwIBAgIUSL4oI8Qe1L8GSi6NFDhhnHdhiuEwCgYIKoZIzj0EAwIw\ngYoxCzAJBgNVBAYTAlVTMREwDwYDVQQIDAhJbGxpbm9pczERMA8GA1UEBwwISWxs\naW5vaXMxEjAQBgNVBAoMCWFuYWx5dGljczFBMD8GA1UEAww4Y2EuYW5hbHl0aWNz\nLW5ldC5hbmFseXRpY3MuZGV2LmFuYWx5dGljcy50aGV0ZWNoLmRpZ2l0YWwwHhcN\nMjIwMjEwMTk0NjIxWhcNMjQxMTMwMTk0NjIxWjCBijELMAkGA1UEBhMCVVMxETAP\nBgNVBAgMCElsbGlub2lzMREwDwYDVQQHDAhJbGxpbm9pczESMBAGA1UECgwJYW5h\nbHl0aWNzMUEwPwYDVQQDDDhjYS5hbmFseXRpY3MtbmV0LmFuYWx5dGljcy5kZXYu\nYW5hbHl0aWNzLnRoZXRlY2guZGlnaXRhbDBZMBMGByqGSM49AgEGCCqGSM49AwEH\nA0IABLfVpk0OKAs5h1ujfAUByeNkD9XITVWUzO48rMixu0K2VTBEMvGwtCMxiysI\nmCY3E3rgzvcQt0zNAPE5ofil3yWjQjBAMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0P\nAQH/BAQDAgGmMB0GA1UdDgQWBBRSBjr7i/Y8a350/jiYACkTsmvR+jAKBggqhkjO\nPQQDAgNIADBFAiEA+j7JWv2FEsrtn624tiX1hxNFa2aKXgoZJWmhv4UuOR0CIERU\nzGf65IUKWLtvtdXsGpx+p4QtwCeqNPjHcrOTFY3X\n-----END CERTIFICATE-----"
                 ]
             },
             "httpOptions": {

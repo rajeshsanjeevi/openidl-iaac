@@ -8,11 +8,15 @@
 		"env": "PORT"
 	},
 	"data-call-app-url": {
-		"value": "http://data-call-app-service.${ENV}.${SUBDOMAIN}.internal.${DOMAIN}.com/openidl/api",
+		"value": "http://data-call-app-service.dev.carrier.internal.thetech.digital/openidl/api",
 		"env": "DATA_CALL_APP_URL"
 	},
 	"log-level": {
 		"value": "debug",
 		"env": "LOG_LEVEL"
+	},
+	"icon-bucket-url": {
+		"value": "https://carr-dev-openidl-public-logos.s3.amazonaws.com",
+		"env": "ICON_BUCKET_URL"
 	}
 }

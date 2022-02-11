@@ -1,7 +1,7 @@
 {
     "listenerChannels": [
         {
-            "channelName": "${ANALYTICS_ORGNAME_SHORT}-${CARRIER_ORGNAME_SHORT}",
+            "channelName": "anal-carr",
             "events": [
                 {
                     "ConsentedEvent": "ConsentedEvent"
@@ -18,7 +18,7 @@
         }
     ],
     "identity": {
-        "user": "openidl-${CARRIER_ORGNAME}-data-call-processor-ibp-2.0",
+        "user": "openidl-carrier-data-call-processor-ibp-2.0",
         "wallet": "&wallet"
     },
     "applicationName": "openidl-carrier-data-call-processor"

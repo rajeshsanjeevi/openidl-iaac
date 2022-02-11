@@ -1,7 +1,7 @@
 {
     "targetChannels": [
         {
-            "channelName": "${ANALYTICS_ORGNAME_SHORT}-${CARRIER_ORGNAME_SHORT}",
+            "channelName": "anal-carr",
             "chaincodeName": "openidl-cc-aais-carriers"
         },
         {
@@ -11,9 +11,9 @@
     ],
     "users": [
         {
-            "org": "${CARRIER_ORGNAME}",
-            "user": "openidl-${CARRIER_ORGNAME}-data-call-processor-ibp-2.0",
-            "mspId": "${CARRIER_ORGNAME}MSP"
+            "org": "carrier",
+            "user": "openidl-carrier-data-call-processor-ibp-2.0",
+            "mspId": "carrierMSP"
         }
     ]
 }

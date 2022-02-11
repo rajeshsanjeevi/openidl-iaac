@@ -1,9 +1,9 @@
 {
-    "name": "test-network-${AAIS_ORGNAME}",
+    "name": "test-network-aais",
     "version": "1.0.0",
     "isLocal": true,
     "client": {
-        "organization": "${AAIS_ORGNAME}",
+        "organization": "aais",
         "connection": {
             "timeout": {
                 "peer": {
@@ -13,21 +13,21 @@
         }
     },
     "organizations": {
-        "${AAIS_ORGNAME}": {
-            "mspid": "${AAIS_ORGNAME}MSP",
+        "aais": {
+            "mspid": "aaisMSP",
             "peers": [
-                "peer0.${AAIS_ORGNAME}-net.${AAIS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com"
+                "peer0.aais-net.aais.dev.aais.thetech.digital"
             ],
             "certificateAuthorities": [
-                "ca.${AAIS_ORGNAME}-net.${AAIS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com"
+                "ca.aais-net.aais.dev.aais.thetech.digital"
             ]
         }
     },
     "peers": {
-        "peer0.${AAIS_ORGNAME}-net.${AAIS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com": {
-            "url": "grpcs://peer0.${AAIS_ORGNAME}-net.${AAIS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com:8443",
+        "peer0.aais-net.aais.dev.aais.thetech.digital": {
+            "url": "grpcs://peer0.aais-net.aais.dev.aais.thetech.digital:8443",
             "tlsCACerts": {
-                "pem": "${TLS_CERT}"
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICMDCCAdagAwIBAgIUEDyCeoRvhbIHUcoP3+Y9ng3bStkwCgYIKoZIzj0EAwIw\ndjELMAkGA1UEBhMCVVMxETAPBgNVBAgMCElsbGlub2lzMREwDwYDVQQHDAhJbGxp\nbm9pczENMAsGA1UECgwEYWFpczEyMDAGA1UEAwwpY2EuYWFpcy1uZXQuYWFpcy5k\nZXYuYWFpcy50aGV0ZWNoLmRpZ2l0YWwwHhcNMjIwMjEwMTgwNjI0WhcNMjQxMTMw\nMTgwNjI0WjB2MQswCQYDVQQGEwJVUzERMA8GA1UECAwISWxsaW5vaXMxETAPBgNV\nBAcMCElsbGlub2lzMQ0wCwYDVQQKDARhYWlzMTIwMAYDVQQDDCljYS5hYWlzLW5l\ndC5hYWlzLmRldi5hYWlzLnRoZXRlY2guZGlnaXRhbDBZMBMGByqGSM49AgEGCCqG\nSM49AwEHA0IABK4Vzd12mCfpopTOqXmfwbfG6mWnodG91sABWNjJHAyN5Cqp/758\ndCBlXIiaUQ9bKTPbMkLX/LrUQ++yna3QSRijQjBAMA8GA1UdEwEB/wQFMAMBAf8w\nDgYDVR0PAQH/BAQDAgGmMB0GA1UdDgQWBBT1boTaRPfx6hg2g9sygdnQxvLpkzAK\nBggqhkjOPQQDAgNIADBFAiEA2yfl+wsnH5j7yVkJZVgfR9J0qMFvvEsUcOmKaRpK\nUh0CIEdCGl3dQcZ86GmPTm1ELtEiqasbXF8pBpB8atdIP7LH\n-----END CERTIFICATE-----"
             },
             "grpcOptions": {
                 "grpc.http2.keepalive_time": 36000,
@@ -35,18 +35,18 @@
                 "grpc.http2.keepalive_timeout": 18000,
                 "grpc.keepalive_timeout_ms": 180000,
                 "grpc-wait-for-ready-timeout": 30000,
-                "ssl-target-name-override": "peer0.${AAIS_ORGNAME}-net.${AAIS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com",
-                "hostnameOverride": "peer0.${AAIS_ORGNAME}-net.${AAIS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com"
+                "ssl-target-name-override": "peer0.aais-net.aais.dev.aais.thetech.digital",
+                "hostnameOverride": "peer0.aais-net.aais.dev.aais.thetech.digital"
             }
         }
     },
     "certificateAuthorities": {
-        "ca.${AAIS_ORGNAME}-net.${AAIS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com": {
-            "url": "https://ca.${AAIS_ORGNAME}-net.${AAIS_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com:8443",
-            "caName": "ca.${AAIS_ORGNAME}-net",
+        "ca.aais-net.aais.dev.aais.thetech.digital": {
+            "url": "https://ca.aais-net.aais.dev.aais.thetech.digital:8443",
+            "caName": "ca.aais-net",
             "tlsCACerts": {
                 "pem": [
-                    "${TLS_CERT}"
+                    "-----BEGIN CERTIFICATE-----\nMIICMDCCAdagAwIBAgIUEDyCeoRvhbIHUcoP3+Y9ng3bStkwCgYIKoZIzj0EAwIw\ndjELMAkGA1UEBhMCVVMxETAPBgNVBAgMCElsbGlub2lzMREwDwYDVQQHDAhJbGxp\nbm9pczENMAsGA1UECgwEYWFpczEyMDAGA1UEAwwpY2EuYWFpcy1uZXQuYWFpcy5k\nZXYuYWFpcy50aGV0ZWNoLmRpZ2l0YWwwHhcNMjIwMjEwMTgwNjI0WhcNMjQxMTMw\nMTgwNjI0WjB2MQswCQYDVQQGEwJVUzERMA8GA1UECAwISWxsaW5vaXMxETAPBgNV\nBAcMCElsbGlub2lzMQ0wCwYDVQQKDARhYWlzMTIwMAYDVQQDDCljYS5hYWlzLW5l\ndC5hYWlzLmRldi5hYWlzLnRoZXRlY2guZGlnaXRhbDBZMBMGByqGSM49AgEGCCqG\nSM49AwEHA0IABK4Vzd12mCfpopTOqXmfwbfG6mWnodG91sABWNjJHAyN5Cqp/758\ndCBlXIiaUQ9bKTPbMkLX/LrUQ++yna3QSRijQjBAMA8GA1UdEwEB/wQFMAMBAf8w\nDgYDVR0PAQH/BAQDAgGmMB0GA1UdDgQWBBT1boTaRPfx6hg2g9sygdnQxvLpkzAK\nBggqhkjOPQQDAgNIADBFAiEA2yfl+wsnH5j7yVkJZVgfR9J0qMFvvEsUcOmKaRpK\nUh0CIEdCGl3dQcZ86GmPTm1ELtEiqasbXF8pBpB8atdIP7LH\n-----END CERTIFICATE-----"
                 ]
             },
             "httpOptions": {

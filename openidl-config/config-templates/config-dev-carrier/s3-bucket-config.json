@@ -1,6 +1,6 @@
 {
-    "accessKeyId": "${AWS_S3_ACCESS_KEY_ID}",
-    "secretAccessKey": "${AWS_S3_SECRET_ACCESS_KEY}",
-    "region": "${AWS_S3_REGION}",
-    "bucketName": "${S3_BUCKET_NAME}"
+    "accessKeyId": "AKIAYKTVXHYPICA774WH",
+    "secretAccessKey": "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",
+    "region": "us-west-1",
+    "bucketName": "carr-dev-openidl-hds-analytics"
 }

@@ -1,9 +1,9 @@
 {
-    "name": "test-network-${CARRIER_ORGNAME}",
+    "name": "test-network-carrier",
     "version": "1.0.0",
     "isLocal": true,
     "client": {
-        "organization": "${CARRIER_ORGNAME}",
+        "organization": "carrier",
         "connection": {
             "timeout": {
                 "peer": {
@@ -13,21 +13,21 @@
         }
     },
     "organizations": {
-        "${CARRIER_ORGNAME}": {
-            "mspid": "${CARRIER_ORGNAME}MSP",
+        "carrier": {
+            "mspid": "carrierMSP",
             "peers": [
-                "peer0.${CARRIER_ORGNAME}-net.${CARRIER_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com"
+                "peer0.carrier-net.carrier.dev.carrier.thetech.digital"
             ],
             "certificateAuthorities": [
-                "ca.${CARRIER_ORGNAME}-net.${CARRIER_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com"
+                "ca.carrier-net.carrier.dev.carrier.thetech.digital"
             ]
         }
     },
     "peers": {
-        "peer0.${CARRIER_ORGNAME}-net.${CARRIER_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com": {
-            "url": "grpcs://peer0.${CARRIER_ORGNAME}-net.${CARRIER_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com:8443",
+        "peer0.carrier-net.carrier.dev.carrier.thetech.digital": {
+            "url": "grpcs://peer0.carrier-net.carrier.dev.carrier.thetech.digital:8443",
             "tlsCACerts": {
-                "pem": "${TLS_CERT}"
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICSjCCAfCgAwIBAgIUfBy+vbccbzW3oUKKrXuSZ5LK8dcwCgYIKoZIzj0EAwIw\ngYIxCzAJBgNVBAYTAlVTMREwDwYDVQQIDAhJbGxpbm9pczERMA8GA1UEBwwISWxs\naW5vaXMxEDAOBgNVBAoMB2NhcnJpZXIxOzA5BgNVBAMMMmNhLmNhcnJpZXItbmV0\nLmNhcnJpZXIuZGV2LmNhcnJpZXIudGhldGVjaC5kaWdpdGFsMB4XDTIyMDIxMDIx\nNTUyOVoXDTI0MTEzMDIxNTUyOVowgYIxCzAJBgNVBAYTAlVTMREwDwYDVQQIDAhJ\nbGxpbm9pczERMA8GA1UEBwwISWxsaW5vaXMxEDAOBgNVBAoMB2NhcnJpZXIxOzA5\nBgNVBAMMMmNhLmNhcnJpZXItbmV0LmNhcnJpZXIuZGV2LmNhcnJpZXIudGhldGVj\naC5kaWdpdGFsMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEC+UUNYHBjL1rzwYJ\nGlmrM8ehOiKr3sDcNzab0JKHgEJvL0lxRSZBrRZV20mxXpcM80oe6RB7JSMEtVNU\n8c36dKNCMEAwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAaYwHQYDVR0O\nBBYEFKwWtYEFUhscHe0y40D83XTEXJGdMAoGCCqGSM49BAMCA0gAMEUCIQCCxSoz\nuCCAWqFcmS4qloGnV7TO40OvrVX6XC1d9nf+HAIgFyMEEk2bVDu/fKeCrcMjBNhN\n4Awhw5DC+3Y7+yCR4mY=\n-----END CERTIFICATE-----"
             },
             "grpcOptions": {
                 "grpc.http2.keepalive_time": 36000,
@@ -35,18 +35,18 @@
                 "grpc.http2.keepalive_timeout": 18000,
                 "grpc.keepalive_timeout_ms": 180000,
                 "grpc-wait-for-ready-timeout": 30000,
-                "ssl-target-name-override": "peer0.${CARRIER_ORGNAME}-net.${CARRIER_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com",
-                "hostnameOverride": "peer0.${CARRIER_ORGNAME}-net.${CARRIER_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com"
+                "ssl-target-name-override": "peer0.carrier-net.carrier.dev.carrier.thetech.digital",
+                "hostnameOverride": "peer0.carrier-net.carrier.dev.carrier.thetech.digital"
             }
         }
     },
     "certificateAuthorities": {
-        "ca.${CARRIER_ORGNAME}-net.${CARRIER_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com": {
-            "url": "https://ca.${CARRIER_ORGNAME}-net.${CARRIER_ORGNAME}.${ENV}.${SUBDOMAIN}.${DOMAIN}.com:8443",
-            "caName": "ca.${CARRIER_ORGNAME}-net",
+        "ca.carrier-net.carrier.dev.carrier.thetech.digital": {
+            "url": "https://ca.carrier-net.carrier.dev.carrier.thetech.digital:8443",
+            "caName": "ca.carrier-net",
             "tlsCACerts": {
                 "pem": [
-                    "${TLS_CERT}"
+                    "-----BEGIN CERTIFICATE-----\nMIICSjCCAfCgAwIBAgIUfBy+vbccbzW3oUKKrXuSZ5LK8dcwCgYIKoZIzj0EAwIw\ngYIxCzAJBgNVBAYTAlVTMREwDwYDVQQIDAhJbGxpbm9pczERMA8GA1UEBwwISWxs\naW5vaXMxEDAOBgNVBAoMB2NhcnJpZXIxOzA5BgNVBAMMMmNhLmNhcnJpZXItbmV0\nLmNhcnJpZXIuZGV2LmNhcnJpZXIudGhldGVjaC5kaWdpdGFsMB4XDTIyMDIxMDIx\nNTUyOVoXDTI0MTEzMDIxNTUyOVowgYIxCzAJBgNVBAYTAlVTMREwDwYDVQQIDAhJ\nbGxpbm9pczERMA8GA1UEBwwISWxsaW5vaXMxEDAOBgNVBAoMB2NhcnJpZXIxOzA5\nBgNVBAMMMmNhLmNhcnJpZXItbmV0LmNhcnJpZXIuZGV2LmNhcnJpZXIudGhldGVj\naC5kaWdpdGFsMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEC+UUNYHBjL1rzwYJ\nGlmrM8ehOiKr3sDcNzab0JKHgEJvL0lxRSZBrRZV20mxXpcM80oe6RB7JSMEtVNU\n8c36dKNCMEAwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAaYwHQYDVR0O\nBBYEFKwWtYEFUhscHe0y40D83XTEXJGdMAoGCCqGSM49BAMCA0gAMEUCIQCCxSoz\nuCCAWqFcmS4qloGnV7TO40OvrVX6XC1d9nf+HAIgFyMEEk2bVDu/fKeCrcMjBNhN\n4Awhw5DC+3Y7+yCR4mY=\n-----END CERTIFICATE-----"
                 ]
             },
             "httpOptions": {

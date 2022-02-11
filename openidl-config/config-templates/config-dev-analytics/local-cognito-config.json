@@ -1,6 +1,6 @@
 {
   "idpType": "cognito",
-  "userPoolId": "${AWS_COGNITO_USERPOOLID}",
-  "clientId": "${AWS_COGNITO_CLIENTID}",
-  "region": "${AWS_COGNITO_REGION}"
+  "userPoolId": "us-west-1_ngE1U5Uc8",
+  "clientId": "1fghb7bkqan6v6v5tcfmq544m3",
+  "region": "us-west-1"
 }
