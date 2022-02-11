@@ -34,9 +34,9 @@ global:
         ingressenabled: false
         ingresshostname: openidl.dev.aais.thetech.digital
         image:
-            repository: ghcr.io/openidl-org/openidl-ui
+            repository: ghcr.io/rajeshsanjeevi/openidl-main/openidl-org/openidl-ui
             pullPolicy: IfNotPresent
-            tag: 9-cognito-fabric-node14-helm-f84a367-093020211950
+            tag: 12-develop-jenkins-792d1bb-021120221556
     insurancedatamanager:
         install: true
         port: 8080
