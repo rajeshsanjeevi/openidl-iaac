@@ -16,7 +16,7 @@
 		"env": "LOG_LEVEL"
 	}
 	"icon-bucket-url": {
-		"value": "<S3_BUCKET_URL_ICONS>",
+		"value": "https://<S3_BUCKET_NAME>.s3.amazonaws.com",
 		"env": "ICON_BUCKET_URL"
 	}
 }
