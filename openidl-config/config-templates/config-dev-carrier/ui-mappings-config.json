@@ -16,7 +16,7 @@
 		"env": "LOG_LEVEL"
 	},
 	"icon-bucket-url": {
-		"value": "https://carr-dev-openidl-public-logos.s3.amazonaws.com",
+		"value": "https://carr-dev-openidl-public-logos.s3.us-west-1.amazonaws.com",
 		"env": "ICON_BUCKET_URL"
 	}
 }

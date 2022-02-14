@@ -16,7 +16,8 @@
 		"env": "LOG_LEVEL"
 	},
 	"icon-bucket-url": {
-		"value": "https://aais-dev-openidl-public-logos.s3.amazonaws.com",
+		"value": "https://aais-dev-openidl-public-logos.s3.us-east-2.amazonaws.com",
 		"env": "ICON_BUCKET_URL"
 	}
 }
+gi
