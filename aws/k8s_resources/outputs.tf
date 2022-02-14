@@ -52,6 +52,10 @@ output "cognito_app_client_id" {
   value     = data.terraform_remote_state.base_setup.outputs.cognito_app_client_id
   sensitive = true
 }
+output "cognito_app_client_secret" {
+  value     = data.terraform_remote_state.base_setup.outputs.cognito_app_client_secret 
+  sensitive = true
+}
 #-----------------------------------------------------------------------------------------------------------------
 #git actions user and baf automation user outputs
 output "git_actions_iam_user_arn" {

@@ -8,6 +8,10 @@ output "cognito_app_client_id" {
   value     = aws_cognito_user_pool_client.cognito_app_client.id
   sensitive = true
 }
+output "cognito_app_client_secret" {
+  value     = aws_cognito_user_pool_client.cognito_app_client.client_secret
+  sensitive = true
+}
 #-----------------------------------------------------------------------------------------------------------------
 #git actions user and baf automation user outputs
 output "git_actions_iam_user_arn" {
