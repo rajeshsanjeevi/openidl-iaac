@@ -1,9 +1,0 @@
-{
-    "adminlist": [
-        {
-            "user": "aais-admin",
-            "secret": "aais-adminpw",
-            "org": "aais"
-        }
-    ]
-}

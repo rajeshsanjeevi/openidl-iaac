@@ -1,9 +1,0 @@
-{
-    "adminlist": [
-        {
-            "user": "analytics-admin",
-            "secret": "analytics-adminpw",
-            "org": "analytics"
-        }
-    ]
-}

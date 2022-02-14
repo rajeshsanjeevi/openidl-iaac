@@ -1,7 +1,0 @@
-{
-    "walletType": "hashicorp_vault",
-    "accessKeyId": "AKIAYKTVXHYPICA774WH",
-    "secretAccessKey": "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",
-    "region": "us-west-1",
-    "secretName": "carrier-dev-kvs-vault"
-}

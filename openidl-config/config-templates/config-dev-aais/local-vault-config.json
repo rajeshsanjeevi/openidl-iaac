@@ -1,7 +1,0 @@
-{
-    "walletType": "hashicorp_vault",
-    "accessKeyId": "AKIAYKTVXHYPFYVAJ55M",
-    "secretAccessKey": "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",
-    "region": "us-east-2",
-    "secretName": "aais-dev-kvs-vault"
-}
