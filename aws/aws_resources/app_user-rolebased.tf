@@ -166,7 +166,7 @@ resource "aws_iam_role" "openidl_nonaais_apps_iam_role" {
                 "sts:AssumeRole",
                 "sts:TagSession"
             ],
-            "Principal": { "AWS": "arn:aws:iam::${var.aws_account_number}:user/${aws_iam_user.openidl_apps_user.name}"},
+            "Principal": { "AWS": "arn:aws:iam::${var.aws_account_number}:user/${aws_iam_user.openidl_apps_user[0].name}"},
             "Effect": "Allow",
             "Condition": {
                 "StringEquals": {
@@ -192,7 +192,7 @@ resource "aws_iam_role" "openidl_aais_apps_iam_role" {
                 "sts:AssumeRole",
                 "sts:TagSession"
             ],
-            "Principal": { "AWS": "arn:aws:iam::${var.aws_account_number}:user/${aws_iam_user.openidl_apps_user.name}"},
+            "Principal": { "AWS": "arn:aws:iam::${var.aws_account_number}:user/${aws_iam_user.openidl_apps_user[0].name}"},
             "Effect": "Allow",
             "Condition": {
                 "StringEquals": {
