@@ -1,7 +1,7 @@
 #creating an s3 bucket for HDS data extract for analytics node
 resource "aws_s3_bucket" "s3_bucket_logos_public" {
   bucket = "${local.std_name}-${var.s3_bucket_name_logos}"
-  acl    = "public-read"
+  acl    = "private"
   force_destroy = true
   versioning {
     enabled = true
@@ -11,6 +11,15 @@ resource "aws_s3_bucket" "s3_bucket_logos_public" {
     {
       "Name" = "${local.std_name}-${var.s3_bucket_name_logos}"
     },)
+}
+#blocking public access to s3 bucket
+resource "aws_s3_bucket_public_access_block" "s3_bucket_logos_public_access_block" {
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = false
+  bucket                  = aws_s3_bucket.s3_bucket_logos_public.id
+  depends_on              = [aws_s3_bucket.s3_bucket_logos_public, aws_s3_bucket_policy.s3_bucket_policy_logos]
 }
 #S3 bucket policy for public s3 bucket
 resource "aws_s3_bucket_policy" "s3_bucket_policy_logos" {
