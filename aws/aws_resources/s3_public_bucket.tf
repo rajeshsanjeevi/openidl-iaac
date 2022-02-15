@@ -14,9 +14,9 @@ resource "aws_s3_bucket" "s3_bucket_logos_public" {
 }
 #blocking public access to s3 bucket
 resource "aws_s3_bucket_public_access_block" "s3_bucket_logos_public_access_block" {
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
   restrict_public_buckets = false
   bucket                  = aws_s3_bucket.s3_bucket_logos_public.id
   depends_on              = [aws_s3_bucket.s3_bucket_logos_public, aws_s3_bucket_policy.s3_bucket_policy_logos]
