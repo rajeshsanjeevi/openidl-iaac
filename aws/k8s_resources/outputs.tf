@@ -53,7 +53,7 @@ output "cognito_app_client_id" {
   sensitive = true
 }
 output "cognito_app_client_secret" {
-  value     = data.terraform_remote_state.base_setup.outputs.cognito_app_client_secret 
+  value     = data.terraform_remote_state.base_setup.outputs.cognito_app_client_secret
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
