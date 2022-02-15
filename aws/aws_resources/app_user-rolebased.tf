@@ -14,7 +14,7 @@ resource "aws_iam_access_key" "openidl_apps_access_key1" {
 #IAM policy of the openidl app user that allows to assume a specific role
 resource "aws_iam_user_policy" "openidl_apps_user_policy1" {
   name = "${local.std_name}-openidl-apps-user1"
-  user = aws_iam_user.openidl_apps_user.name
+  user = aws_iam_user.openidl_apps_user1.name
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
