@@ -59,6 +59,30 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
             ]
         },
       {
+            "Sid": "AllowAccessIAMRole",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${var.aws_role_arn}"
+            },
+            "Action": "*",
+            "Resource": [
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*",
+            ]
+        },
+      {
+            "Sid": "DenyOthers",
+            "Effect": "Deny",
+            "NotPrincipal": {
+                "AWS": [ "${var.aws_role_arn}", "${aws_iam_user.openidl_apps_user.arn}" ]
+            },
+            "Action": "*",
+            "Resource": [
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*",
+            ]
+      },
+      {
         Sid       = "HTTPRestrict"
         Effect    = "Deny"
         Principal = "*"
