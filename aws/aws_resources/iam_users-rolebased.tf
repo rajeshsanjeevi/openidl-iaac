@@ -23,7 +23,7 @@ resource "aws_iam_user_policy" "baf_user_policy1" {
                 "sts:AssumeRole",
                 "sts:TagSession"
             ],
-            "Resource": "arn:aws:iam::${var.aws_account_number}:role/${aws_iam_role.<fixthis>.name}",
+            "Resource": "arn:aws:iam::${var.aws_account_number}:role/${aws_iam_role.baf_user_role.name}",
             "Effect": "Allow",
             "Condition": {
                 "StringEquals": {
