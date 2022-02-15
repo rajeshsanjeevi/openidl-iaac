@@ -34,6 +34,7 @@ resource "aws_iam_user_policy" "openidl_apps_user_policy1" {
     ]
   })
 }
+#IAM role - apps user can assume to access specific OpenIDL related AWS resources
 resource "aws_iam_role" "openidl_apps_iam_role" {
   name = "${local.std_name}-openidl-apps"
   assume_role_policy = jsonencode({
@@ -44,7 +45,7 @@ resource "aws_iam_role" "openidl_apps_iam_role" {
                 "sts:AssumeRole",
                 "sts:TagSession"
             ],
-            "Principal": { "AWS": "arn:aws:iam::${var.aws_account_number}:user/${aws_iam_user.openidl_apps_user.name}"},
+            "Principal": { "AWS": "arn:aws:iam::${var.aws_account_number}:user/${aws_iam_user.openidl_apps_user1.name}"},
             "Effect": "Allow",
             "Condition": {
                 "StringEquals": {
@@ -55,7 +56,7 @@ resource "aws_iam_role" "openidl_apps_iam_role" {
     ]
   })
   managed_policy_arns = [var.org_name == "aais" ? aws_iam_policy.openidl_aais_apps_role_policy[0].arn : aws_iam_policy.openidl_nonaais_apps_role_policy[0].arn]
-  tags = merge(local.tags, {Name = "${local.std_name}-openidl-apps-role", Cluster_type = "both"})
+  tags = merge(local.tags, {Name = "${local.std_name}-openidl-apps", Cluster_type = "both"})
   description = "The iam role that is used with OpenIDL apps to access AWS resources"
   max_session_duration = 3600
 }
