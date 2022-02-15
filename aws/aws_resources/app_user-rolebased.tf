@@ -5,7 +5,7 @@ resource "aws_iam_user" "openidl_apps_user1" {
   tags = merge(local.tags, { Name = "${local.std_name}-openidl-apps-user", Cluster_type = "both" })
 }
 resource "aws_iam_access_key" "openidl_apps_access_key1" {
-  user = aws_iam_user.openidl_apps_user.name
+  user = aws_iam_user.openidl_apps_user1.name
   status = "Active"
   lifecycle {
     ignore_changes = [status]
