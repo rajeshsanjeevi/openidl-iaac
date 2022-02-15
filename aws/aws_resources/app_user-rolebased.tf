@@ -23,7 +23,7 @@ resource "aws_iam_user_policy" "openidl_apps_user_policy1" {
                 "sts:AssumeRole",
                 "sts:TagSession"
             ],
-            "Resource": "arn:aws:iam::${var.aws_account_number}:role/${aws_iam_role.git_actions_admin_role.name}",
+            "Resource": "arn:aws:iam::${var.aws_account_number}:role/${aws_iam_role.openidl_apps_iam_role.name}",
             "Effect": "Allow",
             "Condition": {
                 "StringEquals": {
@@ -35,7 +35,7 @@ resource "aws_iam_user_policy" "openidl_apps_user_policy1" {
   })
 }
 resource "aws_iam_role" "openidl_apps_iam_role" {
-  name = "${local.std_name}-openidl-apps-role"
+  name = "${local.std_name}-openidl-apps"
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
