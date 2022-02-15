@@ -1,7 +1,7 @@
 #creating an s3 bucket for HDS data extract for analytics node
 resource "aws_s3_bucket" "s3_bucket_logos_public" {
   bucket = "${local.std_name}-${var.s3_bucket_name_logos}"
-  acl    = "private"
+  acl    = "public-read"
   force_destroy = true
   versioning {
     enabled = true
