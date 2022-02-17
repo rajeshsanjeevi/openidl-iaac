@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "haproxy-ingress.labels" . | nindent 4 }}
   name: {{ include "haproxy-ingress.fullname" . }}-template
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.metadata.namespace }}
 data:
   haproxy.tmpl: |-
 {{ .Values.controller.template | indent 4 }}

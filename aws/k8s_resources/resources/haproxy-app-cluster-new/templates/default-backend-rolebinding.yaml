@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "haproxy-ingress.labels" . | nindent 4 }}
   name: {{ include "haproxy-ingress.defaultBackend.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.metadata.namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -13,5 +13,5 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ include "haproxy-ingress.defaultBackend.fullname" . }}
-    namespace: {{ .Release.Namespace }}
+    namespace: {{ .Values.metadata.namespace }}
 {{- end }}

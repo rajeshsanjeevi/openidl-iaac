@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "haproxy-ingress.defaultBackend.labels" . | nindent 4 }}
   name: {{ include "haproxy-ingress.defaultBackend.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.metadata.namespace }}
 spec:
   replicas: {{ .Values.defaultBackend.replicaCount }}
   selector:

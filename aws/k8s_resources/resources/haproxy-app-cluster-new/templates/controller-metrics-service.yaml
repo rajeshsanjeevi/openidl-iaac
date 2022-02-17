@@ -12,7 +12,7 @@ metadata:
     app.kubernetes.io/component: metrics
 {{- end }}
   name: {{ include "haproxy-ingress.fullname" . }}-metrics
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.metadata.namespace }}
 spec:
 {{- if .Values.controller.metrics.service.clusterIP }}
   clusterIP: "{{ .Values.controller.metrics.service.clusterIP }}"

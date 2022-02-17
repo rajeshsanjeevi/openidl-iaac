@@ -4,7 +4,7 @@ metadata:
   labels:
     {{- include "haproxy-ingress.labels" . | nindent 4 }}
   name: {{ include "haproxy-ingress.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.metadata.namespace }}
 data:
   healthz-port: {{ .Values.controller.healthzPort | quote }}
 {{- if and .Values.controller.metrics.enabled .Values.controller.metrics.embedded }}

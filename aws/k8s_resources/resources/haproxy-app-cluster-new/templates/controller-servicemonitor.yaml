@@ -12,7 +12,7 @@ metadata:
     {{- toYaml .Values.controller.serviceMonitor.labels | nindent 4 }}
 {{- end }}
   name: {{ include "haproxy-ingress.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.metadata.namespace }}
 spec:
   endpoints:
   - honorLabels: {{ .Values.controller.serviceMonitor.honorLabels }}
@@ -46,7 +46,7 @@ spec:
   jobLabel: app.kubernetes.io/name
   namespaceSelector:
     matchNames:
-    - {{ .Release.Namespace }}
+    - {{ .Values.metadata.namespace }}
   selector:
     matchLabels:
       {{- include "haproxy-ingress.selectorLabels" . | nindent 6 }}

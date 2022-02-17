@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "haproxy-ingress.labels" . | nindent 4 }}
   name: {{ include "haproxy-ingress.fullname" . }}-tcp
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.metadata.namespace }}
 data:
 {{- range $key, $value := .Values.controller.tcp }}
   {{ tpl $key $ | quote }}: {{ tpl $value $ | quote }}

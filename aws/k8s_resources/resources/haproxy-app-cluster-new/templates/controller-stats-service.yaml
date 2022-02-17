@@ -9,7 +9,7 @@ metadata:
   labels:
     {{- include "haproxy-ingress.labels" . | nindent 4 }}
   name: {{ include "haproxy-ingress.fullname" . }}-stats
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.metadata.namespace }}
 spec:
 {{- if .Values.controller.stats.service.clusterIP }}
   clusterIP: "{{ .Values.controller.stats.service.clusterIP }}"

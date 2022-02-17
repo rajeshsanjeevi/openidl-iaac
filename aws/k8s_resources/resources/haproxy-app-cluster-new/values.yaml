@@ -1,5 +1,7 @@
-Release:
-  Namespace: haproxy
+#namespace
+metadata:
+  namespace: haproxy-controller
+
 # Enable RBAC
 rbac:
   create: true
