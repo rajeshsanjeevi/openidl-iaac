@@ -4,12 +4,12 @@ resource "helm_release" "app_haproxy" {
   provider = helm.app_cluster
   cleanup_on_fail = true
   name = "haproxy-ingress"
-  chart ="resources/haproxy-app-cluster"
+  chart ="resources/haproxy-app-cluster-new"
   timeout = 600
   force_update = true
   wait = true
   wait_for_jobs = true
-  values = ["${file("resources/haproxy-app-cluster/values.yaml")}"]
+  values = ["${file("resources/haproxy-app-cluster-new/values.yaml")}"]
 }
 #setting up ha proxy in blk cluster
 resource "helm_release" "blk_haproxy" {
