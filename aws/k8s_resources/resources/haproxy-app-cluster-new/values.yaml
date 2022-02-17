@@ -298,7 +298,7 @@ controller:
     ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
     externalTrafficPolicy: Local
 
-    healthCheckNodePort: 0
+    healthCheckNodePort: 30700
 
     type: LoadBalancer
 
@@ -404,8 +404,8 @@ controller:
 
     service:
       annotations: {}
-      # prometheus.io/scrape: "true"
-      # prometheus.io/port: "10254"
+       prometheus.io/scrape: "true"
+       prometheus.io/port: "10254"
 
       clusterIP: ""
 
