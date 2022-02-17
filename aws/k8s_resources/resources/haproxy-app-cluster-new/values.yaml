@@ -386,7 +386,7 @@ controller:
     ## Container Security Context for the logs container
     ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
     ##
-    securityContext: 
+    securityContext:
       readOnlyRootFilesystem: true
       seccompProfile:
         type: RuntimeDefault
@@ -442,7 +442,7 @@ controller:
 
     metrics:
       metricRelabelings: []
-      relabelings: []
+      relabelings:
        - sourceLabels: [ __meta_kubernetes_pod_node_name ]
          regex: ^(.*)$
          targetLabel: instance
@@ -451,7 +451,7 @@ controller:
 
     ctrlMetrics:
       metricRelabelings: []
-      relabelings: []
+      relabelings: 
        - sourceLabels: [ __meta_kubernetes_pod_node_name ]
          regex: ^(.*)$
          targetLabel: instance
