@@ -451,7 +451,7 @@ controller:
 
     ctrlMetrics:
       metricRelabelings: []
-      relabelings: 
+      relabelings:
        - sourceLabels: [ __meta_kubernetes_pod_node_name ]
          regex: ^(.*)$
          targetLabel: instance
@@ -539,7 +539,7 @@ defaultBackend:
     limits:
       cpu: 15m
       memory: 25Mi
-   requests:
+    requests:
      cpu: 10m
      memory: 20Mi
 
