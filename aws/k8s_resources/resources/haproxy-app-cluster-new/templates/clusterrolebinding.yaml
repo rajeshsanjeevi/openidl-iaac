@@ -12,7 +12,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ include "haproxy-ingress.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace }}
+    namespace: {{ .Values.metadata.namespace }}
   - apiGroup: rbac.authorization.k8s.io
     kind: User
     name: {{ include "haproxy-ingress.fullname" . }}
