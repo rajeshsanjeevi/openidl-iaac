@@ -271,11 +271,11 @@ controller:
     httpPorts:
       - port: 80
         targetPort: http
-        nodePort: 30100
+        nodePort: 30500
     httpsPorts:
       - port: 443
         targetPort: https
-        nodePort: 30200
+        nodePort: 30600
 
     ## Add extra ports to the service
     ## Useful when adding the 'tcp-service-port' configuration key
