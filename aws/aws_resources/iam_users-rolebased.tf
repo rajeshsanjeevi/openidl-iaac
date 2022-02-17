@@ -36,7 +36,7 @@ resource "aws_iam_user_policy" "baf_user_policy1" {
 }
 #IAM role for blockchain automation framework
 resource "aws_iam_role" "baf_user_role" {
-  name = "${local.std_name}-baf-automation"
+  name = "${local.std_name}-baf-automation1"
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -67,4 +67,4 @@ resource "aws_iam_policy" "baf_role_policy" {
     { "Name" = "${local.std_name}-BAFPolicy",
   "Cluster_type" = "both" })
 }
-
+#Please ensure gitactions-user/role is included before deleting iam_users.tf
