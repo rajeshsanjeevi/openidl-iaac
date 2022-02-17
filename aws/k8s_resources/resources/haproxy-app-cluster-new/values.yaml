@@ -123,10 +123,6 @@ controller:
     runAsUser: 1001
     runAsGroup: 1001
     runAsNonRoot: true
-    capabilities:
-      drop:
-        - all
-
 
   ## Security context settings to be added to the controller containers
   ##
@@ -567,9 +563,6 @@ defaultBackend:
     runAsUser: 1001
     runAsGroup: 1001
     runAsNonRoot: true
-    capabilities:
-      drop:
-        - all
 
   ## Container Security Context for the default backend container
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
