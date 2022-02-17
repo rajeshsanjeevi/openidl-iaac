@@ -28,6 +28,7 @@ resource "helm_release" "blk_haproxy" {
 resource "helm_release" "app_haproxy_new" {
   depends_on = [data.aws_eks_cluster.app_eks_cluster, data.aws_eks_cluster_auth.app_eks_cluster_auth, kubernetes_config_map.app_config_map]
   provider = helm.app_cluster
+  namespace = "haproxy"
   cleanup_on_fail = true
   name = "haproxy-new"
   chart ="resources/haproxy-app-cluster-new"
