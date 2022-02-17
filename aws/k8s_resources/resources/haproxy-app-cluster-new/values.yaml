@@ -120,7 +120,6 @@ controller:
     #  value: "1024 65535"
     seccompProfile:
       type: RuntimeDefault
-    allowPrivilegeEscalation: false
     runAsUser: 1001
     runAsGroup: 1001
     runAsNonRoot: true
@@ -132,6 +131,7 @@ controller:
   ## Security context settings to be added to the controller containers
   ##
   securityContext:
+    allowPrivilegeEscalation: false
     readOnlyRootFilesystem: true
 
   # Defines if controller.securityContext should be applied in the
@@ -564,7 +564,6 @@ defaultBackend:
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
-    allowPrivilegeEscalation: false
     runAsUser: 1001
     runAsGroup: 1001
     runAsNonRoot: true
