@@ -80,33 +80,27 @@ output "s3_public_bucket_logos_name" {
 }
 #-----------------------------------------------------------------------------------------------------------------
 #Route53 entries
-output "private_app_bastion_nlb_private_fqdn" {
-  value = var.bastion_host_nlb_external ? null : aws_route53_record.private_record_app_nlb_bastion[0].fqdn
-}
-output "private_blk_bastion_nlb_private_fqdn" {
-  value = var.bastion_host_nlb_external ? null : aws_route53_record.private_record_blk_nlb_bastion[0].fqdn
-}
 output "aws_name_servers" {
   value       = var.domain_info.r53_public_hosted_zone_required == "yes"  ? aws_route53_zone.zones[0].name_servers : null
   description = "The name servers to be updated in the domain registrar"
 }
 output "public_blk_bastion_fqdn" {
-  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.bastion_host_nlb_external ? aws_route53_record.blk_nlb_bastion_r53_record[0].fqdn : null
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? aws_route53_record.blk_nlb_bastion_r53_record[0].fqdn : null
 }
 output "public_app_bastion_fqdn" {
-  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.bastion_host_nlb_external ? aws_route53_record.app_nlb_bastion_r53_record[0].fqdn : null
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? aws_route53_record.app_nlb_bastion_r53_record[0].fqdn : null
 }
 output "bastion_dns_entries_required_to_update" {
-  value = var.domain_info.r53_public_hosted_zone_required == "no" && var.aws_env == "prod" && var.bastion_host_nlb_external ? local.dns_entries_list_prod : null
+  value = var.domain_info.r53_public_hosted_zone_required == "no" && var.aws_env == "prod" && var.create_bastion_host ? local.dns_entries_list_prod : null
 }
 output "bastion_dns_entries_required_to_add" {
-  value = var.domain_info.r53_public_hosted_zone_required == "no" && var.aws_env != "prod" && var.bastion_host_nlb_external ? local.dns_entries_list_non_prod : null
+  value = var.domain_info.r53_public_hosted_zone_required == "no" && var.aws_env != "prod" && var.create_bastion_host ? local.dns_entries_list_non_prod : null
 }
 output "public_app_bastion_dns_name" {
-  value = var.bastion_host_nlb_external ? module.app_bastion_nlb.lb_dns_name : null
+  value = var.create_bastion_host ? module.app_bastion_nlb[0].lb_dns_name : null
 }
 output "public_blk_bastion_dns_name" {
-  value = var.bastion_host_nlb_external ? module.blk_bastion_nlb.lb_dns_name: null
+  value = var.create_bastion_host ? module.blk_bastion_nlb[0].lb_dns_name: null
 }
 output "r53_public_hosted_zone_id" {
   value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_zone.zones[0].zone_id : null

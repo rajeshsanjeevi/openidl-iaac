@@ -1,6 +1,7 @@
 #bastion host setup in the application cluster vpc
 #security group for the bastion hosts in application cluster vpc
 module "app_bastion_sg" {
+  count = var.create_bastion_host ? 1 : 0
   depends_on = [module.aais_app_vpc]
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-app-bastion-sg"
@@ -16,6 +17,7 @@ module "app_bastion_sg" {
 }
 #ssh keypair for the bastion host in application cluster vpc
 module "app_bastion_host_key_pair_external" {
+  count = var.create_bastion_host ? 1 : 0
   depends_on = [module.aais_app_vpc]
   source     = "terraform-aws-modules/key-pair/aws"
   key_name   = "${local.std_name}-app-bastion-external"
@@ -29,6 +31,7 @@ module "app_bastion_host_key_pair_external" {
 }
 #network load balancer for the bastion hosts in application cluster vpc
 module "app_bastion_nlb" {
+  count = var.create_bastion_host ? 1 : 0
   depends_on = [data.aws_subnet_ids.app_vpc_public_subnets, module.aais_app_vpc]
   source     = "terraform-aws-modules/alb/aws"
   version    = "~> 6.0"
@@ -36,7 +39,7 @@ module "app_bastion_nlb" {
   create_lb                        = true
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
-  internal                         = var.bastion_host_nlb_external ? false : true
+  internal                         = false
   ip_address_type                  = "ipv4"
   vpc_id                           = module.aais_app_vpc.vpc_id
   subnets                          = module.aais_app_vpc.public_subnets
@@ -86,6 +89,7 @@ module "app_bastion_nlb" {
 }
 #auto scaling group for the bastion hosts in application cluster vpc
 module "app_bastion_host_asg" {
+  count = var.create_bastion_host ? 1 : 0
   depends_on = [module.aais_app_vpc, module.app_bastion_sg]
   source     = "terraform-aws-modules/autoscaling/aws"
   version    = "~> 4.0"
@@ -101,7 +105,7 @@ module "app_bastion_host_asg" {
   wait_for_capacity_timeout = 0
   default_cooldown          = 600
   health_check_type         = "EC2"
-  target_group_arns         = module.app_bastion_nlb.target_group_arns
+  target_group_arns         = module.app_bastion_nlb[0].target_group_arns
   health_check_grace_period = 300
   vpc_zone_identifier       = module.aais_app_vpc.public_subnets
   #service_linked_role_arn   = aws_iam_service_linked_role.autoscaling_svc_role.arn
@@ -111,8 +115,8 @@ module "app_bastion_host_asg" {
   #iam_instance_profile_arn = aws_iam_instance_profile.bastion_host_profile.arn
   ebs_optimized                        = false
   enable_monitoring                    = true
-  key_name                             = module.app_bastion_host_key_pair_external.key_pair_key_name
-  security_groups                      = [module.app_bastion_sg.security_group_id]
+  key_name                             = module.app_bastion_host_key_pair_external[0].key_pair_key_name
+  security_groups                      = [module.app_bastion_sg[0].security_group_id]
   instance_initiated_shutdown_behavior = "stop"
   disable_api_termination              = false
   placement_tenancy                    = "default"
@@ -142,6 +146,7 @@ module "app_bastion_host_asg" {
 ##bastion host setup in the blockchain cluster vpc
 #security group for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_sg" {
+  count = var.create_bastion_host ? 1 : 0
   depends_on = [module.aais_blk_vpc]
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-blk-bastion-sg"
@@ -157,6 +162,7 @@ module "blk_bastion_sg" {
 }
 #ssh keypair for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_host_key_pair_external" {
+  count = var.create_bastion_host ? 1 : 0
   depends_on = [module.aais_blk_vpc]
   source     = "terraform-aws-modules/key-pair/aws"
   key_name   = "${local.std_name}-blk-bastion-external"
@@ -170,6 +176,7 @@ module "blk_bastion_host_key_pair_external" {
 }
 #network load balancer for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_nlb" {
+  count = var.create_bastion_host ? 1 : 0
   depends_on                       = [data.aws_subnet_ids.blk_vpc_public_subnets, module.aais_blk_vpc]
   source                           = "terraform-aws-modules/alb/aws"
   version                          = "~> 6.0"
@@ -177,7 +184,7 @@ module "blk_bastion_nlb" {
   create_lb                        = true
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
-  internal                         = var.bastion_host_nlb_external ? false : true
+  internal                         = false
   ip_address_type                  = "ipv4"
   vpc_id                           = module.aais_blk_vpc.vpc_id
   subnets                          = module.aais_blk_vpc.public_subnets
@@ -227,6 +234,7 @@ module "blk_bastion_nlb" {
 }
 #autoscaling group for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_host_asg" {
+  count = var.create_bastion_host ? 1 : 0
   depends_on = [module.aais_blk_vpc, module.blk_bastion_sg]
   source     = "terraform-aws-modules/autoscaling/aws"
   version    = "~> 4.0"
@@ -242,7 +250,7 @@ module "blk_bastion_host_asg" {
   wait_for_capacity_timeout = 0
   default_cooldown          = 600
   health_check_type         = "EC2"
-  target_group_arns         = module.blk_bastion_nlb.target_group_arns
+  target_group_arns         = module.blk_bastion_nlb[0].target_group_arns
   health_check_grace_period = 300
   vpc_zone_identifier       = module.aais_blk_vpc.public_subnets
   #service_linked_role_arn   = aws_iam_service_linked_role.autoscaling_svc_role.arn
@@ -252,8 +260,8 @@ module "blk_bastion_host_asg" {
   #iam_instance_profile_arn = aws_iam_instance_profile.bastion_host_profile.arn
   ebs_optimized                        = false
   enable_monitoring                    = true
-  key_name                             = module.blk_bastion_host_key_pair_external.key_pair_key_name
-  security_groups                      = [module.blk_bastion_sg.security_group_id]
+  key_name                             = module.blk_bastion_host_key_pair_external[0].key_pair_key_name
+  security_groups                      = [module.blk_bastion_sg[0].security_group_id]
   instance_initiated_shutdown_behavior = "stop"
   disable_api_termination              = false
   placement_tenancy                    = "default"

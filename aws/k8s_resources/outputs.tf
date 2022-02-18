@@ -101,27 +101,21 @@ output "s3_public_bucket_logos" {
   value = data.terraform_remote_state.base_setup.outputs.s3_public_bucket_logos_name
 }
 #Route53 entries
-output "private_app_bastion_nlb_private_fqdn" {
-  value = var.bastion_host_nlb_external ? null : data.terraform_remote_state.base_setup.outputs.private_app_bastion_nlb_private_fqdn
-}
-output "private_blk_bastion_nlb_private_fqdn" {
-  value = var.bastion_host_nlb_external ? null : data.terraform_remote_state.base_setup.outputs.private_blk_bastion_nlb_private_fqdn
-}
 output "aws_name_servers" {
   value       = var.domain_info.r53_public_hosted_zone_required == "yes"  ? data.terraform_remote_state.base_setup.outputs.aws_name_servers : null
   description = "The name servers to be updated in the domain registrar"
 }
 output "public_blk_bastion_fqdn" {
-  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_fqdn : null
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_fqdn : null
 }
 output "public_app_bastion_fqdn" {
-  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_fqdn : null
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_fqdn : null
 }
 output "public_app_bastion_dns_name" {
-  value = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null
+  value = data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name
 }
 output "public_blk_bastion_dns_name" {
-  value = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null
+  value = data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name
 }
 #-----------------------------------------------------------------------------------------------------------------
 #KMS key related to vault unseal

@@ -143,10 +143,6 @@ variable "blk_bastion_ssh_key" {
   type        = string
   description = "The public ssh key to setup on the bastion host for remote ssh access"
 }
-variable "bastion_host_nlb_external" {
-  type = bool
-  description = "Do you want to set nlb for the bastion hosts in autoscaling group to be external"
-}
 #app cluster (eks) worker nodes application traffic specific SG
 variable "app_eks_workers_app_sg_ingress" {
   type        = list(any)
@@ -672,4 +668,9 @@ variable "s3_bucket_name_hds_analytics" {
 variable "s3_bucket_name_logos" {
   type = string
   description = "The name of s3 bucket used to manage logos (public s3 bucket)"
+}
+variable "create_bastion_host" {
+  type = bool
+  default = true
+  description = "Determines whether to create bastion host in the VPC network"
 }

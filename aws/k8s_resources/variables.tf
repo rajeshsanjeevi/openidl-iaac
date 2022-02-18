@@ -85,10 +85,6 @@ variable "tfc_org_name" {
   description = "The terraform cloud organisation name"
   default = ""
 }
-variable "bastion_host_nlb_external" {
-  type = bool
-  description = "Do you want to set nlb for the bastion hosts in autoscaling group to be external"
-}
 variable "aws_access_key" {
   type = string
   default = ""
