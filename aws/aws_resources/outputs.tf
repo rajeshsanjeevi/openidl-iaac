@@ -1,15 +1,15 @@
 #-----------------------------------------------------------------------------------------------------------------
 #aws cognito application client outputs
 output "cognito_user_pool_id" {
-  value     = aws_cognito_user_pool.user_pool.id
+  value     = var.create_cognito_userpool ? aws_cognito_user_pool.user_pool[0].id : null
   sensitive = true
 }
 output "cognito_app_client_id" {
-  value     = aws_cognito_user_pool_client.cognito_app_client.id
+  value     = var.create_cognito_userpool ? aws_cognito_user_pool_client.cognito_app_client[0].id : null
   sensitive = true
 }
 output "cognito_app_client_secret" {
-  value     = aws_cognito_user_pool_client.cognito_app_client.client_secret
+  value     = var.create_cognito_userpool ? aws_cognito_user_pool_client.cognito_app_client[0].client_secret : null
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
@@ -70,13 +70,13 @@ output "blk_eks_nodegroup_role_arn" {
 #-----------------------------------------------------------------------------------------------------------------
 #cloudtrail related
 output "cloudtrail_s3_bucket_name" {
-  value = aws_s3_bucket.s3_bucket.bucket
+  value = var.create_cloudtrial ? aws_s3_bucket.s3_bucket[0].bucket : null
 }
 output "hds_data_s3_bucket_name" {
   value = var.org_name == "aais" ? null : aws_s3_bucket.s3_bucket_hds[0].bucket
 }
 output "s3_public_bucket_logos_name" {
-  value = aws_s3_bucket.s3_bucket_logos_public.bucket
+  value = var.create_s3_bucket_public ? aws_s3_bucket.s3_bucket_logos_public[0].bucket : null
 }
 #-----------------------------------------------------------------------------------------------------------------
 #Route53 entries

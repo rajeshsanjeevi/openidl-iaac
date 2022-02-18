@@ -96,7 +96,7 @@ resource "aws_iam_policy" "openidl_aais_apps_role_policy" {
           "Sid": "AllowCognito",
           "Effect": "Allow",
           "Action": "cognito-idp:*",
-          "Resource": "${aws_cognito_user_pool.user_pool.arn}"
+          "Resource": var.create_cognito_userpool ? "${aws_cognito_user_pool.user_pool[0].arn}" : ""
         },
         {
           "Sid": "AllowSecretsManager",
@@ -164,7 +164,7 @@ resource "aws_iam_policy" "openidl_nonaais_apps_role_policy" {
           "Sid": "AllowCognito",
           "Effect": "Allow",
           "Action": "cognito-idp:*",
-          "Resource": "${aws_cognito_user_pool.user_pool.arn}"
+          "Resource": var.create_cognito_userpool ? "${aws_cognito_user_pool.user_pool[0].arn}" : ""
         },
         {
           "Sid": "AllowSecretsManager",

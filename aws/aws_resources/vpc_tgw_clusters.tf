@@ -1,6 +1,6 @@
 #Creating an application cluster VPC
 module "aais_app_vpc" {
-  create_vpc      = true
+  create_vpc      = var.create_vpc ? true : false
   source          = "terraform-aws-modules/vpc/aws"
   name            = "${local.std_name}-app-vpc"
   cidr            = var.app_vpc_cidr
@@ -53,7 +53,7 @@ module "aais_app_vpc" {
 }
 #Creating an blockchain cluster VPC
 module "aais_blk_vpc" {
-  create_vpc      = true
+  create_vpc      = var.create_vpc ? true : false
   source          = "terraform-aws-modules/vpc/aws"
   name            = "${local.std_name}-blk-vpc"
   cidr            = var.blk_vpc_cidr
@@ -108,7 +108,7 @@ module "aais_blk_vpc" {
 module "transit_gateway" {
   depends_on                            = [module.aais_app_vpc, module.aais_blk_vpc]
   source                                = "./modules/transit-gateway"
-  create_tgw                            = true
+  create_tgw                            = var.create_vpc ? true: false
   share_tgw                             = false
   name                                  = "${local.std_name}-central-tgw"
   amazon_side_asn                       = var.tgw_amazon_side_asn

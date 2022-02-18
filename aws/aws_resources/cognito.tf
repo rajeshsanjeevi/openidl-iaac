@@ -1,5 +1,6 @@
 #setting up congnito user pool
 resource "aws_cognito_user_pool" "user_pool" {
+  count = var.create_cognito_userpool ? 1 : 0
   name = "${local.std_name}-${var.userpool_name}"
   dynamic "account_recovery_setting" {
     for_each = length(var.userpool_recovery_mechanisms) == 0 ? [] : [1]
@@ -83,8 +84,9 @@ resource "aws_cognito_user_pool" "user_pool" {
 }
 #setting up cognito application client in the userpool
 resource "aws_cognito_user_pool_client" "cognito_app_client" {
+  count = var.create_cognito_userpool ? 1 : 0
   name                                 = "${local.std_name}-${var.client_app_name}"
-  user_pool_id                         = aws_cognito_user_pool.user_pool.id
+  user_pool_id                         = aws_cognito_user_pool.user_pool[0].id
   allowed_oauth_flows                  = var.client_allowed_oauth_flows
   allowed_oauth_flows_user_pool_client = var.client_allowed_oauth_flows_user_pool_client
   allowed_oauth_scopes                 = var.client_allowed_oauth_scopes
@@ -108,7 +110,8 @@ resource "aws_cognito_user_pool_client" "cognito_app_client" {
 }
 #aws cognito domain (custom/out-of-box) specification
 resource "aws_cognito_user_pool_domain" "domain" {
+  count = var.create_cognito_userpool ? 1 : 0
   domain = var.cognito_domain
   # certificate_arn = var.acm_cert_arn #activate when custom domain is required
-  user_pool_id = aws_cognito_user_pool.user_pool.id
+  user_pool_id = aws_cognito_user_pool.user_pool[0].id
 }
