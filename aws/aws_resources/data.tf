@@ -1,3 +1,10 @@
+#reading vpc properties when existing VPC is used
+data "aws_vpc" "app_vpc" {
+  id = var.app_vpc_id
+}
+data "aws_vpc" "blk_vpc" {
+  id = var.blk_vpc_id
+}
 #AMI used with bastion host, this identifies the filtered ami from the region
 data "aws_ami" "amazon_linux" {
   most_recent = true
@@ -59,8 +66,8 @@ data "aws_availability_zones" "app_vpc_azs" {
 }
 #reading application cluster public subnets
 data "aws_subnet_ids" "app_vpc_public_subnets" {
-  depends_on = [module.aais_app_vpc]
-  vpc_id     = module.aais_app_vpc.vpc_id
+  #depends_on = var.create_vpc ? [module.aais_app_vpc] : [data.aws_vpc.app_vpc]
+  vpc_id     = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
   filter {
     name   = "cidr"
     values = var.app_public_subnets
@@ -68,8 +75,8 @@ data "aws_subnet_ids" "app_vpc_public_subnets" {
 }
 #reading application cluster private subnets
 data "aws_subnet_ids" "app_vpc_private_subnets" {
-  depends_on = [module.aais_app_vpc]
-  vpc_id     = module.aais_app_vpc.vpc_id
+  #depends_on = var.create_vpc ? [module.aais_app_vpc] [data.aws_vpc.app_vpc]
+  vpc_id     = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
   filter {
     name   = "cidr"
     values = var.app_private_subnets
@@ -77,8 +84,8 @@ data "aws_subnet_ids" "app_vpc_private_subnets" {
 }
 #reading blockchain cluster public subnets
 data "aws_subnet_ids" "blk_vpc_public_subnets" {
-  depends_on = [module.aais_blk_vpc]
-  vpc_id     = module.aais_blk_vpc.vpc_id
+  #depends_on = var.create_vpc ? [module.aais_blk_vpc] : [data.aws_vpc.blk_vpc]
+  vpc_id     = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
   filter {
     name   = "cidr"
     values = var.blk_public_subnets
@@ -86,8 +93,8 @@ data "aws_subnet_ids" "blk_vpc_public_subnets" {
 }
 #reading blockchain cluster private subnets
 data "aws_subnet_ids" "blk_vpc_private_subnets" {
-  depends_on = [module.aais_blk_vpc]
-  vpc_id     = module.aais_blk_vpc.vpc_id
+  #depends_on = var.create_vpc ? [module.aais_blk_vpc] : [data.aws_vpc.blk_vpc]
+  vpc_id     = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
   filter {
     name   = "cidr"
     values = var.blk_private_subnets

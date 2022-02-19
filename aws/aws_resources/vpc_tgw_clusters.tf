@@ -106,9 +106,10 @@ module "aais_blk_vpc" {
 }
 #setting up transit gateway to use with app_vpc and blk_vpc
 module "transit_gateway" {
+  count = var.create_vpc ? 1 : 0
   depends_on                            = [module.aais_app_vpc, module.aais_blk_vpc]
   source                                = "./modules/transit-gateway"
-  create_tgw                            = var.create_vpc ? true: false
+  create_tgw                            = true
   share_tgw                             = false
   name                                  = "${local.std_name}-central-tgw"
   amazon_side_asn                       = var.tgw_amazon_side_asn

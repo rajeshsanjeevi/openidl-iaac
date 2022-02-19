@@ -37,14 +37,6 @@ output "app_cluster_endpoint" {
 output "app_cluster_name" {
   value = module.app_eks_cluster.cluster_id
 }
-#output "app_cluster_certificate" {
-#  value = module.app_eks_cluster.cluster_certificate_authority_data
-#  sensitive = true
-#}
-#output "app_cluster_token" {
-#  value = module.app_eks_cluster.aws_eks_cluster_auth[0].token
-#  sensitive = true
-#}
 output "app_eks_nodegroup_role_arn" {
   value = aws_iam_role.eks_nodegroup_role["app-node-group"].arn
 }
@@ -56,14 +48,6 @@ output "blk_cluster_endpoint" {
 output "blk_cluster_name" {
   value = module.blk_eks_cluster.cluster_id
 }
-#output "blk_cluster_certificate" {
-#  value = module.blk_eks_cluster.cluster_certificate_authority_data
-#  sensitive = true
-#}
-#output "blk_cluster_token" {
-#  value = module.blk_eks_cluster.aws_eks_cluster_auth[0].token
-#  sensitive = true
-#}
 output "blk_eks_nodegroup_role_arn" {
   value = aws_iam_role.eks_nodegroup_role["blk-node-group"].arn
 }

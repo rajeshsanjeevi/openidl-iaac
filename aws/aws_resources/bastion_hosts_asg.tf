@@ -2,11 +2,11 @@
 #security group for the bastion hosts in application cluster vpc
 module "app_bastion_sg" {
   count = var.create_bastion_host ? 1 : 0
-  depends_on = [module.aais_app_vpc]
+  #depends_on =  var.create_vpc ? [module.aais_app_vpc] : [data.aws_vpc.app_vpc]
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-app-bastion-sg"
   description              = "Security group associated with app cluster bastion host"
-  vpc_id                   = module.aais_app_vpc.vpc_id
+  vpc_id                   = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
   ingress_with_cidr_blocks = var.app_bastion_sg_ingress
   egress_with_cidr_blocks  = var.app_bastion_sg_egress
   tags = merge(
@@ -18,7 +18,7 @@ module "app_bastion_sg" {
 #ssh keypair for the bastion host in application cluster vpc
 module "app_bastion_host_key_pair_external" {
   count = var.create_bastion_host ? 1 : 0
-  depends_on = [module.aais_app_vpc]
+  #depends_on = var.create_vpc ? [module.aais_app_vpc] : [data.aws_vpc.app_vpc]
   source     = "terraform-aws-modules/key-pair/aws"
   key_name   = "${local.std_name}-app-bastion-external"
   public_key = var.app_bastion_ssh_key
@@ -32,7 +32,7 @@ module "app_bastion_host_key_pair_external" {
 #network load balancer for the bastion hosts in application cluster vpc
 module "app_bastion_nlb" {
   count = var.create_bastion_host ? 1 : 0
-  depends_on = [data.aws_subnet_ids.app_vpc_public_subnets, module.aais_app_vpc]
+  #depends_on = var.create_vpc ? [data.aws_subnet_ids.app_vpc_public_subnets, module.aais_app_vpc] : [data.aws_subnet_ids.app_vpc_public_subnets, data.aws_vpc.app_vpc]
   source     = "terraform-aws-modules/alb/aws"
   version    = "~> 6.0"
   name       = "${local.std_name}-app-bastion-nlb"
@@ -41,8 +41,8 @@ module "app_bastion_nlb" {
   enable_cross_zone_load_balancing = true
   internal                         = false
   ip_address_type                  = "ipv4"
-  vpc_id                           = module.aais_app_vpc.vpc_id
-  subnets                          = module.aais_app_vpc.public_subnets
+  vpc_id                           = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
+  subnets                          = var.create_vpc ? module.aais_app_vpc.public_subnets : data.aws_subnet_ids.app_vpc_public_subnets.ids
   http_tcp_listeners = [
     {
       port        = 22
@@ -90,7 +90,7 @@ module "app_bastion_nlb" {
 #auto scaling group for the bastion hosts in application cluster vpc
 module "app_bastion_host_asg" {
   count = var.create_bastion_host ? 1 : 0
-  depends_on = [module.aais_app_vpc, module.app_bastion_sg]
+  #depends_on = var.create_vpc ? [module.aais_app_vpc, module.app_bastion_sg] : [data.aws_vpc.app_vpc, module.app_bastion_sg]
   source     = "terraform-aws-modules/autoscaling/aws"
   version    = "~> 4.0"
   name       = "${local.std_name}-app-bastion-asg"
@@ -107,7 +107,7 @@ module "app_bastion_host_asg" {
   health_check_type         = "EC2"
   target_group_arns         = module.app_bastion_nlb[0].target_group_arns
   health_check_grace_period = 300
-  vpc_zone_identifier       = module.aais_app_vpc.public_subnets
+  vpc_zone_identifier       = var.create_vpc ? module.aais_app_vpc.public_subnets : data.aws_subnet_ids.app_vpc_public_subnets.ids
   #service_linked_role_arn   = aws_iam_service_linked_role.autoscaling_svc_role.arn
   #launch template specifics
   image_id      = data.aws_ami.amazon_linux.id
@@ -147,11 +147,11 @@ module "app_bastion_host_asg" {
 #security group for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_sg" {
   count = var.create_bastion_host ? 1 : 0
-  depends_on = [module.aais_blk_vpc]
+  #depends_on = var.create_vpc ? [module.aais_blk_vpc] : [data.aws_vpc.blk_vpc]
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-blk-bastion-sg"
   description              = "Security group associated with blk cluster bastion host"
-  vpc_id                   = module.aais_blk_vpc.vpc_id
+  vpc_id                   = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
   ingress_with_cidr_blocks = var.blk_bastion_sg_ingress
   egress_with_cidr_blocks  = var.blk_bastion_sg_egress
   tags = merge(
@@ -163,7 +163,7 @@ module "blk_bastion_sg" {
 #ssh keypair for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_host_key_pair_external" {
   count = var.create_bastion_host ? 1 : 0
-  depends_on = [module.aais_blk_vpc]
+  #depends_on = var.create_vpc ? [module.aais_blk_vpc] : [data.aws_vpc.blk_vpc]
   source     = "terraform-aws-modules/key-pair/aws"
   key_name   = "${local.std_name}-blk-bastion-external"
   public_key = var.blk_bastion_ssh_key
@@ -177,7 +177,7 @@ module "blk_bastion_host_key_pair_external" {
 #network load balancer for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_nlb" {
   count = var.create_bastion_host ? 1 : 0
-  depends_on                       = [data.aws_subnet_ids.blk_vpc_public_subnets, module.aais_blk_vpc]
+  #depends_on                       = var.create_vpc ? [data.aws_subnet_ids.blk_vpc_public_subnets, module.aais_blk_vpc] : [data.aws_subnet_ids.blk_vpc_public_subnets, data.aws_vpc.blk_vpc]
   source                           = "terraform-aws-modules/alb/aws"
   version                          = "~> 6.0"
   name                             = "${local.std_name}-blk-bastion-nlb"
@@ -186,8 +186,8 @@ module "blk_bastion_nlb" {
   enable_cross_zone_load_balancing = true
   internal                         = false
   ip_address_type                  = "ipv4"
-  vpc_id                           = module.aais_blk_vpc.vpc_id
-  subnets                          = module.aais_blk_vpc.public_subnets
+  vpc_id                           = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+  subnets                          = var.create_vpc ? module.aais_blk_vpc.public_subnets : data.aws_subnet_ids.blk_vpc_public_subnets.ids
   http_tcp_listeners = [
     {
       port        = 22
@@ -235,7 +235,7 @@ module "blk_bastion_nlb" {
 #autoscaling group for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_host_asg" {
   count = var.create_bastion_host ? 1 : 0
-  depends_on = [module.aais_blk_vpc, module.blk_bastion_sg]
+  #depends_on = var.create_vpc ? [module.aais_blk_vpc, module.blk_bastion_sg] : [data.aws_vpc.blk_vpc, module.blk_bastion_sg]
   source     = "terraform-aws-modules/autoscaling/aws"
   version    = "~> 4.0"
   name       = "${local.std_name}-blk-bastion-asg"
@@ -252,7 +252,7 @@ module "blk_bastion_host_asg" {
   health_check_type         = "EC2"
   target_group_arns         = module.blk_bastion_nlb[0].target_group_arns
   health_check_grace_period = 300
-  vpc_zone_identifier       = module.aais_blk_vpc.public_subnets
+  vpc_zone_identifier       = var.create_vpc ? module.aais_blk_vpc.public_subnets : data.aws_subnet_ids.blk_vpc_public_subnets.ids
   #service_linked_role_arn   = aws_iam_service_linked_role.autoscaling_svc_role.arn
   #launch template specifics
   image_id      = data.aws_ami.amazon_linux.id
