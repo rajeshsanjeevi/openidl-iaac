@@ -10,6 +10,11 @@ locals {
     Managed_by  = "terraform"
     Node_type   = var.org_name
   }
+
+  #sub domain specific
+  public_domain = "${var.domain_info.sub_domain_name}" == "" ? data.terraform_remote_state.base_setup.outputs.route53"${aws_route53_zone.zones[0].name}" : "${var.domain_info.sub_domain_name}.${aws_route53_zone.zones[0].name}"
+  private_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
+
   #application cluster (eks) config-map (aws auth) - iam user to map
   app_cluster_map_users = [{
     userarn = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn

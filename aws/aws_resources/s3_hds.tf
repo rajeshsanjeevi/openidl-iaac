@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "s3_bucket_hds" {
   tags = merge(
     local.tags,
     {
-      "Name" = "${local.std_name}-${var.s3_bucket_name_hds_analytics}"
+      "name" = "${local.std_name}-${var.s3_bucket_name_hds_analytics}"
     },)
   server_side_encryption_configuration {
     rule {
@@ -95,7 +95,7 @@ resource "aws_kms_key" "s3_kms_key_hds" {
   tags = merge(
     local.tags,
     {
-      "Name" = "s3-bucket-hds-kms-key"
+      "name" = "s3-bucket-hds-kms-key"
     },)
   policy = jsonencode({
     "Id" : "${local.std_name}-${var.s3_bucket_name_hds_analytics}",

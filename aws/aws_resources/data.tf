@@ -1,10 +1,3 @@
-#reading vpc properties when existing VPC is used
-data "aws_vpc" "app_vpc" {
-  id = var.app_vpc_id
-}
-data "aws_vpc" "blk_vpc" {
-  id = var.blk_vpc_id
-}
 #AMI used with bastion host, this identifies the filtered ami from the region
 data "aws_ami" "amazon_linux" {
   most_recent = true
@@ -60,44 +53,77 @@ data "aws_eks_cluster_auth" "blk_eks_cluster_auth" {
   depends_on = [data.aws_eks_cluster.blk_eks_cluster]
   name       = module.blk_eks_cluster.cluster_id
 }
+#reading existing VPC (app vpc)
+data "aws_vpc" "app_vpc" {
+  id = var.app_vpc_id
+}
+#reading existing VPC (blk vpc)
+data "aws_vpc" "blk_vpc" {
+  id = var.blk_vpc_id
+}
 #reading availability zones
 data "aws_availability_zones" "app_vpc_azs" {
   state = "available"
 }
 #reading application cluster public subnets
 data "aws_subnet_ids" "app_vpc_public_subnets" {
-  #depends_on = var.create_vpc ? [module.aais_app_vpc] : [data.aws_vpc.app_vpc]
   vpc_id     = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
-  filter {
-    name   = "cidr"
-    values = var.app_public_subnets
+ # filter {
+ #   name   = "cidr"
+ #   values = var.app_public_subnets
+ # }
+  tags = {
+    tier = "public"
   }
 }
 #reading application cluster private subnets
 data "aws_subnet_ids" "app_vpc_private_subnets" {
-  #depends_on = var.create_vpc ? [module.aais_app_vpc] [data.aws_vpc.app_vpc]
   vpc_id     = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
-  filter {
-    name   = "cidr"
-    values = var.app_private_subnets
+ # filter {
+ #   name   = "cidr"
+ #   values = var.app_private_subnets
+ # }
+  tags = {
+    tier = "private"
   }
 }
 #reading blockchain cluster public subnets
 data "aws_subnet_ids" "blk_vpc_public_subnets" {
-  #depends_on = var.create_vpc ? [module.aais_blk_vpc] : [data.aws_vpc.blk_vpc]
   vpc_id     = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
-  filter {
-    name   = "cidr"
-    values = var.blk_public_subnets
+  #filter {
+  #  name   = "cidr"
+  #  values = var.blk_public_subnets
+  #}
+  tags = {
+    tier = "public"
   }
 }
 #reading blockchain cluster private subnets
 data "aws_subnet_ids" "blk_vpc_private_subnets" {
-  #depends_on = var.create_vpc ? [module.aais_blk_vpc] : [data.aws_vpc.blk_vpc]
   vpc_id     = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+ # filter {
+ #   name   = "cidr"
+ #   values = var.blk_private_subnets
+ # }
+  tags = {
+    tier = "private"
+  }
+}
+#reading private route tables
+data "aws_route_tables" "app_vpc_private_rt" {
+  count = var.create_vpc ? 0 : 1
+  vpc_id = var.app_vpc_id
   filter {
-    name   = "cidr"
-    values = var.blk_private_subnets
+    name = "tag:tier"
+    values = ["private"]
+  }
+}
+data "aws_route_tables" "blk_vpc_private_rt" {
+  count = var.create_vpc ? 0 : 1
+  vpc_id = var.blk_vpc_id
+  filter {
+    name = "tag:tier"
+    values = ["private"]
   }
 }
 #iam policy for cloudtrail
@@ -129,140 +155,111 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
     sid     = "Enable IAM User Permissions"
     effect  = "Allow"
     actions = ["kms:*"]
-
     principals {
       type = "AWS"
 
       identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
     }
-
     resources = ["*"]
   }
-
   statement {
     sid     = "Allow CloudTrail to encrypt logs"
     effect  = "Allow"
     actions = ["kms:GenerateDataKey*"]
-
     principals {
       type        = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
     }
-
     resources = ["*"]
-
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
       values   = ["arn:aws:cloudtrail:*:${var.aws_account_number}:trail/*"]
     }
   }
-
   statement {
     sid     = "Allow CloudTrail to describe key"
     effect  = "Allow"
     actions = ["kms:DescribeKey"]
-
     principals {
       type        = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
     }
-
     resources = ["*"]
   }
-
   statement {
     sid    = "Allow principals in the account to decrypt log files"
     effect = "Allow"
-
     actions = [
       "kms:Decrypt",
       "kms:ReEncryptFrom",
     ]
-
     principals {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
     }
-
     resources = ["*"]
-
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
       values   = ["${var.aws_account_number}"]
     }
-
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
       values   = ["arn:aws:cloudtrail:*:${var.aws_account_number}:trail/*"]
     }
   }
-
   statement {
     sid     = "Allow alias creation during setup"
     effect  = "Allow"
     actions = ["kms:CreateAlias"]
-
     principals {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
     }
-
     condition {
       test     = "StringEquals"
       variable = "kms:ViaService"
       values   = ["ec2.${var.aws_region}.amazonaws.com"]
     }
-
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
       values   = ["${var.aws_account_number}"]
     }
-
     resources = ["*"]
   }
-
   statement {
     sid    = "Enable cross account log decryption"
     effect = "Allow"
-
     actions = [
       "kms:Decrypt",
       "kms:ReEncryptFrom",
     ]
-
     principals {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
     }
-
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
       values   = ["${var.aws_account_number}"]
     }
-
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
       values   = ["arn:aws:cloudtrail:*:${var.aws_account_number}:trail/*"]
     }
-
     resources = ["*"]
   }
-
   statement {
     sid    = "Allow logs KMS access"
     effect = "Allow"
-
     principals {
       type        = "Service"
       identifiers = ["logs.${var.aws_region}.amazonaws.com"]
     }
-
     actions = [
       "kms:Encrypt*",
       "kms:Decrypt*",

@@ -9,8 +9,8 @@ resource "aws_kms_key" "cw_logs_ct_kms_key" {
   tags = merge(
     local.tags,
     {
-      "Name" = "${local.std_name}-cw-logs-cloudtrail"
-      "Cluster_type" = "both"
+      "name" = "${local.std_name}-cwlogs-cloudtrail"
+      "cluster_type" = "both"
     },)
 }
 #kms key alias for cloudwatch logs related to cloudtrail
@@ -25,7 +25,7 @@ resource "aws_cloudwatch_log_group" "cloudtrail_cw_logs" {
   name = "${local.std_name}-cloudtrail-logs"
   retention_in_days = var.cw_logs_retention_period
   kms_key_id = aws_kms_key.cw_logs_ct_kms_key[0].arn
-  tags = merge(local.tags, { Name = "${local.std_name}-cloudtrail-logs-group", Cluster_type = "both"})
+  tags = merge(local.tags, { name = "${local.std_name}-cloudtrail-logs-group", cluster_type = "both"})
   depends_on = [aws_kms_key.cw_logs_ct_kms_key]
 }
 #setting up iam role for cloudwatch related to cloudtrail
@@ -52,13 +52,13 @@ resource "aws_cloudtrail" "cloudtrail_events" {
             read_write_type = "WriteOnly"
 
     }
-    tags = merge(local.tags, {Name = "${local.std_name}-cloudtrail-logs", Cluster_type = "both"})
+    tags = merge(local.tags, {name = "${local.std_name}-cloudtrail-logs", cluster_type = "both"})
     depends_on = [aws_cloudwatch_log_group.cloudtrail_cw_logs, aws_s3_bucket_policy.bucket_policy]
 }
 #iam policy for cloudwatch logs related to cloudtrail
 resource "aws_iam_policy" "cloudtrail_cloudwatch_logs" {
   count = var.create_cloudtrial ? 1 : 0
-  name   = "${local.std_name}-ct-cloudwatch-logs"
+  name   = "${local.std_name}-CTCWLOGSPolicy"
   policy = data.aws_iam_policy_document.cloudtrail_cloudwatch_logs.json
 }
 #iam policy attachment for cloudwatch logs related to cloudtrail
@@ -82,7 +82,7 @@ resource "aws_s3_bucket" "s3_bucket" {
   tags = merge(
     local.tags,
     {
-      "Name" = "${local.std_name}-${var.s3_bucket_name_cloudtrail}"
+      "name" = "${local.std_name}-${var.s3_bucket_name_cloudtrail}"
     },)
   server_side_encryption_configuration {
     rule {
@@ -159,7 +159,7 @@ resource "aws_kms_key" "s3_kms_key" {
   tags = merge(
     local.tags,
     {
-      "Name" = "s3-bucket-kms-key"
+      "name" = "s3-bucket-kms-key"
     },)
   policy = jsonencode({
     "Id" : "${local.std_name}-${var.s3_bucket_name_cloudtrail}",

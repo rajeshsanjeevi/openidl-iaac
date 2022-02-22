@@ -2,7 +2,6 @@
 #security group for the bastion hosts in application cluster vpc
 module "app_bastion_sg" {
   count = var.create_bastion_host ? 1 : 0
-  #depends_on =  var.create_vpc ? [module.aais_app_vpc] : [data.aws_vpc.app_vpc]
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-app-bastion-sg"
   description              = "Security group associated with app cluster bastion host"
@@ -12,27 +11,25 @@ module "app_bastion_sg" {
   tags = merge(
     local.tags,
     {
-      "Cluster_type" = "application"
+      "cluster_type" = "application"
   }, )
 }
 #ssh keypair for the bastion host in application cluster vpc
 module "app_bastion_host_key_pair_external" {
   count = var.create_bastion_host ? 1 : 0
-  #depends_on = var.create_vpc ? [module.aais_app_vpc] : [data.aws_vpc.app_vpc]
   source     = "terraform-aws-modules/key-pair/aws"
   key_name   = "${local.std_name}-app-bastion-external"
   public_key = var.app_bastion_ssh_key
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-app-bastion-hosts-external"
-      "Cluster_type" = "application"
+      "name"         = "${local.std_name}-app-bastion-hosts-external"
+      "cluster_type" = "application"
   }, )
 }
 #network load balancer for the bastion hosts in application cluster vpc
 module "app_bastion_nlb" {
   count = var.create_bastion_host ? 1 : 0
-  #depends_on = var.create_vpc ? [data.aws_subnet_ids.app_vpc_public_subnets, module.aais_app_vpc] : [data.aws_subnet_ids.app_vpc_public_subnets, data.aws_vpc.app_vpc]
   source     = "terraform-aws-modules/alb/aws"
   version    = "~> 6.0"
   name       = "${local.std_name}-app-bastion-nlb"
@@ -72,25 +69,24 @@ module "app_bastion_nlb" {
   tags = merge(
     local.tags,
     {
-      "Cluster_type" = "application"
+      "cluster_type" = "application"
   }, )
   lb_tags = merge(
     local.tags,
     {
-      "Cluster_type" = "application"
+      "cluster_type" = "application"
   }, )
   idle_timeout = 180
   target_group_tags = merge(
     local.tags,
     {
-      "Name"         = "tg-bst"
-      "Cluster_type" = "application"
+      "name"         = "tg-bst"
+      "cluster_type" = "application"
   }, )
 }
 #auto scaling group for the bastion hosts in application cluster vpc
 module "app_bastion_host_asg" {
   count = var.create_bastion_host ? 1 : 0
-  #depends_on = var.create_vpc ? [module.aais_app_vpc, module.app_bastion_sg] : [data.aws_vpc.app_vpc, module.app_bastion_sg]
   source     = "terraform-aws-modules/autoscaling/aws"
   version    = "~> 4.0"
   name       = "${local.std_name}-app-bastion-asg"
@@ -101,7 +97,7 @@ module "app_bastion_host_asg" {
   use_lt                    = true
   min_size                  = 1
   max_size                  = 2
-  desired_capacity          = 1 #var.aws_env == "prod" ? 2 : 1
+  desired_capacity          = 1
   wait_for_capacity_timeout = 0
   default_cooldown          = 600
   health_check_type         = "EC2"
@@ -114,7 +110,7 @@ module "app_bastion_host_asg" {
   instance_type = var.instance_type
   #iam_instance_profile_arn = aws_iam_instance_profile.bastion_host_profile.arn
   ebs_optimized                        = false
-  enable_monitoring                    = true
+  enable_monitoring                    = false
   key_name                             = module.app_bastion_host_key_pair_external[0].key_pair_key_name
   security_groups                      = [module.app_bastion_sg[0].security_group_id]
   instance_initiated_shutdown_behavior = "stop"
@@ -147,7 +143,6 @@ module "app_bastion_host_asg" {
 #security group for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_sg" {
   count = var.create_bastion_host ? 1 : 0
-  #depends_on = var.create_vpc ? [module.aais_blk_vpc] : [data.aws_vpc.blk_vpc]
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-blk-bastion-sg"
   description              = "Security group associated with blk cluster bastion host"
@@ -157,27 +152,25 @@ module "blk_bastion_sg" {
   tags = merge(
     local.tags,
     {
-      "Cluster_type" = "blockchain"
+      "cluster_type" = "blockchain"
   }, )
 }
 #ssh keypair for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_host_key_pair_external" {
   count = var.create_bastion_host ? 1 : 0
-  #depends_on = var.create_vpc ? [module.aais_blk_vpc] : [data.aws_vpc.blk_vpc]
   source     = "terraform-aws-modules/key-pair/aws"
   key_name   = "${local.std_name}-blk-bastion-external"
   public_key = var.blk_bastion_ssh_key
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-blk-bastion-external"
-      "Cluster_type" = "blockchain"
+      "name"         = "${local.std_name}-blk-bastion-external"
+      "cluster_type" = "blockchain"
   }, )
 }
 #network load balancer for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_nlb" {
   count = var.create_bastion_host ? 1 : 0
-  #depends_on                       = var.create_vpc ? [data.aws_subnet_ids.blk_vpc_public_subnets, module.aais_blk_vpc] : [data.aws_subnet_ids.blk_vpc_public_subnets, data.aws_vpc.blk_vpc]
   source                           = "terraform-aws-modules/alb/aws"
   version                          = "~> 6.0"
   name                             = "${local.std_name}-blk-bastion-nlb"
@@ -217,25 +210,24 @@ module "blk_bastion_nlb" {
   tags = merge(
     local.tags,
     {
-      "Cluster_type" = "blockchain"
+      "cluster_type" = "blockchain"
   }, )
   lb_tags = merge(
     local.tags,
     {
-      "Cluster_type" = "blockchain"
+      "cluster_type" = "blockchain"
   }, )
   idle_timeout = 180
   target_group_tags = merge(
     local.tags,
     {
-      "Name"         = "tg-bst"
-      "Cluster_type" = "blockchain"
+      "name"         = "tg-bst"
+      "cluster_type" = "blockchain"
   }, )
 }
 #autoscaling group for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_host_asg" {
   count = var.create_bastion_host ? 1 : 0
-  #depends_on = var.create_vpc ? [module.aais_blk_vpc, module.blk_bastion_sg] : [data.aws_vpc.blk_vpc, module.blk_bastion_sg]
   source     = "terraform-aws-modules/autoscaling/aws"
   version    = "~> 4.0"
   name       = "${local.std_name}-blk-bastion-asg"
@@ -246,7 +238,7 @@ module "blk_bastion_host_asg" {
   use_lt                    = true
   min_size                  = 1
   max_size                  = 2
-  desired_capacity          = 1 #var.aws_env == "prod" ? 2 : 1
+  desired_capacity          = 1
   wait_for_capacity_timeout = 0
   default_cooldown          = 600
   health_check_type         = "EC2"
@@ -259,7 +251,7 @@ module "blk_bastion_host_asg" {
   instance_type = var.instance_type
   #iam_instance_profile_arn = aws_iam_instance_profile.bastion_host_profile.arn
   ebs_optimized                        = false
-  enable_monitoring                    = true
+  enable_monitoring                    = false
   key_name                             = module.blk_bastion_host_key_pair_external[0].key_pair_key_name
   security_groups                      = [module.blk_bastion_sg[0].security_group_id]
   instance_initiated_shutdown_behavior = "stop"
@@ -285,6 +277,6 @@ module "blk_bastion_host_asg" {
   tags_as_map = merge(
     local.tags,
     {
-      "Cluster_type" = "blockchain"
+      "cluster_type" = "blockchain"
   }, )
 }

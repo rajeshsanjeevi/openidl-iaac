@@ -74,7 +74,7 @@ controller:
   ##
   ingressClassResource:
     enabled: false
-    default: false
+    default: true
     controllerClass: ""
     parameters: {}
 
@@ -175,7 +175,7 @@ controller:
 
   ## DaemonSet or Deployment
   ##
-  kind: DaemonSet
+  kind: Daemonset
 
   # TCP service key:value pairs
   # <port>: <namespace>/<servicename>:<portnumber>[:[<in-proxy>][:<out-proxy>]]
@@ -257,6 +257,9 @@ controller:
       service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
       service.beta.kubernetes.io/aws-load-balancer-type: nlb
       service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+#      service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: TCP
+#      service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: traffic-port
+
     labels: {}
     clusterIP: ""
     clusterIPs: []
@@ -278,12 +281,12 @@ controller:
 
     httpPorts:
       - port: 80
-        targetPort: http
-        nodePort: 30500
+        targetPort: 80
+        nodePort: 30100
     httpsPorts:
       - port: 443
-        targetPort: https
-        nodePort: 30600
+        targetPort: 443
+        nodePort: 30200
 
     ## Add extra ports to the service
     ## Useful when adding the 'tcp-service-port' configuration key
@@ -298,7 +301,7 @@ controller:
     ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
     externalTrafficPolicy: Local
 
-    healthCheckNodePort: 30700
+    healthCheckNodePort:
 
     type: LoadBalancer
 

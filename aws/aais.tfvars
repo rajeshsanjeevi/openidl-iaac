@@ -4,12 +4,14 @@
 #when nodetype is aais's dummy carrier set org_name="carrier" and for other carriers refer to next line.
 #when nodetype is other carrier set org_name="<carrier_org_name>" , example: org_name = "travelers" etc.,
 
-aws_account_number = "572551282206"
-aws_access_key = "AKIAYKTVXHYPOF7MN7OG"
-aws_secret_key = "dqO5Xxe0phjiOLYVOPZuIJcqldWKiC/k9ZUHZDnX"
-aws_user_arn = "arn:aws:iam::572551282206:user/terraform_user"
-aws_role_arn = "arn:aws:iam::572551282206:role/tf_automation"
-aws_region = "us-east-1"
+aws_account_number = "357396431244"
+aws_access_key = "AKIAVGNT4YGGJI5HSLXA"
+aws_secret_key = "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"
+#aws_access_key = "AKIAYKTVXHYPOF7MN7OG"
+#aws_secret_key = "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"
+aws_user_arn = "arn:aws:iam::357396431244:user/terraform_dev_user"
+aws_role_arn = "arn:aws:iam::357396431244:role/tf_dev_automation"
+aws_region = "us-east-2"
 aws_external_id = "terraform"
 app_bastion_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJTI6JSWyleIzZhyBY2cRj92csqiGMTtg+dFjL5OvbInBibmvDDND7DKIyUfvEITBnxKicxWzZBOxFm5HrQMQWfGrszbDT3f+g/sWrCKcwOm4wWNGf/JjTVnCP1DopFmBzAYJ+JYJ3DMTnl261SPjV9HtTtXe/xzBrJIVMAKdO6KUWmF8q7x25Gq9GmrJmoEmqv6XxAqMYS90bGqdsxTsJwjh6yU3jKyhQBazmO4aEzscaNELXM/X52zcDulYa0ulQ2hJ0B72D/TmCJAJK7qkQ77qDcpvByKnaxcl+7aVQvcRYfOv0jYDAEyZb0hT3LSkEjuBwJnsJU26urHFCEBoDXg4+lwFL/UA/ofEfZbC18LbpVTCjhxQgIyVo6f5mcp+lzRSdPeTR+RMXnwecQHJjkG9Gl76M2uPbeIMt17PExASVdb6sl16qtMmGAKlP4RqZfI/HuZkeI8mdWiap9J/HUsn+Dq9JPq88yKtR7/Vxj1XSGbmaq15sONsAmBnjPHE= rajesh.sanjeevi@T480s-12"
 blk_bastion_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJTI6JSWyleIzZhyBY2cRj92csqiGMTtg+dFjL5OvbInBibmvDDND7DKIyUfvEITBnxKicxWzZBOxFm5HrQMQWfGrszbDT3f+g/sWrCKcwOm4wWNGf/JjTVnCP1DopFmBzAYJ+JYJ3DMTnl261SPjV9HtTtXe/xzBrJIVMAKdO6KUWmF8q7x25Gq9GmrJmoEmqv6XxAqMYS90bGqdsxTsJwjh6yU3jKyhQBazmO4aEzscaNELXM/X52zcDulYa0ulQ2hJ0B72D/TmCJAJK7qkQ77qDcpvByKnaxcl+7aVQvcRYfOv0jYDAEyZb0hT3LSkEjuBwJnsJU26urHFCEBoDXg4+lwFL/UA/ofEfZbC18LbpVTCjhxQgIyVo6f5mcp+lzRSdPeTR+RMXnwecQHJjkG9Gl76M2uPbeIMt17PExASVdb6sl16qtMmGAKlP4RqZfI/HuZkeI8mdWiap9J/HUsn+Dq9JPq88yKtR7/Vxj1XSGbmaq15sONsAmBnjPHE= rajesh.sanjeevi@T480s-12"
@@ -23,30 +25,33 @@ app_cluster_map_roles = []
 blk_cluster_map_roles = []
 
 
-org_name = "trv" #Its an example
+org_name = "aais" #Its an example
 aws_env = "dev" #set to dev|test|prod
 
 #--------------------------------------------------------------------------------------------------------------------
+create_vpc = "false"
 #Application cluster VPC specifications
-app_vpc_cidr           = "172.18.0.0/16"
-app_availability_zones = ["us-east-2a", "us-east-2b"]
-app_public_subnets     = ["172.18.1.0/24", "172.18.2.0/24"]
-app_private_subnets    = ["172.18.3.0/24", "172.18.4.0/24"]
+app_vpc_id = "vpc-0b768c6cfb07f8cba"
+blk_vpc_id = "vpc-0d3477e8efbb93293"
+
+#app_vpc_cidr           = "172.18.0.0/16"
+#app_availability_zones = ["us-east-2a", "us-east-2b"]
+#app_public_subnets     = ["172.18.1.0/24", "172.18.2.0/24"]
+#app_private_subnets    = ["172.18.3.0/24", "172.18.4.0/24"]
 
 #-------------------------------------------------------------------------------------------------------------------
 #Blockchain cluster VPC specifications
-blk_vpc_cidr           = "172.19.0.0/16"
-blk_availability_zones = ["us-east-2a", "us-east-2b"]
-blk_public_subnets     = ["172.19.1.0/24", "172.19.2.0/24"]
-blk_private_subnets    = ["172.19.3.0/24", "172.19.4.0/24"]
+#blk_vpc_cidr           = "172.19.0.0/16"
+#blk_availability_zones = ["us-east-2a", "us-east-2b"]
+#blk_public_subnets     = ["172.19.1.0/24", "172.19.2.0/24"]
+#blk_private_subnets    = ["172.19.3.0/24", "172.19.4.0/24"]
 
 #--------------------------------------------------------------------------------------------------------------------
 #Bastion host specifications
-#Bastion hosts are placed behind nlb. These NLBs can be configured to be private | public to serve SSH traffics.
-#Either case whether NLB is private|public, the source ip_address|cidr_block should be enabled in bastion host's security group for incoming ssh traffic.
+#Bastion hosts are placed behind nlb.
+#The source ip_address|cidr_block should be enabled in bastion host's security group for incoming ssh traffic.
 #in bastion hosts security group for ssh traffic
 
-#when set to true bastion host's nlb is exposed as public, otherwise exposed only to internal to VPC
 create_bastion_host = "true"
 
 #application cluster bastion host specifications
@@ -73,13 +78,12 @@ blk_bastion_sg_egress =   [
     {rule="ssh-tcp", cidr_blocks = "172.19.0.0/16"},
     {rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}
     ]
-
 #--------------------------------------------------------------------------------------------------------------------
 #Route53 (PUBLIC) DNS domain related specifications
 domain_info = {
-  r53_public_hosted_zone_required = "no" #Options: yes | no
+  r53_public_hosted_zone_required = "yes" #Options: yes | no
   domain_name = "thetech.digital", #primary domain registered
-  sub_domain_name = "aais" #sub domain
+  sub_domain_name = "" #sub domain optional
   comments = "aais node domain"
 }
 
@@ -89,6 +93,7 @@ tgw_amazon_side_asn = "64532" #default is 64532
 
 #--------------------------------------------------------------------------------------------------------------------
 #Cognito specifications
+create_cognito_userpool = "false"
 userpool_name                = "openidl-pool" #unique user_pool name
 client_app_name              = "openidl-client" #a name of the application that uses user pool
 client_callback_urls         = ["https://openidl-dev-aais.thetech.digital/callback", "https://openidl-dev-aais.thetech.digital/redirect"] #ensure to add redirect url part of callback urls, as this is required
@@ -102,39 +107,39 @@ email_sending_account        = "COGNITO_DEFAULT" # Options: COGNITO_DEFAULT | DE
 
 #--------------------------------------------------------------------------------------------------------------------
 #Any additional traffic required to open to worker nodes in future, below are required to set (app cluster)
-app_eks_workers_app_sg_ingress = [
-   {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
-    description = "inbound https traffic"
-    cidr_blocks = "172.18.0.0/16"
-  },
-   {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
-    description = "inbound https traffic"
-    cidr_blocks = "172.19.0.0/16"
-   }]
+app_eks_workers_app_sg_ingress = []
+   #[{
+   # from_port = 443
+   # to_port = 443
+   # protocol = "tcp"
+   # description = "inbound https traffic"
+   # cidr_blocks = "172.18.0.0/16"
+   #},
+   #{
+   # from_port = 443
+   # to_port = 443
+   # protocol = "tcp"
+   # description = "inbound https traffic"
+   # cidr_blocks = "172.19.0.0/16"
+   #}]
 app_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
 #Any additional traffic required to open to worker nodes in future, below are required to set (blk cluster)
-blk_eks_workers_app_sg_ingress = [
-  {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
-    description = "inbound https traffic"
-    cidr_blocks = "172.18.0.0/16"
-  },
-   {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
-    description = "inbound https traffic"
-    cidr_blocks = "172.19.0.0/16"
-   }]
+blk_eks_workers_app_sg_ingress = []
+  #[{
+  #  from_port = 443
+  #  to_port = 443
+  #  protocol = "tcp"
+  #  description = "inbound https traffic"
+  #  cidr_blocks = "172.18.0.0/16"
+  #},
+  #{
+  #  from_port = 443
+  #  to_port = 443
+  #  protocol = "tcp"
+  #  description = "inbound https traffic"
+  #  cidr_blocks = "172.19.0.0/16"
+  # }]
 blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
 #--------------------------------------------------------------------------------------------------------------------
@@ -151,6 +156,7 @@ blk_worker_nodes_ami_id = "ami-09fd0b5dd68327412"
 
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related
+create_cloudtrial = "true"
 cw_logs_retention_period = "90" #example 90 days
 s3_bucket_name_cloudtrail = "openidl-cloudtrial-logs" #s3 bucket name to manage cloudtrail logs
 
@@ -164,4 +170,6 @@ tfc_workspace_name_aws_resources = "openidl-aais-aws-resources"
 
 #Name of the S3 bucket used to store the data extracted from HDS for analytics
 s3_bucket_name_hds_analytics = "openidl-hds-analytics"
+create_s3_bucket_public = "true"
 s3_bucket_name_logos = "openidl-public-logos"
+

@@ -14,8 +14,8 @@ module "app_eks_worker_nodes_key_pair_external" {
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-app-eks-worker-nodes-external"
-      "Cluster_type" = "application"
+      "name"         = "${local.std_name}-app-eks-worker-nodes-external"
+      "cluster_type" = "application"
   }, )
 }
 #setting up application cluster (eks)
@@ -37,7 +37,7 @@ module "app_eks_cluster" {
   cluster_create_endpoint_private_access_sg_rule     = true
   cluster_create_security_group                      = false
   cluster_security_group_id                          = module.app_eks_control_plane_sg.security_group_id
-  cluster_endpoint_private_access_cidrs              = var.create_vpc ? [var.app_vpc_cidr] : [var.app_vpc_cidr]
+  cluster_endpoint_private_access_cidrs              = var.create_vpc ? [var.app_vpc_cidr] : [data.aws_vpc.app_vpc.cidr_block]
   cluster_endpoint_public_access_cidrs               = var.cluster_endpoint_public_access_cidrs
   cluster_create_timeout                             = var.cluster_create_timeout
   wait_for_cluster_timeout                           = var.wait_for_cluster_timeout
@@ -76,7 +76,7 @@ module "app_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.app_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.aais_app_vpc.private_subnets[0] : data.aws_subnet_ids.app_vpc_private_subnets.ids
+      subnet_id                     = var.create_vpc ? module.aais_app_vpc.private_subnets[0] : data.aws_subnet_ids.app_vpc_private_subnets.id
       #target_group_arns             = module.app_eks_nlb.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -103,7 +103,7 @@ module "app_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.app_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.aais_app_vpc.private_subnets[1] : data.aws_subnet_ids.app_vpc_private_subnets.ids
+      subnet_id                     = var.create_vpc ? module.aais_app_vpc.private_subnets[1] : data.aws_subnet_ids.app_vpc_private_subnets.id
       #target_group_arns             = module.app_eks_nlb.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -118,18 +118,18 @@ module "app_eks_cluster" {
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.app_cluster_name}"
-      "Cluster_type" = "application"
+      "name"         = "${local.app_cluster_name}"
+      "cluster_type" = "application"
   }, )
   depends_on = [module.aais_app_vpc,
-    aws_vpc_endpoint.app_eks_asg,
-    aws_vpc_endpoint.app_eks_ec2,
-    aws_vpc_endpoint.app_eks_ecr_api,
-    aws_vpc_endpoint.app_eks_ecr_dkr,
-    aws_vpc_endpoint.app_eks_elb,
-    aws_vpc_endpoint.app_eks_logs,
-    aws_vpc_endpoint.app_eks_s3,
-    aws_vpc_endpoint.app_eks_sts,
+    #aws_vpc_endpoint.app_eks_asg,
+    #aws_vpc_endpoint.app_eks_ec2,
+    #aws_vpc_endpoint.app_eks_ecr_api,
+    #aws_vpc_endpoint.app_eks_ecr_dkr,
+    #aws_vpc_endpoint.app_eks_elb,
+    #aws_vpc_endpoint.app_eks_logs,
+    #aws_vpc_endpoint.app_eks_s3,
+    #aws_vpc_endpoint.app_eks_sts,
     module.app_eks_control_plane_sg,
     module.app_eks_worker_node_group_sg,
     aws_iam_role.eks_cluster_role,
@@ -157,8 +157,8 @@ module "blk_eks_worker_nodes_key_pair_external" {
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-blk-eks-worker-nodes-external"
-      "Cluster_type" = "blockchain"
+      "name"         = "${local.std_name}-blk-eks-worker-nodes-external"
+      "cluster_type" = "blockchain"
   }, )
 }
 #setting up blockchain cluster (eks)
@@ -180,7 +180,7 @@ module "blk_eks_cluster" {
   cluster_create_endpoint_private_access_sg_rule     = true
   cluster_create_security_group                      = false
   cluster_security_group_id                          = module.blk_eks_control_plane_sg.security_group_id
-  cluster_endpoint_private_access_cidrs              = var.create_vpc ? [var.blk_vpc_cidr] : [var.blk_vpc_cidr]
+  cluster_endpoint_private_access_cidrs              = var.create_vpc ? [var.blk_vpc_cidr] : [data.aws_vpc.blk_vpc.cidr_block]
   cluster_endpoint_public_access_cidrs               = var.cluster_endpoint_public_access_cidrs
   cluster_create_timeout                             = var.cluster_create_timeout
   wait_for_cluster_timeout                           = var.wait_for_cluster_timeout
@@ -219,7 +219,7 @@ module "blk_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.aais_blk_vpc.private_subnets[0] : data.aws_subnet_ids.blk_vpc_private_subnets.ids
+      subnet_id                     = var.create_vpc ? module.aais_blk_vpc.private_subnets[0] : data.aws_subnet_ids.blk_vpc_private_subnets.id
       #target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -246,7 +246,7 @@ module "blk_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.aais_blk_vpc.private_subnets[1] : data.aws_subnet_ids.blk_vpc_private_subnets.ids
+      subnet_id                     = var.create_vpc ? module.aais_blk_vpc.private_subnets[1] : data.aws_subnet_ids.blk_vpc_private_subnets.id
       #target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -273,7 +273,7 @@ module "blk_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.aais_blk_vpc.private_subnets[1] : data.aws_subnet_ids.blk_vpc_private_subnets.ids
+      subnet_id                     = var.create_vpc ? module.aais_blk_vpc.private_subnets[1] : data.aws_subnet_ids.blk_vpc_private_subnets.id
       #target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -288,18 +288,18 @@ module "blk_eks_cluster" {
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.blk_cluster_name}"
-      "Cluster_type" = "blockchain"
+      "name"         = "${local.blk_cluster_name}"
+      "cluster_type" = "blockchain"
   }, )
   depends_on = [module.aais_blk_vpc,
-    aws_vpc_endpoint.blk_eks_asg,
-    aws_vpc_endpoint.blk_eks_ec2,
-    aws_vpc_endpoint.blk_eks_ecr_api,
-    aws_vpc_endpoint.blk_eks_ecr_dkr,
-    aws_vpc_endpoint.blk_eks_elb,
-    aws_vpc_endpoint.blk_eks_logs,
-    aws_vpc_endpoint.blk_eks_s3,
-    aws_vpc_endpoint.blk_eks_sts,
+    #aws_vpc_endpoint.blk_eks_asg,
+    #aws_vpc_endpoint.blk_eks_ec2,
+    #aws_vpc_endpoint.blk_eks_ecr_api,
+    #aws_vpc_endpoint.blk_eks_ecr_dkr,
+    #aws_vpc_endpoint.blk_eks_elb,
+    #aws_vpc_endpoint.blk_eks_logs,
+    #aws_vpc_endpoint.blk_eks_s3,
+    #aws_vpc_endpoint.blk_eks_sts,
     module.blk_eks_control_plane_sg,
     module.blk_eks_worker_node_group_sg,
     aws_iam_role.eks_cluster_role,

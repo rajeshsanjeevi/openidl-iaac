@@ -89,8 +89,8 @@ resource "aws_kms_key" "eks_kms_key" {
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-${each.value}"
-      "Cluster_type" = "${each.value}"
+      "name"         = "${local.std_name}-${each.value}"
+      "cluster_type" = "${each.value}"
   }, )
 }
 resource "aws_kms_alias" "alias" {

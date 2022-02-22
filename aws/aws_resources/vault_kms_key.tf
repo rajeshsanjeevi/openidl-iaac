@@ -69,8 +69,8 @@ resource "aws_kms_key" "vault_kms_key" {
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-vault-kmskey"
-      "Cluster_type" = "both"
+      "name"         = "${local.std_name}-vault-kmskey"
+      "cluster_type" = "both"
   }, )
 }
 resource "aws_kms_alias" "vault_kms_key_alias" {

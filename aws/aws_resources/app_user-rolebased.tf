@@ -2,7 +2,7 @@
 resource "aws_iam_user" "openidl_apps_user1" {
   name = "${local.std_name}-openidl-apps-user1"
   force_destroy = true
-  tags = merge(local.tags, { Name = "${local.std_name}-openidl-apps-user", Cluster_type = "both" })
+  tags = merge(local.tags, { Name = "${local.std_name}-openidl-apps-user", Cluster_type = "application" })
 }
 resource "aws_iam_access_key" "openidl_apps_access_key1" {
   user = aws_iam_user.openidl_apps_user1.name
@@ -55,23 +55,25 @@ resource "aws_iam_role" "openidl_apps_iam_role" {
         }
     ]
   })
-  managed_policy_arns = [var.org_name == "aais" ? aws_iam_policy.openidl_aais_apps_role_policy[0].arn : aws_iam_policy.openidl_nonaais_apps_role_policy[0].arn]
-  tags = merge(local.tags, {Name = "${local.std_name}-openidl-apps", Cluster_type = "both"})
+  managed_policy_arns = [aws_iam_policy.openidl_apps_user_role_policy.arn]
+  tags = merge(local.tags, {name = "${local.std_name}-openidl-apps", cluster_type = "application"})
   description = "The iam role that is used with OpenIDL apps to access AWS resources"
   max_session_duration = 3600
 }
 #iam policy for openidl apps role
-resource "aws_iam_policy" "openidl_aais_apps_role_policy" {
-  count = var.org_name == "aais" ? 1 : 0
-  name   = "${local.std_name}-OpenIDL-APPs-Policy"
-  policy = jsonencode({
+resource "aws_iam_policy" "openidl_apps_user_role_policy" {
+  name = "${local.std_name}-OpenIDLAPPPolicy"
+  policy = var.org_name == "aais" ? jsonencode({
     "Version": "2012-10-17",
     "Statement": [
         {
             "Sid": "ListBucket",
             "Effect": "Allow",
             "Action": "s3:ListAllMyBuckets",
-            "Resource": "*"
+            "Resource": [
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*"
+            ]
         },
         {
             "Sid": "AllowKMS",
@@ -96,7 +98,7 @@ resource "aws_iam_policy" "openidl_aais_apps_role_policy" {
           "Sid": "AllowCognito",
           "Effect": "Allow",
           "Action": "cognito-idp:*",
-          "Resource": var.create_cognito_userpool ? "${aws_cognito_user_pool.user_pool[0].arn}" : ""
+          "Resource": var.create_cognito_userpool ? "${aws_cognito_user_pool.user_pool[0].arn}" : "arn:aws:cognito-idp:${var.aws_region}:${var.aws_account_number}:userpool/null"
         },
         {
           "Sid": "AllowSecretsManager",
@@ -105,25 +107,22 @@ resource "aws_iam_policy" "openidl_aais_apps_role_policy" {
             "secretsmanager:GetSecretValue",
             "secretsmanager:DescribeSecret",
           ],
-          "Resource": "*"
+          "Resource": ["arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_number}:secret:${var.org_name}-${var.aws_env}-kvs-vault-??????"]
         }
     ]
-  })
-  tags = merge(local.tags,
-    { "Name" = "${local.std_name}-OpenIDL-APPs-Policy",
-  "Cluster_type" = "both" })
-}
-resource "aws_iam_policy" "openidl_nonaais_apps_role_policy" {
-  count = var.org_name == "aais" ? 0 : 1
-  name   = "${local.std_name}-OpenIDL-APPs-Policy"
-  policy = jsonencode({
+  }) : jsonencode({
     "Version": "2012-10-17",
     "Statement": [
         {
             "Sid": "ListBucket",
             "Effect": "Allow",
             "Action": "s3:ListAllMyBuckets",
-            "Resource": "*"
+            "Resource": [
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*"
+            ]
         },
         {
             "Sid": "GetPutAllowHDS",
@@ -164,7 +163,7 @@ resource "aws_iam_policy" "openidl_nonaais_apps_role_policy" {
           "Sid": "AllowCognito",
           "Effect": "Allow",
           "Action": "cognito-idp:*",
-          "Resource": var.create_cognito_userpool ? "${aws_cognito_user_pool.user_pool[0].arn}" : ""
+          "Resource": var.create_cognito_userpool ? "${aws_cognito_user_pool.user_pool[0].arn}" : "arn:aws:cognito-idp:${var.aws_region}:${var.aws_account_number}:userpool/null"
         },
         {
           "Sid": "AllowSecretsManager",
@@ -173,11 +172,11 @@ resource "aws_iam_policy" "openidl_nonaais_apps_role_policy" {
             "secretsmanager:GetSecretValue",
             "secretsmanager:DescribeSecret",
           ],
-          "Resource": "*"
+          "Resource": ["arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_number}:secret:${var.org_name}-${var.aws_env}-kvs-vault-??????"]
         }
     ]
   })
   tags = merge(local.tags,
-    { "Name" = "${local.std_name}-OpenIDL-APPs-Policy",
-  "Cluster_type" = "both" })
+    { "name" = "${local.std_name}-OpenIDLAPPPolicy",
+      "cluster_type" = "application" })
 }

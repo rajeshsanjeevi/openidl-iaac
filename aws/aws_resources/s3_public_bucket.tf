@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "s3_bucket_logos_public" {
   tags = merge(
     local.tags,
     {
-      "Name" = "${local.std_name}-${var.s3_bucket_name_logos}"
+      "name" = "${local.std_name}-${var.s3_bucket_name_logos}"
     },)
 }
 #blocking public access to s3 bucket

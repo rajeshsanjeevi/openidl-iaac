@@ -6,15 +6,15 @@ resource "aws_route53_zone" "zones" {
   tags = merge(
     local.tags,
     {
-      "Name"         = "${var.domain_info.domain_name}"
-      "Cluster_type" = "Both"
+      "name"         = "${var.domain_info.domain_name}"
+      "cluster_type" = "Both"
   }, )
 }
 #setting dns entry for bastion host in app cluster vpc
 resource "aws_route53_record" "app_nlb_bastion_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id
-  name    = var.aws_env != "prod" ? "app-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${aws_route53_zone.zones[0].name}" : "app-bastion.${var.domain_info.sub_domain_name}.${aws_route53_zone.zones[0].name}"
+  name    = var.aws_env != "prod" ? "app-bastion.${var.aws_env}.${local.public_domain}" : "app-bastion.${local.public_domain}"
   type    = "A"
   alias {
     name                   = module.app_bastion_nlb[0].lb_dns_name
@@ -26,7 +26,7 @@ resource "aws_route53_record" "app_nlb_bastion_r53_record" {
 resource "aws_route53_record" "blk_nlb_bastion_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id
-  name    = var.aws_env != "prod" ? "blk-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${aws_route53_zone.zones[0].name}" : "blk-bastion.${var.domain_info.sub_domain_name}.${aws_route53_zone.zones[0].name}"
+  name    = var.aws_env != "prod" ? "blk-bastion.${var.aws_env}.${local.public_domain}" : "blk-bastion.${local.public_domain}"
   type    = "A"
   alias {
     name                   = module.blk_bastion_nlb[0].lb_dns_name

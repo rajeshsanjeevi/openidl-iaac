@@ -74,12 +74,11 @@ resource "aws_cognito_user_pool" "user_pool" {
       }
     }
   }
-
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-${var.userpool_name}"
-      "Cluster_type" = "application"
+      "name"         = "${local.std_name}-${var.userpool_name}"
+      "cluster_type" = "application"
   }, )
 }
 #setting up cognito application client in the userpool
