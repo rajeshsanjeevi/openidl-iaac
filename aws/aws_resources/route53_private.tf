@@ -1,5 +1,5 @@
 #creating private hosted zones for internal vpc dns resolution - databases and vault
-resource "aws_route53_zone" "aais_private_zones_internal" {
+resource "aws_route53_zone" "private_zones_internal" {
   name    = "internal.${var.domain_info.domain_name}"
   comment = "Private hosted zones for ${local.std_name}"
   vpc {
@@ -16,7 +16,7 @@ resource "aws_route53_zone" "aais_private_zones_internal" {
   },)
 }
 #creating private hosted zones for internal vpc dns resolution - others
-resource "aws_route53_zone" "aais_private_zones" {
+resource "aws_route53_zone" "private_zones" {
   name    = "${var.aws_env}.${local.private_domain}"
   comment = "Private hosted zones for ${local.std_name}"
   vpc {

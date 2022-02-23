@@ -70,7 +70,7 @@ module "app_eks_cluster" {
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
       security_groups               = module.app_eks_worker_node_group_sg.security_group_id
-      additional_security_group_ids = module.app_eks_workers_app_traffic_sg.security_group_id
+    #  additional_security_group_ids = module.app_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size              = var.eks_wg_root_volume_size
@@ -97,7 +97,7 @@ module "app_eks_cluster" {
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
       security_groups               = module.app_eks_worker_node_group_sg.security_group_id
-      additional_security_group_ids = module.app_eks_workers_app_traffic_sg.security_group_id
+    #  additional_security_group_ids = module.app_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size              = var.eks_wg_root_volume_size
@@ -122,14 +122,6 @@ module "app_eks_cluster" {
       "cluster_type" = "application"
   }, )
   depends_on = [module.aais_app_vpc,
-    #aws_vpc_endpoint.app_eks_asg,
-    #aws_vpc_endpoint.app_eks_ec2,
-    #aws_vpc_endpoint.app_eks_ecr_api,
-    #aws_vpc_endpoint.app_eks_ecr_dkr,
-    #aws_vpc_endpoint.app_eks_elb,
-    #aws_vpc_endpoint.app_eks_logs,
-    #aws_vpc_endpoint.app_eks_s3,
-    #aws_vpc_endpoint.app_eks_sts,
     module.app_eks_control_plane_sg,
     module.app_eks_worker_node_group_sg,
     aws_iam_role.eks_cluster_role,
@@ -213,7 +205,7 @@ module "blk_eks_cluster" {
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
       security_groups               = module.blk_eks_worker_node_group_sg.security_group_id
-      additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
+    #  additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size              = var.eks_wg_root_volume_size
@@ -240,7 +232,7 @@ module "blk_eks_cluster" {
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
       security_groups               = module.blk_eks_worker_node_group_sg.security_group_id
-      additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
+    #  additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size              = var.eks_wg_root_volume_size
@@ -267,7 +259,7 @@ module "blk_eks_cluster" {
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
       security_groups               = module.blk_eks_worker_node_group_sg.security_group_id
-      additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
+  #    additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size              = var.eks_wg_root_volume_size
@@ -292,14 +284,6 @@ module "blk_eks_cluster" {
       "cluster_type" = "blockchain"
   }, )
   depends_on = [module.aais_blk_vpc,
-    #aws_vpc_endpoint.blk_eks_asg,
-    #aws_vpc_endpoint.blk_eks_ec2,
-    #aws_vpc_endpoint.blk_eks_ecr_api,
-    #aws_vpc_endpoint.blk_eks_ecr_dkr,
-    #aws_vpc_endpoint.blk_eks_elb,
-    #aws_vpc_endpoint.blk_eks_logs,
-    #aws_vpc_endpoint.blk_eks_s3,
-    #aws_vpc_endpoint.blk_eks_sts,
     module.blk_eks_control_plane_sg,
     module.blk_eks_worker_node_group_sg,
     aws_iam_role.eks_cluster_role,

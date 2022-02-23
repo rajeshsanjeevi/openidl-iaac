@@ -17,17 +17,26 @@ output "cognito_app_client_secret" {
 output "git_actions_iam_user_arn" {
   value = aws_iam_user.git_actions_user.arn
 }
+output "git_actions_admin_role_arn" {
+  value = aws_iam_role.git_actions_admin_role.arn
+}
 output "baf_automation_user_arn" {
   value = aws_iam_user.baf_user.arn
+}
+output "baf_automation_role_arn" {
+  value = aws_iam_role.baf_user_role.arn
 }
 output "openidl_app_iam_user_arn"{
   value = aws_iam_user.openidl_apps_user.arn
 }
+output "openidl_app_iam_role_arn" {
+  value = aws_iam_role.openidl_apps_iam_role.arn
+}
+output "eks_admin_user_group_arn" {
+  value = aws_iam_group.eks_admin_group.arn
+}
 output "eks_admin_role_arn" {
   value = aws_iam_role.eks_admin_role.arn
-}
-output "git_actions_admin_role_arn" {
-  value = aws_iam_role.git_actions_admin_role.arn
 }
 #-----------------------------------------------------------------------------------------------------------------
 #application cluster (EKS) outputs
@@ -65,7 +74,7 @@ output "s3_public_bucket_logos_name" {
 #-----------------------------------------------------------------------------------------------------------------
 #Route53 entries
 output "aws_name_servers" {
-  value       = var.domain_info.r53_public_hosted_zone_required == "yes"  ? aws_route53_zone.zones[0].name_servers : null
+  value       = var.domain_info.r53_public_hosted_zone_required == "yes"  ? aws_route53_zone.public_zones[0].name_servers : null
   description = "The name servers to be updated in the domain registrar"
 }
 output "public_blk_bastion_fqdn" {
@@ -87,13 +96,13 @@ output "public_blk_bastion_dns_name" {
   value = var.create_bastion_host ? module.blk_bastion_nlb[0].lb_dns_name: null
 }
 output "r53_public_hosted_zone_id" {
-  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_zone.zones[0].zone_id : null
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_zone.public_zones[0].zone_id : null
 }
 output "r53_private_hosted_zone_id"{
-  value = aws_route53_zone.aais_private_zones.zone_id
+  value = aws_route53_zone.private_zones.zone_id
 }
 output "r53_private_hosted_zone_internal_id" {
-  value = aws_route53_zone.aais_private_zones_internal.zone_id
+  value = aws_route53_zone.private_zones_internal.zone_id
 }
 #-----------------------------------------------------------------------------------------------------------------
 #KMS key related to vault unseal

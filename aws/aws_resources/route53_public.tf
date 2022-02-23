@@ -1,5 +1,5 @@
 #creating public hosted zones
-resource "aws_route53_zone" "zones" {
+resource "aws_route53_zone" "public_zones" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" ? 1 : 0
   name    = lookup(var.domain_info, "domain_name")
   comment = lookup(var.domain_info, "comments", null)
@@ -13,7 +13,7 @@ resource "aws_route53_zone" "zones" {
 #setting dns entry for bastion host in app cluster vpc
 resource "aws_route53_record" "app_nlb_bastion_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? 1 : 0
-  zone_id = aws_route53_zone.zones[0].id
+  zone_id = aws_route53_zone.public_zones[0].id
   name    = var.aws_env != "prod" ? "app-bastion.${var.aws_env}.${local.public_domain}" : "app-bastion.${local.public_domain}"
   type    = "A"
   alias {
@@ -25,7 +25,7 @@ resource "aws_route53_record" "app_nlb_bastion_r53_record" {
 #setting dns entry for bastion host in blk cluster vpc
 resource "aws_route53_record" "blk_nlb_bastion_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? 1 : 0
-  zone_id = aws_route53_zone.zones[0].id
+  zone_id = aws_route53_zone.public_zones[0].id
   name    = var.aws_env != "prod" ? "blk-bastion.${var.aws_env}.${local.public_domain}" : "blk-bastion.${local.public_domain}"
   type    = "A"
   alias {

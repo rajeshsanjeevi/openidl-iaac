@@ -147,28 +147,12 @@ variable "blk_bastion_sg_egress" {
 variable "app_bastion_ssh_key" {
   type        = string
   description = "The public ssh key to setup on the bastion host for remote ssh access"
+  default = ""
 }
 variable "blk_bastion_ssh_key" {
   type        = string
   description = "The public ssh key to setup on the bastion host for remote ssh access"
-}
-#app cluster (eks) worker nodes application traffic specific SG
-variable "app_eks_workers_app_sg_ingress" {
-  type        = list(any)
-  description = "The ingress rules of the application specific traffic to be allowed to worker nodes of app cluster"
-}
-variable "app_eks_workers_app_sg_egress" {
-  type        = list(any)
-  description = "The egress rules of the application specific traffic to be allowed to worker nodes of app cluster"
-}
-#blk cluster (eks) worker nodes application traffic specific SG
-variable "blk_eks_workers_app_sg_ingress" {
-  type        = list(any)
-  description = "The ingress rules of the application specific traffic to be allowed to worker nodes of blk cluster"
-}
-variable "blk_eks_workers_app_sg_egress" {
-  type        = list(any)
-  description = "The egress rules of the application specific traffic to be allowed to worker nodes of blk cluster"
+  default = ""
 }
 variable "instance_type" {
   description = "The instance type of the bastion host"
@@ -589,10 +573,12 @@ variable "eks_wg_health_check_type" {
 variable "app_eks_worker_nodes_ssh_key" {
   type        = string
   description = "The ssh public key to setup on worker nodes in app cluster eks for remote access"
+  default = ""
 }
 variable "blk_eks_worker_nodes_ssh_key" {
   type        = string
   description = "The ssh public key to setup on worker nodes in blk cluster eks for remote access"
+  default = ""
 }
 variable "app_cluster_map_roles" {
   type        = list(any)
@@ -715,4 +701,9 @@ variable "blk_vpc_id" {
   type = string
   default = ""
   description = "Existing VPC ID to use as blockchain cluster VPC"
+}
+variable "custom_tags" {
+  type = map
+  default = {}
+  description ="List of custom tags to include"
 }

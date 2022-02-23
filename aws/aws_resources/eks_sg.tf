@@ -54,6 +54,7 @@ module "blk_eks_worker_node_group_sg" {
     "kubernetes.io/cluster/${local.blk_cluster_name}" = "owned"
   "cluster_type" = "application" })
 }
+/*
 # app cluster worker nodes additional security group to manage application specific traffic requirements
 module "app_eks_workers_app_traffic_sg" {
   depends_on               = [module.aais_app_vpc]
@@ -84,3 +85,4 @@ module "blk_eks_workers_app_traffic_sg" {
       "cluster_type" = "blockchain"
   }, )
 }
+*/

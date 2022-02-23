@@ -4,16 +4,16 @@ locals {
   app_cluster_name  = "${local.std_name}-${var.app_cluster_name}"
   blk_cluster_name  = "${local.std_name}-${var.blk_cluster_name}"
   policy_arn_prefix = "arn:aws:iam::aws:policy"
-  tags = {
+  tags = merge(var.custom_tags, {
     Application = "openidl"
     Environment = var.aws_env
     Managed_by  = "terraform"
     Node_type   = var.org_name
-  }
+  })
 
   #sub domain specific
-  public_domain = "${var.domain_info.sub_domain_name}" == "" ? data.terraform_remote_state.base_setup.outputs.route53"${aws_route53_zone.zones[0].name}" : "${var.domain_info.sub_domain_name}.${aws_route53_zone.zones[0].name}"
-  private_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
+  public_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
+  private_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.aws_env}" : "${var.aws_env}.${var.domain_info.sub_domain_name}"
 
   #application cluster (eks) config-map (aws auth) - iam user to map
   app_cluster_map_users = [{
@@ -108,23 +108,23 @@ locals {
       groups   = ["system:masters"]
   }]
   dns_entries_list_non_prod = {
-    "openidl.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
-    "app-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null,
-    "blk-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"= var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null,
-    "*.ordererorg.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
-    "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
-    "data-call-app-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
-    "insurance-data-manager-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
-    "utilities-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name
+    "openidl.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
+    "app-bastion.${var.aws_env}.${local.public_domain}" = var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null,
+    "blk-bastion.${var.aws_env}.${local.public_domain}"= var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null,
+    "*.ordererorg.${var.aws_env}.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
+    "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
+    "data-call-app-service.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
+    "insurance-data-manager-service.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
+    "utilities-service.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name
   }
   dns_entries_list_prod = {
-    "openidl.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
-    "app-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null,
-    "blk-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null,
-    "*.ordererorg.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
-    "*.${var.org_name}-net.${var.org_name}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
-    "data-call-app-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
-    "insurance-data-manager-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
-    "utilities-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name
+    "openidl.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
+    "app-bastion.${local.public_domain}" = var.create_bastion_host? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null,
+    "blk-bastion.${local.public_domain}" = var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null,
+    "*.ordererorg.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
+    "*.${var.org_name}-net.${var.org_name}.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
+    "data-call-app-service.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
+    "insurance-data-manager-service.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
+    "utilities-service.${local.public_domain}" = data.aws_alb.app_nlb.dns_name
   }
 }

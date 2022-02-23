@@ -5,18 +5,18 @@ locals {
   blk_cluster_name  = "${local.std_name}-${var.blk_cluster_name}"
   policy_arn_prefix = "arn:aws:iam::aws:policy"
 
-  tags = {
+  tags = merge(var.custom_tags, {
     application = "openidl"
     environment = var.aws_env
     managed_by  = "terraform"
     node_type   = var.org_name
-  }
+  })
 
   bastion_host_userdata = filebase64("resources/bootstrap_scripts/bastion_host.sh")
   worker_nodes_userdata = filebase64("resources/bootstrap_scripts/worker_nodes.sh")
 
   #sub domain specific
-  public_domain = "${var.domain_info.sub_domain_name}" == "" ? "${aws_route53_zone.zones[0].name}" : "${var.domain_info.sub_domain_name}.${aws_route53_zone.zones[0].name}"
+  public_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
   private_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
 
   #cognito custom attributes
