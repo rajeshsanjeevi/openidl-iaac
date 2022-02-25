@@ -56,12 +56,12 @@ create_bastion_host = "true"
 
 #application cluster bastion host specifications
 app_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}]
-app_bastion_sg_egress =   [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"},{rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"}]
+app_bastion_sg_egress =   [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}]
 
 #blockchain cluster bastion host specifications
 #bastion host security specifications
 blk_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}]
-blk_bastion_sg_egress =   [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"},{rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"}]
+blk_bastion_sg_egress =   [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}]
 #--------------------------------------------------------------------------------------------------------------------
 #Route53 (PUBLIC) DNS domain related specifications
 domain_info = {
