@@ -1,5 +1,6 @@
 #kms key for hcp vault cluster unseal
 resource "aws_kms_key" "vault_kms_key" {
+  count = var.create_kms_keys ? 1 : 0
   description             = "The KMS key for vault cluster"
   deletion_window_in_days = 7
   key_usage               = "ENCRYPT_DECRYPT"
@@ -21,7 +22,7 @@ resource "aws_kms_key" "vault_kms_key" {
         "Sid" : "AllowaccessforKeyAdministrators",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : ["${var.aws_role_arn}", aws_iam_role.git_actions_admin_role.arn, aws_iam_role.eks_nodegroup_role["app-node-group"].arn, aws_iam_role.eks_nodegroup_role["blk-node-group"].arn ]
+          "AWS" : ["${var.aws_role_arn}"]
         },
         "Action" : [
           "kms:Create*",
@@ -38,13 +39,23 @@ resource "aws_kms_key" "vault_kms_key" {
           "kms:UntagResource",
           "kms:ScheduleKeyDeletion",
           "kms:CancelKeyDeletion",
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:DescribeKey"
         ],
         "Resource" : "*"
+      },
+      {
+            "Sid": "Allowuseofthekey",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": ["${var.aws_role_arn}", aws_iam_role.git_actions_admin_role.arn, aws_iam_role.eks_nodegroup_role["app-node-group"].arn, aws_iam_role.eks_nodegroup_role["blk-node-group"].arn ]
+            },
+            "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey"
+            ],
+            "Resource": "*"
       },
       {
         "Sid" : "Allowattachmentofpersistentresources",
@@ -69,11 +80,12 @@ resource "aws_kms_key" "vault_kms_key" {
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-vault-kmskey"
-      "Cluster_type" = "both"
+      "name"         = "${local.std_name}-vault-kmskey"
+      "cluster_type" = "both"
   }, )
 }
 resource "aws_kms_alias" "vault_kms_key_alias" {
+  count = var.create_kms_keys ? 1 : 0
   name          = "alias/${local.std_name}-vault-kmskey"
-  target_key_id = aws_kms_key.vault_kms_key.id
+  target_key_id = aws_kms_key.vault_kms_key[0].id
 }

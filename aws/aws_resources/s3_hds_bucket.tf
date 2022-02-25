@@ -10,13 +10,13 @@ resource "aws_s3_bucket" "s3_bucket_hds" {
   tags = merge(
     local.tags,
     {
-      "Name" = "${local.std_name}-${var.s3_bucket_name_hds_analytics}"
+      "name" = "${local.std_name}-${var.s3_bucket_name_hds_analytics}"
     },)
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm     = "aws:kms"
-        kms_master_key_id = aws_kms_key.s3_kms_key_hds[0].id
+        kms_master_key_id = var.create_kms_keys ? aws_kms_key.s3_kms_key_hds[0].id : var.s3_kms_key_arn
       }
     }
   }
@@ -43,7 +43,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
             "Sid": "AllowGetAndPutObjects",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "${aws_iam_user.openidl_apps_user.arn}"
+                "AWS": ["${aws_iam_user.openidl_apps_user.arn}", "${aws_iam_role.openidl_apps_iam_role}"]
             },
             "Action": [
                 "s3:GetObject",
@@ -87,7 +87,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
 }
 #creating kms key that is used to encrypt data at rest in S3 bucket used for HDS data extract for analytics node
 resource "aws_kms_key" "s3_kms_key_hds" {
-  count = var.org_name == "aais" ? 0 : 1
+  count = var.org_name == "aais" && var.create_kms_keys != "false" ? 0 : 1
   description             = "The kms key for s3 bucket used for HDS"
   deletion_window_in_days = 30
   key_usage               = "ENCRYPT_DECRYPT"
@@ -95,87 +95,84 @@ resource "aws_kms_key" "s3_kms_key_hds" {
   tags = merge(
     local.tags,
     {
-      "Name" = "s3-bucket-hds-kms-key"
+      "name" = "s3-bucket-hds-kms-key"
     },)
   policy = jsonencode({
-    "Id" : "${local.std_name}-${var.s3_bucket_name_hds_analytics}",
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Sid" : "EnableIAMUserPermissions",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "arn:aws:iam::${var.aws_account_number}:root"
+    "Id": "key-consolepolicy-3",
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "EnableIAMUserPermissions",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::357396431244:root"
+            },
+            "Action": "kms:*",
+            "Resource": "*"
         },
-        "Action" : "kms:*",
-        "Resource" : "*"
-      },
-      {
-        "Sid" : "AllowaccessforKeyAdministrators",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "${var.aws_role_arn}"
+        {
+            "Sid": "AllowaccessforKeyAdministrators",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${var.aws_role_arn}"
+            },
+            "Action": [
+                "kms:Create*",
+                "kms:Describe*",
+                "kms:Enable*",
+                "kms:List*",
+                "kms:Put*",
+                "kms:Update*",
+                "kms:Revoke*",
+                "kms:Disable*",
+                "kms:Get*",
+                "kms:Delete*",
+                "kms:TagResource",
+                "kms:UntagResource",
+                "kms:ScheduleKeyDeletion",
+                "kms:CancelKeyDeletion"
+            ],
+            "Resource": "*"
         },
-        "Action" : [
-          "kms:Create*",
-          "kms:Describe*",
-          "kms:Enable*",
-          "kms:List*",
-          "kms:Put*",
-          "kms:Update*",
-          "kms:Revoke*",
-          "kms:Disable*",
-          "kms:Get*",
-          "kms:Delete*",
-          "kms:TagResource",
-          "kms:UntagResource",
-          "kms:ScheduleKeyDeletion",
-          "kms:CancelKeyDeletion",
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:DescribeKey"
-        ],
-        "Resource" : "*"
-      },
-      	{
-        "Sid" : "EnableAccess",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "${aws_iam_user.openidl_apps_user.arn}"
+        {
+            "Sid": "Allowuseofthekey",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${var.aws_role_arn}"
+            },
+            "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey"
+            ],
+            "Resource": "*"
         },
-        "Action" : [
-			"kms:Encrypt",
-			"kms:Decrypt",
-			"kms:DescribeKey"
-		],
-        "Resource" : "*"
-    },
-      {
-        "Sid" : "Allowattachmentofpersistentresources",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "${var.aws_role_arn}"
-        },
-        "Action" : [
-          "kms:CreateGrant",
-          "kms:ListGrants",
-          "kms:RevokeGrant"
-        ],
-        "Resource" : "*",
-        "Condition" : {
-          "Bool" : {
-            "kms:GrantIsForAWSResource" : "true"
-          }
+        {
+            "Sid": "Allowattachmentofpersistentresources",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${var.aws_role_arn}"
+            },
+            "Action": [
+                "kms:CreateGrant",
+                "kms:ListGrants",
+                "kms:RevokeGrant"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "Bool": {
+                    "kms:GrantIsForAWSResource": "true"
+                }
+            }
         }
-      }
     ]
-  })
+})
 }
 #setting up an alias for the kms key used with s3 bucket data encryption which is used for HDS data extract for analytics node
 resource "aws_kms_alias" "kms_alias_hds" {
-  count = var.org_name == "aais" ? 0 : 1
+  count = var.org_name == "aais" && var.create_kms_keys != "false" ? 0 : 1
   name          = "alias/${local.std_name}-${var.s3_bucket_name_hds_analytics}"
   target_key_id = aws_kms_key.s3_kms_key_hds[0].id
 }

@@ -85,10 +85,6 @@ variable "tfc_org_name" {
   description = "The terraform cloud organisation name"
   default = ""
 }
-variable "bastion_host_nlb_external" {
-  type = bool
-  description = "Do you want to set nlb for the bastion hosts in autoscaling group to be external"
-}
 variable "aws_access_key" {
   type = string
   default = ""
@@ -104,4 +100,34 @@ variable "aws_external_id" {
   default = "terraform"
   description = "ExternalID setup while setting up IAM user and relevant IAM roles"
 
+}
+variable "create_bastion_host" {
+  type = bool
+  default = true
+  description = "Determines whether to create bastion host in the VPC network"
+}
+variable "create_cloudtrial" {
+  type = bool
+  default = true
+  description = "Determines whether to enable cloudtrial"
+}
+variable "create_cognito_userpool" {
+  type = bool
+  default = true
+  description = "Determines whether to create cognito userpool"
+}
+variable "create_s3_bucket_public" {
+  type = bool
+  default = true
+  description = "Determines whether to create public s3 bucket to manage logos"
+}
+variable "create_vpc" {
+  type = bool
+  default = true
+  description = "Determines whether to create vpc or use existing vpc"
+}
+variable "custom_tags" {
+  type = map
+  default = {}
+  description ="List of custom tags to include"
 }

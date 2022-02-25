@@ -45,33 +45,42 @@ output "dns_entries_required_to_add" {
 #-----------------------------------------------------------------------------------------------------------------
 #aws cognito application client outputs
 output "cognito_user_pool_id" {
-  value     = data.terraform_remote_state.base_setup.outputs.cognito_user_pool_id
+  value     = var.create_cognito_userpool ? data.terraform_remote_state.base_setup.outputs.cognito_user_pool_id : null
   sensitive = true
 }
 output "cognito_app_client_id" {
-  value     = data.terraform_remote_state.base_setup.outputs.cognito_app_client_id
+  value     = var.create_cognito_userpool ? data.terraform_remote_state.base_setup.outputs.cognito_app_client_id : null
   sensitive = true
 }
 output "cognito_app_client_secret" {
-  value     = data.terraform_remote_state.base_setup.outputs.cognito_app_client_secret
+  value     = var.create_cognito_userpool ? data.terraform_remote_state.base_setup.outputs.cognito_app_client_secret : null
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
 #git actions user and baf automation user outputs
-output "git_actions_iam_user_arn" {
+output "git_actions_user_arn" {
   value = data.terraform_remote_state.base_setup.outputs.git_actions_iam_user_arn
-}
-output "baf_automation_user_arn" {
-  value = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
-}
-output "eks_admin_role_arn" {
-  value = data.terraform_remote_state.base_setup.outputs.eks_admin_role_arn
 }
 output "git_actions_admin_role_arn" {
   value = data.terraform_remote_state.base_setup.outputs.git_actions_admin_role_arn
 }
-output "openidl_app_iam_user" {
+output "baf_automation_user_arn" {
+  value = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
+}
+output "baf_automation_role_arn" {
+  value = data.terraform_remote_state.base_setup.outputs.baf_automation_role_arn
+}
+output "openidl_app_user_arn" {
   value = data.terraform_remote_state.base_setup.outputs.openidl_app_iam_user_arn
+}
+output "openidl_app_role_arn" {
+  value = data.terraform_remote_state.base_setup.outputs.openidl_app_iam_role_arn
+}
+output "eks_admin_user_group_arn" {
+  value = data.terraform_remote_state.base_setup.outputs.eks_admin_user_group_arn
+}
+output "eks_admin_role_arn" {
+  value = data.terraform_remote_state.base_setup.outputs.eks_admin_role_arn
 }
 #-----------------------------------------------------------------------------------------------------------------
 #application cluster (EKS) outputs
@@ -92,42 +101,30 @@ output "blk_cluster_name" {
 #-----------------------------------------------------------------------------------------------------------------
 #cloudtrail related
 output "cloudtrail_s3_bucket_name" {
-  value = data.terraform_remote_state.base_setup.outputs.cloudtrail_s3_bucket_name
+  value = var.create_cloudtrial ? data.terraform_remote_state.base_setup.outputs.cloudtrail_s3_bucket_name : null
 }
 output "hds_data_s3_bucket_name" {
   value = var.org_name == "aais" ? null : data.terraform_remote_state.base_setup.outputs.hds_data_s3_bucket_name
 }
 output "s3_public_bucket_logos" {
-  value = data.terraform_remote_state.base_setup.outputs.s3_public_bucket_logos_name
+  value = var.create_s3_bucket_public ? data.terraform_remote_state.base_setup.outputs.s3_public_bucket_logos_name : null
 }
 #Route53 entries
-output "private_app_bastion_nlb_private_fqdn" {
-  value = var.bastion_host_nlb_external ? null : data.terraform_remote_state.base_setup.outputs.private_app_bastion_nlb_private_fqdn
-}
-output "private_blk_bastion_nlb_private_fqdn" {
-  value = var.bastion_host_nlb_external ? null : data.terraform_remote_state.base_setup.outputs.private_blk_bastion_nlb_private_fqdn
-}
 output "aws_name_servers" {
   value       = var.domain_info.r53_public_hosted_zone_required == "yes"  ? data.terraform_remote_state.base_setup.outputs.aws_name_servers : null
   description = "The name servers to be updated in the domain registrar"
 }
 output "public_blk_bastion_fqdn" {
-  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_fqdn : null
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_fqdn : null
 }
 output "public_app_bastion_fqdn" {
-  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_fqdn : null
-}
-output "public_app_bastion_dns_name" {
-  value = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null
-}
-output "public_blk_bastion_dns_name" {
-  value = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_fqdn : null
 }
 #-----------------------------------------------------------------------------------------------------------------
 #KMS key related to vault unseal
-output "kms_key_arn_vault_unseal" {
-  value = data.terraform_remote_state.base_setup.outputs.kms_key_arn_vault_unseal_arn
+output "vault_kms_key_arn" {
+  value = data.terraform_remote_state.base_setup.outputs.vault_kms_key_arn
 }
-output "kms_key_id_vault_unseal" {
-  value = data.terraform_remote_state.base_setup.outputs.kms_key_id_vault_unseal_name
+output "vault_kms_key_alais_name" {
+  value = data.terraform_remote_state.base_setup.outputs.vault_kms_key_alias_name
 }

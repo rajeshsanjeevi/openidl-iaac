@@ -1,6 +1,6 @@
 #Creating an application cluster VPC
 module "aais_app_vpc" {
-  create_vpc      = true
+  create_vpc      = var.create_vpc ? true : false
   source          = "terraform-aws-modules/vpc/aws"
   name            = "${local.std_name}-app-vpc"
   cidr            = var.app_vpc_cidr
@@ -31,29 +31,32 @@ module "aais_app_vpc" {
   private_outbound_acl_rules     = var.app_private_nacl_rules["outbound"]
   default_security_group_egress  = local.def_sg_egress
   default_security_group_ingress = local.app_def_sg_ingress
-
-  default_route_table_tags             = { DefaultRouteTable = true }
   enable_flow_log                      = true
   create_flow_log_cloudwatch_log_group = true
   create_flow_log_cloudwatch_iam_role  = true
   flow_log_max_aggregation_interval    = 60
-  tags                                 = merge(local.tags, { "Cluster_type" = "application" })
-  vpc_tags                             = merge(local.tags, { "Cluster_type" = "application" })
+
+  private_route_table_tags       = { tier = "private"}
+  public_route_table_tags        = { tier = "public" }
+  default_route_table_tags             = { DefaultRouteTable = true }
+  tags                                 = merge(local.tags, { "cluster_type" = "application" })
+  vpc_tags                             = merge(local.tags, { "cluster_type" = "application" })
   public_subnet_tags = merge(local.tags, {
     "kubernetes.io/cluster/${local.app_cluster_name}" = "shared"
     "kubernetes.io/role/elb"                          = "1"
-    "Cluster_type"                                    = "application"
+    "cluster_type"                                    = "application"
+    "tier"                                            = "public"
   })
-
   private_subnet_tags = merge(local.tags, {
     "kubernetes.io/cluster/${local.app_cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"                 = "1"
-    "Cluster_type"                                    = "application"
+    "cluster_type"                                    = "application"
+    "tier"                                            = "private"
   })
 }
 #Creating an blockchain cluster VPC
 module "aais_blk_vpc" {
-  create_vpc      = true
+  create_vpc      = var.create_vpc ? true : false
   source          = "terraform-aws-modules/vpc/aws"
   name            = "${local.std_name}-blk-vpc"
   cidr            = var.blk_vpc_cidr
@@ -84,28 +87,33 @@ module "aais_blk_vpc" {
   private_outbound_acl_rules     = var.blk_private_nacl_rules["outbound"]
   default_security_group_egress  = local.def_sg_egress
   default_security_group_ingress = local.blk_def_sg_ingress
-
-  default_route_table_tags             = { DefaultRouteTable = true }
   enable_flow_log                      = true
   create_flow_log_cloudwatch_log_group = true
   create_flow_log_cloudwatch_iam_role  = true
   flow_log_max_aggregation_interval    = 60
-  tags                                 = merge(local.tags, { "Cluster_type" = "blockchain" })
-  vpc_tags                             = merge(local.tags, { "Cluster_type" = "blockchain" })
+
+
+  default_route_table_tags             = { DefaultRouteTable = true }
+  private_route_table_tags       = { tier = "private"}
+  public_route_table_tags        = { tier = "public" }
+  tags                                 = merge(local.tags, { "cluster_type" = "blockchain" })
+  vpc_tags                             = merge(local.tags, { "cluster_type" = "blockchain" })
   public_subnet_tags = merge(local.tags, {
     "kubernetes.io/cluster/${local.blk_cluster_name}" = "shared"
     "kubernetes.io/role/elb"                          = "1"
-    "Cluster_type"                                    = "blockchain"
+    "cluster_type"                                    = "blockchain"
+    "tier"                                            = "public"
   })
-
   private_subnet_tags = merge(local.tags, {
     "kubernetes.io/cluster/${local.blk_cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"                 = "1"
-    "Cluster_type"                                    = "blockchain"
+    "cluster_type"                                    = "blockchain"
+    "tier"                                            = "private"
   })
 }
 #setting up transit gateway to use with app_vpc and blk_vpc
 module "transit_gateway" {
+  count = var.create_vpc ? 1 : 0
   depends_on                            = [module.aais_app_vpc, module.aais_blk_vpc]
   source                                = "./modules/transit-gateway"
   create_tgw                            = true
@@ -137,10 +145,10 @@ module "transit_gateway" {
       tgw_routes                                      = local.blk_tgw_routes
     }
   }
-  tags                         = merge(local.tags, { "Cluster_type" = "both" })
-  tgw_default_route_table_tags = merge(local.tags, { "Cluster_type" = "both" })
-  tgw_route_table_tags         = merge(local.tags, { "Cluster_type" = "both" })
-  tgw_tags                     = merge(local.tags, { "Cluster_type" = "both" })
-  tgw_vpc_attachment_tags      = merge(local.tags, { "Cluster_type" = "both" })
+  tags                         = merge(local.tags, { "cluster_type" = "both" })
+  tgw_default_route_table_tags = merge(local.tags, { "cluster_type" = "both" })
+  tgw_route_table_tags         = merge(local.tags, { "cluster_type" = "both" })
+  tgw_tags                     = merge(local.tags, { "cluster_type" = "both" })
+  tgw_vpc_attachment_tags      = merge(local.tags, { "cluster_type" = "both" })
 }
 

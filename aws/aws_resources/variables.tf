@@ -41,18 +41,22 @@ variable "default_sg_rules" {
 }
 variable "app_vpc_cidr" {
   description = "The VPC network CIDR Block to be created"
+  default = ""
 }
 variable "app_availability_zones" {
   type        = list(string)
   description = "The list of availability zones aligning to the numbers with public/private subnets defined"
+  default = []
 }
 variable "app_private_subnets" {
   type        = list(string)
   description = "The list of private subnet cidrs to be created"
+  default = []
 }
 variable "app_public_subnets" {
   type        = list(string)
   description = "The list of public subnet cidrs to be created"
+  default = []
 }
 variable "app_public_nacl_rules" {
   type        = map(any)
@@ -66,18 +70,22 @@ variable "app_private_nacl_rules" {
 }
 variable "blk_vpc_cidr" {
   description = "The VPC network CIDR Block to be created"
+  default = ""
 }
 variable "blk_availability_zones" {
   type        = list(string)
   description = "The list of availability zones aligning to the numbers with public/private subnets defined"
+  default = []
 }
 variable "blk_private_subnets" {
   type        = list(string)
   description = "The list of private subnet cidrs to be created"
+  default = []
 }
 variable "blk_public_subnets" {
   type        = list(string)
   description = "The list of public subnet cidrs to be created"
+  default = []
 }
 variable "blk_public_nacl_rules" {
   type        = map(any)
@@ -113,6 +121,7 @@ variable "blk_tgw_destination_cidr" {
 variable "tgw_amazon_side_asn" {
   type        = string
   description = "The amazon side asn for the transit gateway"
+  default = "64532"
 }
 #bastion host related
 variable "app_bastion_sg_ingress" {
@@ -138,32 +147,12 @@ variable "blk_bastion_sg_egress" {
 variable "app_bastion_ssh_key" {
   type        = string
   description = "The public ssh key to setup on the bastion host for remote ssh access"
+  default = ""
 }
 variable "blk_bastion_ssh_key" {
   type        = string
   description = "The public ssh key to setup on the bastion host for remote ssh access"
-}
-variable "bastion_host_nlb_external" {
-  type = bool
-  description = "Do you want to set nlb for the bastion hosts in autoscaling group to be external"
-}
-#app cluster (eks) worker nodes application traffic specific SG
-variable "app_eks_workers_app_sg_ingress" {
-  type        = list(any)
-  description = "The ingress rules of the application specific traffic to be allowed to worker nodes of app cluster"
-}
-variable "app_eks_workers_app_sg_egress" {
-  type        = list(any)
-  description = "The egress rules of the application specific traffic to be allowed to worker nodes of app cluster"
-}
-#blk cluster (eks) worker nodes application traffic specific SG
-variable "blk_eks_workers_app_sg_ingress" {
-  type        = list(any)
-  description = "The ingress rules of the application specific traffic to be allowed to worker nodes of blk cluster"
-}
-variable "blk_eks_workers_app_sg_egress" {
-  type        = list(any)
-  description = "The egress rules of the application specific traffic to be allowed to worker nodes of blk cluster"
+  default = ""
 }
 variable "instance_type" {
   description = "The instance type of the bastion host"
@@ -584,10 +573,12 @@ variable "eks_wg_health_check_type" {
 variable "app_eks_worker_nodes_ssh_key" {
   type        = string
   description = "The ssh public key to setup on worker nodes in app cluster eks for remote access"
+  default = ""
 }
 variable "blk_eks_worker_nodes_ssh_key" {
   type        = string
   description = "The ssh public key to setup on worker nodes in blk cluster eks for remote access"
+  default = ""
 }
 variable "app_cluster_map_roles" {
   type        = list(any)
@@ -614,10 +605,12 @@ variable "blk_cluster_map_users" {
 variable "cw_logs_retention_period" {
   type        = number
   description = "The number of days to retain cloudwatch logs related to cloudtrail events"
+  default = 90
 }
 variable "s3_bucket_name_cloudtrail" {
   type        = string
   description = "The name of s3 bucket to store the cloudtrail logs"
+  default = ""
 }
 variable "org_name" {
   type = string
@@ -672,4 +665,70 @@ variable "s3_bucket_name_hds_analytics" {
 variable "s3_bucket_name_logos" {
   type = string
   description = "The name of s3 bucket used to manage logos (public s3 bucket)"
+  default = ""
+}
+variable "create_bastion_host" {
+  type = bool
+  default = true
+  description = "Determines whether to create bastion host in the VPC network"
+}
+variable "create_cloudtrial" {
+  type = bool
+  default = true
+  description = "Determines whether to enable cloudtrial"
+}
+variable "create_cognito_userpool" {
+  type = bool
+  default = true
+  description = "Determines whether to create cognito userpool"
+}
+variable "create_s3_bucket_public" {
+  type = bool
+  default = true
+  description = "Determines whether to create public s3 bucket to manage logos"
+}
+variable "create_vpc" {
+  type = bool
+  default = true
+  description = "Determines whether to create vpc or use existing vpc"
+}
+variable "app_vpc_id" {
+  type = string
+  default = ""
+  description = "Existing VPC ID to use as application cluster VPC"
+}
+variable "blk_vpc_id" {
+  type = string
+  default = ""
+  description = "Existing VPC ID to use as blockchain cluster VPC"
+}
+variable "custom_tags" {
+  type = map
+  default = {}
+  description ="List of custom tags to include"
+}
+variable "s3_kms_key_arn" {
+  type = string
+  default = ""
+  description ="KMS Key arn to be used for S3 buckets"
+}
+variable "eks_secrets_kms_key_arn" {
+  type = string
+  default = ""
+  description ="KMS Key arn to be used for EKS secrets encryption"
+}
+variable "eks_cwlogs_kms_key_arn" {
+  type = string
+  default = ""
+  description = "KMS Key arn to be used for EKS related cloudwatch logs"
+}
+variable "cloudtrail_cwlogs_kms_key_arn" {
+  type = string
+  default = ""
+  description = "KMS Key arn to be used for EKS related cloudwatch logs"
+}
+variable "create_kms_keys" {
+  type = bool
+  default = "true"
+  description = "Determine whether KMS keys are required to create"
 }

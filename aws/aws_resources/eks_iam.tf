@@ -6,8 +6,8 @@ resource "aws_iam_role" "eks_cluster_role" {
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-${each.value}"
-      "Cluster_type" = "${each.value}"
+      "name"         = "${local.std_name}-${each.value}"
+      "cluster_type" = "${each.value}"
   }, )
 }
 resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEKSClusterPolicy" {
@@ -49,8 +49,8 @@ resource "aws_iam_role" "eks_nodegroup_role" {
   tags = merge(
     local.tags,
     {
-      "Name"               = "${local.std_name}-${each.value}"
-      "Cluster_node_group" = "${each.value}"
+      "name"               = "${local.std_name}-${each.value}"
+      "cluster_node_group" = "${each.value}"
   }, )
 }
 resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonEKSWorkerNodePolicy" {
@@ -70,11 +70,11 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonEKSCNIPolicy" {
 }
 #iam policy for the worker nodes to manage csi driver for persistent volumes
 resource "aws_iam_policy" "eks_worker_node_ebs_policy" {
-  name   = "${local.std_name}-AmazonEBSCSIDriver"
+  name   = "${local.std_name}-AmazonEBSCSIDriverPolicy"
   policy = file("resources/policies/workergroup-role-ebs-ci-driver-policy.json")
   tags = merge(local.tags,
-    { "Name" = "${local.std_name}-AmazonEBSCSIDriver",
-  "Cluster_type" = "both" })
+    { "name" = "${local.std_name}-AmazonEBSCSIDriverPolicy",
+  "cluster_type" = "both" })
 }
 resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonEKSEBSCSIDriverPolicy" {
   for_each   = toset(["app-node-group", "blk-node-group"])
@@ -93,11 +93,10 @@ resource "aws_iam_policy" "eks_worker_node_kms_policy" {
             "Action": ["kms:DescribeKey"],
             "Resource": "*"
         }
-    ]
-})
+    ]})
   tags = merge(local.tags,
-    { "Name" = "${local.std_name}-AmazonKMSKeyPolicy",
-  "Cluster_type" = "both" })
+    { "name" = "${local.std_name}-AmazonKMSKeyPolicy",
+  "cluster_type" = "both" })
 }
 resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonKMSKeyPolicy" {
   for_each   = toset(["app-node-group", "blk-node-group"])
@@ -106,15 +105,123 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonKMSKeyPolicy" {
 }
 #iam policy for eks admin role
 resource "aws_iam_policy" "eks_admin_policy" {
-  name   = "${local.std_name}-AmazonEKSAdminPolicy"
-  policy = file("resources/policies/eks-admin-policy.json")
+  name   = "${local.std_name}-EKSAdminPolicy"
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowEKS",
+            "Effect": "Allow",
+            "Action": [
+                "eks:*"
+            ],
+            "Resource": [
+              "arn:aws:eks:${var.aws_region}:${var.aws_account_number}:cluster/${local.app_cluster_name}",
+              "arn:aws:eks:${var.aws_region}:${var.aws_account_number}:cluster/${local.blk_cluster_name}",
+              "arn:aws:eks:${var.aws_region}:${var.aws_account_number}:*/${local.app_cluster_name}/*",
+              "arn:aws:eks:${var.aws_region}:${var.aws_account_number}:*/${local.blk_cluster_name}/*",
+              ]
+        },
+        {
+            "Sid": "AllowPassRole",
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "iam:PassedToService": "eks.amazonaws.com"
+                }
+            }
+        },
+        {
+            "Sid": "AllowEKSRead",
+            "Effect": "Allow",
+            "Action": [
+                "iam:ListPolicies",
+                "iam:GetPolicyVersion",
+                "eks:ListNodegroups",
+                "eks:DescribeFargateProfile",
+                "iam:GetPolicy",
+                "eks:ListTagsForResource",
+                "iam:ListGroupPolicies",
+                "eks:ListAddons",
+                "eks:DescribeAddon",
+                "eks:ListFargateProfiles",
+                "eks:DescribeNodegroup",
+                "iam:ListPolicyVersions",
+                "eks:DescribeIdentityProviderConfig",
+                "eks:ListUpdates",
+                "eks:DescribeUpdate",
+                "eks:AccessKubernetesApi",
+                "iam:ListUsers",
+                "iam:ListAttachedGroupPolicies",
+                "eks:DescribeCluster",
+                "iam:GetGroupPolicy",
+                "eks:ListClusters",
+                "eks:DescribeAddonVersions",
+                "eks:ListIdentityProviderConfigs"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ViewOwnUserInfo",
+            "Effect": "Allow",
+            "Action": [
+                "iam:GetUserPolicy",
+                "iam:ListGroupsForUser",
+                "iam:ListAttachedUserPolicies",
+                "iam:ListUserPolicies",
+                "iam:GetUser"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:user/$${aws:username}"
+            ]
+        },
+        {
+            "Sid": "NavigateInConsole",
+            "Effect": "Allow",
+            "Action": [
+                "iam:GetGroupPolicy",
+                "iam:GetPolicyVersion",
+                "iam:GetPolicy",
+                "iam:ListAttachedGroupPolicies",
+                "iam:ListGroupPolicies",
+                "iam:ListPolicyVersions",
+                "iam:ListPolicies",
+                "iam:ListUsers"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ListRoles",
+            "Effect": "Allow",
+            "Action": [
+                "iam:ListRoles"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Sid": "AllowSSM",
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameter"
+            ],
+            "Resource": [
+                "arn:aws:ssm:*:${var.aws_account_number}:parameter/*"
+            ]
+        }
+
+    ]
+})
   tags = merge(local.tags,
-    { "Name" = "${local.std_name}-AmazonEKSAdminPolicy",
-  "Cluster_type" = "both" })
+    { "name" = "${local.std_name}-EKSAdminPolicy",
+  "cluster_type" = "both" })
 }
 #iam role - to perform eks administrative tasks
 resource "aws_iam_role" "eks_admin_role" {
-  name = "${local.std_name}-eks-admin"
+  name = "${local.std_name}-eksadmin"
   assume_role_policy = jsonencode({
   "Version": "2012-10-17",
   "Statement": [
@@ -128,7 +235,7 @@ resource "aws_iam_role" "eks_admin_role" {
     }]
   })
   managed_policy_arns = [aws_iam_policy.eks_admin_policy.arn]
-  tags = merge(local.tags, {Name = "${local.std_name}-eks-admin", Cluster_type = "both"})
+  tags = merge(local.tags, {name = "${local.std_name}-eks-admin", cluster_type = "both"})
   description = "The iam role that is used to manage EKS cluster administrative tasks"
   max_session_duration = 3600
 }
@@ -143,7 +250,7 @@ resource "aws_iam_group_policy_attachment" "eks_admin_group_policy_attachment" {
 }
 #iam policy for eks admin role
 resource "aws_iam_policy" "eks_admin_group_assume_policy" {
-  name = "${local.std_name}-eks-admin"
+  name = "${local.std_name}-EKSAdmPolicy"
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -155,7 +262,7 @@ resource "aws_iam_policy" "eks_admin_group_assume_policy" {
       }]
   })
   tags = merge(local.tags, {
-    Name = "${local.std_name}-eks-admin",
-    Cluster_type = "both"
+    name = "${local.std_name}-EKSAdmPolicy",
+    cluster_type = "both"
   })
 }

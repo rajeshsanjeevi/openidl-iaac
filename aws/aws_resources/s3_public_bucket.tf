@@ -1,5 +1,6 @@
 #creating an s3 bucket for HDS data extract for analytics node
 resource "aws_s3_bucket" "s3_bucket_logos_public" {
+  count = var.create_s3_bucket_public ? 1 : 0
   bucket = "${local.std_name}-${var.s3_bucket_name_logos}"
   acl    = "private"
   force_destroy = true
@@ -9,20 +10,22 @@ resource "aws_s3_bucket" "s3_bucket_logos_public" {
   tags = merge(
     local.tags,
     {
-      "Name" = "${local.std_name}-${var.s3_bucket_name_logos}"
+      "name" = "${local.std_name}-${var.s3_bucket_name_logos}"
     },)
 }
 #blocking public access to s3 bucket
 resource "aws_s3_bucket_public_access_block" "s3_bucket_logos_public_access_block" {
+  count = var.create_s3_bucket_public ? 1 : 0
   block_public_acls       = false
   block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
-  bucket                  = aws_s3_bucket.s3_bucket_logos_public.id
+  bucket                  = aws_s3_bucket.s3_bucket_logos_public[0].id
   depends_on              = [aws_s3_bucket.s3_bucket_logos_public, aws_s3_bucket_policy.s3_bucket_policy_logos]
 }
 #S3 bucket policy for public s3 bucket
 resource "aws_s3_bucket_policy" "s3_bucket_policy_logos" {
+  count = var.create_s3_bucket_public ? 1 : 0
   bucket     = "${local.std_name}-${var.s3_bucket_name_logos}"
   depends_on = [aws_s3_bucket.s3_bucket_logos_public]
   policy = jsonencode({
@@ -43,7 +46,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_logos" {
             "Sid": "AllowIAMAccess",
             "Effect": "Allow",
             "Principal": {
-                "AWS": ["${var.aws_role_arn}","arn:aws:iam::572551282206:user/rajesh.sanjeevi@itpeoplecorp.com"]
+                "AWS": "${var.aws_role_arn}"
             },
             "Action": "*",
             "Resource": [
