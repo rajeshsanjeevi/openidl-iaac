@@ -31,13 +31,14 @@ module "aais_app_vpc" {
   private_outbound_acl_rules     = var.app_private_nacl_rules["outbound"]
   default_security_group_egress  = local.def_sg_egress
   default_security_group_ingress = local.app_def_sg_ingress
-  private_route_table_tags       = { tier = "private"}
-  public_route_table_tags        = { tier = "public" }
-  default_route_table_tags             = { DefaultRouteTable = true }
   enable_flow_log                      = true
   create_flow_log_cloudwatch_log_group = true
   create_flow_log_cloudwatch_iam_role  = true
   flow_log_max_aggregation_interval    = 60
+
+  private_route_table_tags       = { tier = "private"}
+  public_route_table_tags        = { tier = "public" }
+  default_route_table_tags             = { DefaultRouteTable = true }
   tags                                 = merge(local.tags, { "cluster_type" = "application" })
   vpc_tags                             = merge(local.tags, { "cluster_type" = "application" })
   public_subnet_tags = merge(local.tags, {
@@ -46,7 +47,6 @@ module "aais_app_vpc" {
     "cluster_type"                                    = "application"
     "tier"                                            = "public"
   })
-
   private_subnet_tags = merge(local.tags, {
     "kubernetes.io/cluster/${local.app_cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"                 = "1"
@@ -87,14 +87,15 @@ module "aais_blk_vpc" {
   private_outbound_acl_rules     = var.blk_private_nacl_rules["outbound"]
   default_security_group_egress  = local.def_sg_egress
   default_security_group_ingress = local.blk_def_sg_ingress
-
-  default_route_table_tags             = { DefaultRouteTable = true }
-  private_route_table_tags       = { tier = "private"}
-  public_route_table_tags        = { tier = "public" }
   enable_flow_log                      = true
   create_flow_log_cloudwatch_log_group = true
   create_flow_log_cloudwatch_iam_role  = true
   flow_log_max_aggregation_interval    = 60
+
+
+  default_route_table_tags             = { DefaultRouteTable = true }
+  private_route_table_tags       = { tier = "private"}
+  public_route_table_tags        = { tier = "public" }
   tags                                 = merge(local.tags, { "cluster_type" = "blockchain" })
   vpc_tags                             = merge(local.tags, { "cluster_type" = "blockchain" })
   public_subnet_tags = merge(local.tags, {
@@ -103,7 +104,6 @@ module "aais_blk_vpc" {
     "cluster_type"                                    = "blockchain"
     "tier"                                            = "public"
   })
-
   private_subnet_tags = merge(local.tags, {
     "kubernetes.io/cluster/${local.blk_cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"                 = "1"

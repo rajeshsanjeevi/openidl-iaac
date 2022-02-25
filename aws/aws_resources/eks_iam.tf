@@ -105,21 +105,25 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonKMSKeyPolicy" {
 }
 #iam policy for eks admin role
 resource "aws_iam_policy" "eks_admin_policy" {
-  name   = "${local.std_name}-AmazonEKSAdminPolicy"
+  name   = "${local.std_name}-EKSAdminPolicy"
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "AllowEKS",
             "Effect": "Allow",
             "Action": [
                 "eks:*"
             ],
-            "Resource":  [
+            "Resource": [
               "arn:aws:eks:${var.aws_region}:${var.aws_account_number}:cluster/${local.app_cluster_name}",
-              "arn:aws:eks:${var.aws_region}:${var.aws_account_number}:cluster/${local.blk_cluster_name}"
-            ]
+              "arn:aws:eks:${var.aws_region}:${var.aws_account_number}:cluster/${local.blk_cluster_name}",
+              "arn:aws:eks:${var.aws_region}:${var.aws_account_number}:*/${local.app_cluster_name}/*",
+              "arn:aws:eks:${var.aws_region}:${var.aws_account_number}:*/${local.blk_cluster_name}/*",
+              ]
         },
         {
+            "Sid": "AllowPassRole",
             "Effect": "Allow",
             "Action": "iam:PassRole",
             "Resource": "*",
@@ -130,17 +134,33 @@ resource "aws_iam_policy" "eks_admin_policy" {
             }
         },
         {
+            "Sid": "AllowEKSRead",
             "Effect": "Allow",
             "Action": [
-                "eks:DescribeNodegroup",
+                "iam:ListPolicies",
+                "iam:GetPolicyVersion",
                 "eks:ListNodegroups",
-                "eks:DescribeCluster",
-                "eks:ListClusters",
-                "eks:AccessKubernetesApi",
-                "ssm:GetParameter",
+                "eks:DescribeFargateProfile",
+                "iam:GetPolicy",
+                "eks:ListTagsForResource",
+                "iam:ListGroupPolicies",
+                "eks:ListAddons",
+                "eks:DescribeAddon",
+                "eks:ListFargateProfiles",
+                "eks:DescribeNodegroup",
+                "iam:ListPolicyVersions",
+                "eks:DescribeIdentityProviderConfig",
                 "eks:ListUpdates",
-                "eks:ListFargateProfiles"
-             ],
+                "eks:DescribeUpdate",
+                "eks:AccessKubernetesApi",
+                "iam:ListUsers",
+                "iam:ListAttachedGroupPolicies",
+                "eks:DescribeCluster",
+                "iam:GetGroupPolicy",
+                "eks:ListClusters",
+                "eks:DescribeAddonVersions",
+                "eks:ListIdentityProviderConfigs"
+            ],
             "Resource": "*"
         },
         {
@@ -179,18 +199,29 @@ resource "aws_iam_policy" "eks_admin_policy" {
                 "iam:ListRoles"
             ],
             "Resource": [
-                "arn:aws:iam::*:role/"
+                "*"
+            ]
+        },
+        {
+            "Sid": "AllowSSM",
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameter"
+            ],
+            "Resource": [
+                "arn:aws:ssm:*:${var.aws_account_number}:parameter/*"
             ]
         }
+
     ]
 })
   tags = merge(local.tags,
-    { "name" = "${local.std_name}-AmazonEKSAdminPolicy",
+    { "name" = "${local.std_name}-EKSAdminPolicy",
   "cluster_type" = "both" })
 }
 #iam role - to perform eks administrative tasks
 resource "aws_iam_role" "eks_admin_role" {
-  name = "${local.std_name}-eks-admin"
+  name = "${local.std_name}-eksadmin"
   assume_role_policy = jsonencode({
   "Version": "2012-10-17",
   "Statement": [
@@ -219,7 +250,7 @@ resource "aws_iam_group_policy_attachment" "eks_admin_group_policy_attachment" {
 }
 #iam policy for eks admin role
 resource "aws_iam_policy" "eks_admin_group_assume_policy" {
-  name = "${local.std_name}-EKSADMINPolicy"
+  name = "${local.std_name}-EKSAdmPolicy"
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -231,7 +262,7 @@ resource "aws_iam_policy" "eks_admin_group_assume_policy" {
       }]
   })
   tags = merge(local.tags, {
-    name = "${local.std_name}-eksadmin",
+    name = "${local.std_name}-EKSAdmPolicy",
     cluster_type = "both"
   })
 }

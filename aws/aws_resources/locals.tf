@@ -27,21 +27,21 @@ locals {
     "organizationId"]
 
   app_def_sg_ingress = [{
-    cidr_blocks = var.app_vpc_cidr
+    cidr_blocks = var.create_vpc ? var.app_vpc_cidr : data.aws_vpc.app_vpc.cidr_block
     description = "Inbound SSH traffic"
     from_port   = "22"
     to_port     = "22"
     protocol    = "tcp"
   },
   {
-    cidr_blocks = var.app_vpc_cidr
+    cidr_blocks = var.create_vpc ? var.app_vpc_cidr : data.aws_vpc.app_vpc.cidr_block
     description = "Inbound SSH traffic"
     from_port   = "443"
     to_port     = "443"
     protocol    = "tcp"
   },
   {
-    cidr_blocks = var.app_vpc_cidr
+    cidr_blocks = var.create_vpc ? var.app_vpc_cidr : data.aws_vpc.app_vpc.cidr_block
     description = "Inbound SSH traffic"
     from_port   = "8443"
     to_port     = "8443"
@@ -49,21 +49,21 @@ locals {
   }]
 
   blk_def_sg_ingress = [{
-    cidr_blocks = var.blk_vpc_cidr
+    cidr_blocks = var.create_vpc ? var.blk_vpc_cidr : data.aws_vpc.blk_vpc.cidr_block
     description = "Inbound SSH traffic"
     from_port   = "22"
     to_port     = "22"
     protocol    = "tcp"
   },
   {
-    cidr_blocks = var.blk_vpc_cidr
+    cidr_blocks = var.create_vpc ? var.blk_vpc_cidr : data.aws_vpc.blk_vpc.cidr_block
     description = "Inbound SSH traffic"
     from_port   = "443"
     to_port     = "443"
     protocol    = "tcp"
   },
   {
-    cidr_blocks = var.blk_vpc_cidr
+    cidr_blocks = var.create_vpc ? var.blk_vpc_cidr : data.aws_vpc.blk_vpc.cidr_block
     description = "Inbound SSH traffic"
     from_port   = "8443"
     to_port     = "8443"
@@ -91,10 +91,22 @@ locals {
     protocol    = "tcp"
   }]
 
-  app_tgw_routes = [{destination_cidr_block = var.blk_vpc_cidr}]
-  blk_tgw_routes = [{destination_cidr_block = var.app_vpc_cidr}]
-  app_tgw_destination_cidr = ["${var.blk_vpc_cidr}"]
-  blk_tgw_destination_cidr = ["${var.app_vpc_cidr}"]
+  app_tgw_routes = [{destination_cidr_block = var.create_vpc ? var.blk_vpc_cidr : data.aws_vpc.blk_vpc.cidr_block}]
+  blk_tgw_routes = [{destination_cidr_block = var.create_vpc ? var.app_vpc_cidr : data.aws_vpc.app_vpc.cidr_block}]
+  app_tgw_destination_cidr = var.create_vpc ? ["${var.blk_vpc_cidr}"] : ["${data.aws_vpc.blk_vpc.cidr_block}"]
+  blk_tgw_destination_cidr = var.create_vpc ? ["${var.app_vpc_cidr}"] : ["${data.aws_vpc.app_vpc.cidr_block}"]
+
+  def_app_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.app_vpc_cidr}" : "${data.aws_vpc.app_vpc.cidr_block}"}]
+  def_app_bastion_sg_egress = [
+    {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
+    {rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
+    {rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.app_vpc_cidr}" : "${data.aws_vpc.app_vpc.cidr_block}"}]
+
+  def_blk_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.blk_vpc_cidr}" : "${data.aws_vpc.blk_vpc.cidr_block}"}]
+  def_blk_bastion_sg_egress = [
+    {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
+    {rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
+    {rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.blk_vpc_cidr}" : "${data.aws_vpc.blk_vpc.cidr_block}"}]
 
   dns_entries_list_non_prod = var.create_bastion_host ? {
     "app-bastion.${var.aws_env}.${local.public_domain}" = module.app_bastion_nlb[0].lb_dns_name,

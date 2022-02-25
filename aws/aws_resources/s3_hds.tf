@@ -43,7 +43,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
             "Sid": "AllowGetAndPutObjects",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "${aws_iam_user.openidl_apps_user.arn}"
+                "AWS": ["${aws_iam_user.openidl_apps_user.arn}", "${aws_iam_role.openidl_apps_iam_role}"]
             },
             "Action": [
                 "s3:GetObject",
@@ -143,7 +143,7 @@ resource "aws_kms_key" "s3_kms_key_hds" {
         "Sid" : "EnableAccess",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "${aws_iam_user.openidl_apps_user.arn}"
+          "AWS" : ["${aws_iam_user.openidl_apps_user.arn}", "${aws_iam_role.openidl_apps_iam_role}"]
         },
         "Action" : [
 			"kms:Encrypt",
@@ -156,7 +156,7 @@ resource "aws_kms_key" "s3_kms_key_hds" {
         "Sid" : "Allowattachmentofpersistentresources",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "${var.aws_role_arn}"
+          "AWS" : ["${var.aws_role_arn}", "${aws_iam_role.openidl_apps_iam_role}"]
         },
         "Action" : [
           "kms:CreateGrant",

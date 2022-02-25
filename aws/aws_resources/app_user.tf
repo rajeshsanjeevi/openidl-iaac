@@ -21,10 +21,7 @@ resource "aws_iam_user_policy" "openidl_apps_user_policy" {
             "Sid": "ListBucket",
             "Effect": "Allow",
             "Action": "s3:ListAllMyBuckets",
-            "Resource": [
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*"
-            ]
+            "Resource": "*"
         },
         {
             "Sid": "AllowKMS",
@@ -68,12 +65,7 @@ resource "aws_iam_user_policy" "openidl_apps_user_policy" {
             "Sid": "ListBucket",
             "Effect": "Allow",
             "Action": "s3:ListAllMyBuckets",
-            "Resource": [
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*"
-            ]
+            "Resource": "*"
         },
         {
             "Sid": "GetPutAllowHDS",

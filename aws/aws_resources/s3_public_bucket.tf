@@ -46,7 +46,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_logos" {
             "Sid": "AllowIAMAccess",
             "Effect": "Allow",
             "Principal": {
-                "AWS": ["${var.aws_role_arn}","arn:aws:iam::572551282206:user/rajesh.sanjeevi@itpeoplecorp.com"]
+                "AWS": "${var.aws_role_arn}"
             },
             "Action": "*",
             "Resource": [

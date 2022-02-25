@@ -1,4 +1,4 @@
-#IAM user for openidl application configuration
+#IAM user role based access specific to openIDL application purpose
 resource "aws_iam_user" "openidl_apps_user1" {
   name = "${local.std_name}-openidl-apps-user1"
   force_destroy = true
@@ -13,7 +13,7 @@ resource "aws_iam_access_key" "openidl_apps_access_key1" {
 }
 #IAM policy of the openidl app user that allows to assume a specific role
 resource "aws_iam_user_policy" "openidl_apps_user_policy1" {
-  name = "${local.std_name}-openidl-apps-user1"
+  name = "${local.std_name}-openidl-apps-user1-policy"
   user = aws_iam_user.openidl_apps_user1.name
   policy = jsonencode({
     "Version": "2012-10-17",
@@ -62,7 +62,7 @@ resource "aws_iam_role" "openidl_apps_iam_role" {
 }
 #iam policy for openidl apps role
 resource "aws_iam_policy" "openidl_apps_user_role_policy" {
-  name = "${local.std_name}-OpenIDLAPPPolicy"
+  name = "${local.std_name}-OPENIDLAppPolicy"
   policy = var.org_name == "aais" ? jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -70,10 +70,7 @@ resource "aws_iam_policy" "openidl_apps_user_role_policy" {
             "Sid": "ListBucket",
             "Effect": "Allow",
             "Action": "s3:ListAllMyBuckets",
-            "Resource": [
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*"
-            ]
+            "Resource": "*"
         },
         {
             "Sid": "AllowKMS",
@@ -117,12 +114,7 @@ resource "aws_iam_policy" "openidl_apps_user_role_policy" {
             "Sid": "ListBucket",
             "Effect": "Allow",
             "Action": "s3:ListAllMyBuckets",
-            "Resource": [
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*"
-            ]
+            "Resource": "*"
         },
         {
             "Sid": "GetPutAllowHDS",
@@ -177,6 +169,6 @@ resource "aws_iam_policy" "openidl_apps_user_role_policy" {
     ]
   })
   tags = merge(local.tags,
-    { "name" = "${local.std_name}-OpenIDLAPPPolicy",
+    { "name" = "${local.std_name}-OPENIDLAppPolicy",
       "cluster_type" = "application" })
 }
