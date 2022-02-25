@@ -1,5 +1,6 @@
 #kms key for hcp vault cluster unseal
 resource "aws_kms_key" "vault_kms_key" {
+  count = var.create_kms_keys ? 1 : 0
   description             = "The KMS key for vault cluster"
   deletion_window_in_days = 7
   key_usage               = "ENCRYPT_DECRYPT"
@@ -74,6 +75,7 @@ resource "aws_kms_key" "vault_kms_key" {
   }, )
 }
 resource "aws_kms_alias" "vault_kms_key_alias" {
+  count = var.create_kms_keys ? 1 : 0
   name          = "alias/${local.std_name}-vault-kmskey"
-  target_key_id = aws_kms_key.vault_kms_key.id
+  target_key_id = aws_kms_key.vault_kms_key[0].id
 }

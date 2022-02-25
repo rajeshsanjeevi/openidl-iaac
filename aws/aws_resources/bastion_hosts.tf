@@ -6,8 +6,8 @@ module "app_bastion_sg" {
   name                     = "${local.std_name}-app-bastion-sg"
   description              = "Security group associated with app cluster bastion host"
   vpc_id                   = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
-  ingress_with_cidr_blocks = concat(var.app_bastion_sg_ingress, local.def_app_bastion_sg_ingress)
-  egress_with_cidr_blocks  = concat(var.app_bastion_sg_egress, local.def_app_bastion_sg_egress)
+  ingress_with_cidr_blocks = distinct(concat(var.app_bastion_sg_ingress, local.def_app_bastion_sg_ingress))
+  egress_with_cidr_blocks  = distinct(concat(var.app_bastion_sg_egress, local.def_app_bastion_sg_egress))
   tags = merge(
     local.tags,
     {
@@ -147,8 +147,8 @@ module "blk_bastion_sg" {
   name                     = "${local.std_name}-blk-bastion-sg"
   description              = "Security group associated with blk cluster bastion host"
   vpc_id                   = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
-  ingress_with_cidr_blocks = concat(var.blk_bastion_sg_ingress, local.def_blk_bastion_sg_ingress)
-  egress_with_cidr_blocks  = concat(var.blk_bastion_sg_egress, local.def_blk_bastion_sg_egress)
+  ingress_with_cidr_blocks = distinct(concat(var.blk_bastion_sg_ingress, local.def_blk_bastion_sg_ingress))
+  egress_with_cidr_blocks  = distinct(concat(var.blk_bastion_sg_egress, local.def_blk_bastion_sg_egress))
   tags = merge(
     local.tags,
     {

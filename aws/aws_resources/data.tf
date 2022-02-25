@@ -157,7 +157,6 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
     actions = ["kms:*"]
     principals {
       type = "AWS"
-
       identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
     }
     resources = ["*"]

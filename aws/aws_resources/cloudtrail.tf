@@ -1,6 +1,6 @@
 #kms key for application cluster and blockchain cluster encryption
 resource "aws_kms_key" "cw_logs_ct_kms_key" {
-  count = var.create_cloudtrial ? 1 : 0
+  count = var.create_cloudtrial && var.create_kms_keys ? 1 : 0
   description             = "The KMS key for cloudwatch log group receives events from cloudtrial"
   deletion_window_in_days = 30
   key_usage               = "ENCRYPT_DECRYPT"
@@ -15,7 +15,7 @@ resource "aws_kms_key" "cw_logs_ct_kms_key" {
 }
 #kms key alias for cloudwatch logs related to cloudtrail
 resource "aws_kms_alias" "cw_logs_ct_kms_key_alias" {
-  count = var.create_cloudtrial ? 1 : 0
+  count = var.create_cloudtrial && var.create_kms_keys ? 1 : 0
   name          = "alias/${local.std_name}-cloudwatch-logs"
   target_key_id = aws_kms_key.cw_logs_ct_kms_key[0].id
 }
@@ -24,7 +24,7 @@ resource "aws_cloudwatch_log_group" "cloudtrail_cw_logs" {
   count = var.create_cloudtrial ? 1 : 0
   name = "${local.std_name}-cloudtrail-logs"
   retention_in_days = var.cw_logs_retention_period
-  kms_key_id = aws_kms_key.cw_logs_ct_kms_key[0].arn
+  kms_key_id = var.create_kms_keys ? aws_kms_key.cw_logs_ct_kms_key[0].arn : var.cw_logs_kms_key_arn
   tags = merge(local.tags, { name = "${local.std_name}-cloudtrail-logs-group", cluster_type = "both"})
   depends_on = [aws_kms_key.cw_logs_ct_kms_key]
 }
@@ -46,7 +46,7 @@ resource "aws_cloudtrail" "cloudtrail_events" {
     include_global_service_events = true
     is_multi_region_trail = false
     is_organization_trail = false
-    kms_key_id = aws_kms_key.cw_logs_ct_kms_key[0].arn
+    kms_key_id = var.create_kms_keys ? aws_kms_key.cw_logs_ct_kms_key[0].arn : var.cw_logs_kms_key_arn
      event_selector {
             include_management_events = true
             read_write_type = "WriteOnly"
@@ -88,7 +88,7 @@ resource "aws_s3_bucket" "s3_bucket" {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm     = "aws:kms"
-        kms_master_key_id = aws_kms_key.s3_kms_key[0].id
+        kms_master_key_id = var.create_kms_keys ? aws_kms_key.s3_kms_key[0].id : var.s3_kms_key_arn
       }
     }
   }
@@ -135,6 +135,18 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
             }
         },
       {
+            "Sid": "AllowAccessIAMRole",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${var.aws_role_arn}"
+            },
+            "Action": "*",
+            "Resource": [
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_cloudtrail}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_cloudtrail}/*",
+            ]
+        },
+      {
         Sid       = "HTTPRestrict"
         Effect    = "Deny"
         Principal = "*"
@@ -151,7 +163,7 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 }
 #creating kms key that is used to encrypt data at rest in S3 bucket
 resource "aws_kms_key" "s3_kms_key" {
-  count = var.create_cloudtrial ? 1 : 0
+  count = var.create_cloudtrial && var.create_kms_keys ? 1 : 0
   description             = "The kms key for app eks"
   deletion_window_in_days = 30
   key_usage               = "ENCRYPT_DECRYPT"
@@ -226,7 +238,7 @@ resource "aws_kms_key" "s3_kms_key" {
 }
 #setting up an alias for the kms key used with s3 bucket data encryption
 resource "aws_kms_alias" "s3_kms_key" {
-  count = var.create_cloudtrial ? 1 : 0
+  count = var.create_cloudtrial && var.create_kms_keys ? 1 : 0
   name          = "alias/${local.std_name}-${var.s3_bucket_name_cloudtrail}"
   target_key_id = aws_kms_key.s3_kms_key[0].id
 }

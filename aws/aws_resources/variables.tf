@@ -707,3 +707,28 @@ variable "custom_tags" {
   default = {}
   description ="List of custom tags to include"
 }
+variable "s3_kms_key_arn" {
+  type = string
+  default = ""
+  description ="KMS Key arn to be used for S3 buckets"
+}
+variable "secrets_manager_kms_key_arn" {
+  type = string
+  default = ""
+  description ="KMS Key arn to be used with secrets in secrets manager"
+}
+variable "eks_kms_key_arn" {
+  type = string
+  default = ""
+  description ="KMS Key arn to be used for EKS cluster"
+}
+variable "cw_logs_kms_key_arn" {
+  type = string
+  default = ""
+  description = "KMS Key arn to be used for cloudwatch logs"
+}
+variable "create_kms_keys" {
+  type = bool
+  default = "true"
+  description = "Determine whether KMS keys are required to create"
+}

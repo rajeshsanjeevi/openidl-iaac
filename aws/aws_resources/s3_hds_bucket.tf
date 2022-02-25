@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "s3_bucket_hds" {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm     = "aws:kms"
-        kms_master_key_id = aws_kms_key.s3_kms_key_hds[0].id
+        kms_master_key_id = var.create_kms_keys ? aws_kms_key.s3_kms_key_hds[0].id : var.s3_kms_key_arn
       }
     }
   }
@@ -87,7 +87,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
 }
 #creating kms key that is used to encrypt data at rest in S3 bucket used for HDS data extract for analytics node
 resource "aws_kms_key" "s3_kms_key_hds" {
-  count = var.org_name == "aais" ? 0 : 1
+  count = var.org_name == "aais" && !var.create_kms_keys ? 0 : 1
   description             = "The kms key for s3 bucket used for HDS"
   deletion_window_in_days = 30
   key_usage               = "ENCRYPT_DECRYPT"
@@ -175,7 +175,7 @@ resource "aws_kms_key" "s3_kms_key_hds" {
 }
 #setting up an alias for the kms key used with s3 bucket data encryption which is used for HDS data extract for analytics node
 resource "aws_kms_alias" "kms_alias_hds" {
-  count = var.org_name == "aais" ? 0 : 1
+  count = var.org_name == "aais" && !var.create_kms_keys ? 0 : 1
   name          = "alias/${local.std_name}-${var.s3_bucket_name_hds_analytics}"
   target_key_id = aws_kms_key.s3_kms_key_hds[0].id
 }

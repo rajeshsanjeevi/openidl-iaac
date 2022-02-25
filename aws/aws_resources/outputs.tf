@@ -1,15 +1,15 @@
 #-----------------------------------------------------------------------------------------------------------------
 #aws cognito application client outputs
 output "cognito_user_pool_id" {
-  value     = var.create_cognito_userpool ? aws_cognito_user_pool.user_pool[0].id : null
+  value     = var.create_cognito_userpool ? aws_cognito_user_pool.user_pool[0].id : "cognito userpool not opted"
   sensitive = true
 }
 output "cognito_app_client_id" {
-  value     = var.create_cognito_userpool ? aws_cognito_user_pool_client.cognito_app_client[0].id : null
+  value     = var.create_cognito_userpool ? aws_cognito_user_pool_client.cognito_app_client[0].id : "cognito userpool not opted"
   sensitive = true
 }
 output "cognito_app_client_secret" {
-  value     = var.create_cognito_userpool ? aws_cognito_user_pool_client.cognito_app_client[0].client_secret : null
+  value     = var.create_cognito_userpool ? aws_cognito_user_pool_client.cognito_app_client[0].client_secret : "cognito userpool not opted"
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
@@ -63,18 +63,18 @@ output "blk_eks_nodegroup_role_arn" {
 #-----------------------------------------------------------------------------------------------------------------
 #cloudtrail related
 output "cloudtrail_s3_bucket_name" {
-  value = var.create_cloudtrial ? aws_s3_bucket.s3_bucket[0].bucket : null
+  value = var.create_cloudtrial ? aws_s3_bucket.s3_bucket[0].bucket : "cloudtrail not opted"
 }
 output "hds_data_s3_bucket_name" {
-  value = var.org_name == "aais" ? null : aws_s3_bucket.s3_bucket_hds[0].bucket
+  value = var.org_name == "aais" ? "s3 bucket for hds data analytics not applicable for AAIS node" : aws_s3_bucket.s3_bucket_hds[0].bucket
 }
 output "s3_public_bucket_logos_name" {
-  value = var.create_s3_bucket_public ? aws_s3_bucket.s3_bucket_logos_public[0].bucket : null
+  value = var.create_s3_bucket_public ? aws_s3_bucket.s3_bucket_logos_public[0].bucket : "s3 public bucket not opted"
 }
 #-----------------------------------------------------------------------------------------------------------------
 #Route53 entries
 output "aws_name_servers" {
-  value       = var.domain_info.r53_public_hosted_zone_required == "yes"  ? aws_route53_zone.public_zones[0].name_servers : null
+  value       = var.domain_info.r53_public_hosted_zone_required == "yes"  ? aws_route53_zone.public_zones[0].name_servers : ["Route53 public hosted zone not opted"]
   description = "The name servers to be updated in the domain registrar"
 }
 output "public_blk_bastion_fqdn" {
@@ -90,13 +90,13 @@ output "bastion_dns_entries_required_to_add" {
   value = var.domain_info.r53_public_hosted_zone_required == "no" && var.aws_env != "prod" && var.create_bastion_host ? local.dns_entries_list_non_prod : null
 }
 output "public_app_bastion_dns_name" {
-  value = var.create_bastion_host ? module.app_bastion_nlb[0].lb_dns_name : null
+  value = var.create_bastion_host ? module.app_bastion_nlb[0].lb_dns_name : "bastion hosts opted out"
 }
 output "public_blk_bastion_dns_name" {
-  value = var.create_bastion_host ? module.blk_bastion_nlb[0].lb_dns_name: null
+  value = var.create_bastion_host ? module.blk_bastion_nlb[0].lb_dns_name: "bastion hosts opted out"
 }
 output "r53_public_hosted_zone_id" {
-  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_zone.public_zones[0].zone_id : null
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_zone.public_zones[0].zone_id : "Route53 public zone opted out"
 }
 output "r53_private_hosted_zone_id"{
   value = aws_route53_zone.private_zones.zone_id
@@ -107,8 +107,8 @@ output "r53_private_hosted_zone_internal_id" {
 #-----------------------------------------------------------------------------------------------------------------
 #KMS key related to vault unseal
 output "kms_key_arn_vault_unseal_arn" {
-  value = aws_kms_key.vault_kms_key.arn
+  value = var.create_kms_keys ? aws_kms_key.vault_kms_key[0].arn : "Provision KMS key named ${local.std_name}-vault-kmskey and set access to ${aws_iam_role.git_actions_admin_role.arn}, ${aws_iam_role.eks_nodegroup_role["app-node-group"].arn}, ${aws_iam_role.eks_nodegroup_role["blk-node-group"].arn}, ${var.aws_role_arn}"
 }
 output "kms_key_id_vault_unseal_name" {
-  value = aws_kms_alias.vault_kms_key_alias.name
+  value = var.create_kms_keys ? aws_kms_alias.vault_kms_key_alias[0].name : ""
 }
