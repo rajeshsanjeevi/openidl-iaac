@@ -105,10 +105,10 @@ output "r53_private_hosted_zone_internal_id" {
   value = aws_route53_zone.private_zones_internal.zone_id
 }
 #-----------------------------------------------------------------------------------------------------------------
-#KMS key related to vault unseal
-output "kms_key_arn_vault_unseal_arn" {
+#KMS key used with hashicorp vault setup
+output "vault_kms_key_arn" {
   value = var.create_kms_keys ? aws_kms_key.vault_kms_key[0].arn : "Provision KMS key named ${local.std_name}-vault-kmskey and set access to ${aws_iam_role.git_actions_admin_role.arn}, ${aws_iam_role.eks_nodegroup_role["app-node-group"].arn}, ${aws_iam_role.eks_nodegroup_role["blk-node-group"].arn}, ${var.aws_role_arn}"
 }
-output "kms_key_id_vault_unseal_name" {
+output "vault_kms_key_alias_name" {
   value = var.create_kms_keys ? aws_kms_alias.vault_kms_key_alias[0].name : ""
 }

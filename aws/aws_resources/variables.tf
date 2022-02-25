@@ -712,20 +712,20 @@ variable "s3_kms_key_arn" {
   default = ""
   description ="KMS Key arn to be used for S3 buckets"
 }
-variable "secrets_manager_kms_key_arn" {
+variable "eks_secrets_kms_key_arn" {
   type = string
   default = ""
-  description ="KMS Key arn to be used with secrets in secrets manager"
+  description ="KMS Key arn to be used for EKS secrets encryption"
 }
-variable "eks_kms_key_arn" {
+variable "eks_cwlogs_kms_key_arn" {
   type = string
   default = ""
-  description ="KMS Key arn to be used for EKS cluster"
+  description = "KMS Key arn to be used for EKS related cloudwatch logs"
 }
-variable "cw_logs_kms_key_arn" {
+variable "cloudtrail_cwlogs_kms_key_arn" {
   type = string
   default = ""
-  description = "KMS Key arn to be used for cloudwatch logs"
+  description = "KMS Key arn to be used for EKS related cloudwatch logs"
 }
 variable "create_kms_keys" {
   type = bool

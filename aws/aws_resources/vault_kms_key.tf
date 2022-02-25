@@ -22,7 +22,7 @@ resource "aws_kms_key" "vault_kms_key" {
         "Sid" : "AllowaccessforKeyAdministrators",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : ["${var.aws_role_arn}", aws_iam_role.git_actions_admin_role.arn, aws_iam_role.eks_nodegroup_role["app-node-group"].arn, aws_iam_role.eks_nodegroup_role["blk-node-group"].arn ]
+          "AWS" : ["${var.aws_role_arn}"]
         },
         "Action" : [
           "kms:Create*",
@@ -39,13 +39,23 @@ resource "aws_kms_key" "vault_kms_key" {
           "kms:UntagResource",
           "kms:ScheduleKeyDeletion",
           "kms:CancelKeyDeletion",
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:DescribeKey"
         ],
         "Resource" : "*"
+      },
+      {
+            "Sid": "Allowuseofthekey",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": ["${var.aws_role_arn}", aws_iam_role.git_actions_admin_role.arn, aws_iam_role.eks_nodegroup_role["app-node-group"].arn, aws_iam_role.eks_nodegroup_role["blk-node-group"].arn ]
+            },
+            "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey"
+            ],
+            "Resource": "*"
       },
       {
         "Sid" : "Allowattachmentofpersistentresources",

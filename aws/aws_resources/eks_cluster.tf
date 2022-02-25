@@ -46,7 +46,7 @@ module "app_eks_cluster" {
   manage_worker_iam_resources                        = false
   cluster_enabled_log_types                          = var.eks_cluster_logs
   cluster_iam_role_name                              = aws_iam_role.eks_cluster_role["app-eks"].name
-  cluster_log_kms_key_id                             = var.create_kms_keys ? aws_kms_key.eks_kms_key["app-eks"].arn : var.cw_logs_kms_key_arn
+  cluster_log_kms_key_id                             = var.create_kms_keys ? aws_kms_key.eks_kms_key["app-eks"].arn : var.eks_cwlogs_kms_key_arn
   cluster_log_retention_in_days                      = 365
   worker_create_security_group                       = false
   worker_security_group_id                           = module.app_eks_worker_node_group_sg.security_group_id
@@ -55,7 +55,7 @@ module "app_eks_cluster" {
 #  map_users                                          = concat(local.app_cluster_map_users, local.app_cluster_map_users_list)
   cluster_encryption_config = [
     {
-      provider_key_arn = var.create_kms_keys ? aws_kms_key.eks_kms_key["app-eks"].arn : var.eks_kms_key_arn
+      provider_key_arn = var.create_kms_keys ? aws_kms_key.eks_kms_key["app-eks"].arn : var.eks_secrets_kms_key_arn
       resources        = ["secrets"]
     }
   ]
@@ -180,7 +180,7 @@ module "blk_eks_cluster" {
   manage_worker_iam_resources                        = false
   cluster_enabled_log_types                          = var.eks_cluster_logs
   cluster_iam_role_name                              = aws_iam_role.eks_cluster_role["blk-eks"].name
-  cluster_log_kms_key_id                             = var.create_kms_keys ? aws_kms_key.eks_kms_key["blk-eks"].arn : var.cw_logs_kms_key_arn
+  cluster_log_kms_key_id                             = var.create_kms_keys ? aws_kms_key.eks_kms_key["blk-eks"].arn : var.eks_cwlogs_kms_key_arn
   cluster_log_retention_in_days                      = 365
   worker_create_security_group                       = false
   worker_security_group_id                           = module.blk_eks_worker_node_group_sg.security_group_id
@@ -189,7 +189,7 @@ module "blk_eks_cluster" {
 #  map_users                                          = concat(local.blk_cluster_map_users, local.blk_cluster_map_users_list)
   cluster_encryption_config = [
     {
-      provider_key_arn = var.create_kms_keys ? aws_kms_key.eks_kms_key["blk-eks"].arn : var.eks_kms_key_arn
+      provider_key_arn = var.create_kms_keys ? aws_kms_key.eks_kms_key["blk-eks"].arn : var.eks_secrets_kms_key_arn
       resources        = ["secrets"]
     }
   ]

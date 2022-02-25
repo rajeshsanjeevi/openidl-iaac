@@ -122,6 +122,9 @@ output "public_app_bastion_fqdn" {
 }
 #-----------------------------------------------------------------------------------------------------------------
 #KMS key related to vault unseal
-output "kms_key_arn_vault_unseal" {
-  value = data.terraform_remote_state.base_setup.outputs.kms_key_arn_vault_unseal_arn
+output "vault_kms_key_arn" {
+  value = data.terraform_remote_state.base_setup.outputs.vault_kms_key_arn
+}
+output "vault_kms_key_alais_name" {
+  value = data.terraform_remote_state.base_setup.outputs.vault_kms_key_alias_name
 }

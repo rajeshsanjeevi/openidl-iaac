@@ -1,6 +1,6 @@
 #kms key for application cluster and blockchain cluster encryption
 resource "aws_kms_key" "eks_kms_key" {
-  for_each = {for k in [toset(["app-eks", "blk-eks"])] : k => k if var.create_kms_keys }
+  for_each = {for k in ["app-eks", "blk-eks"] : k => k if var.create_kms_keys }
   #for_each                = toset(["app-eks", "blk-eks"])
   description             = "The KMS key for app eks"
   deletion_window_in_days = 7
@@ -95,7 +95,7 @@ resource "aws_kms_key" "eks_kms_key" {
   }, )
 }
 resource "aws_kms_alias" "alias" {
-  for_each = {for k in [toset(["app-eks", "blk-eks"])] : k => k if var.create_kms_keys }
+  for_each = {for k in ["app-eks", "blk-eks"] : k => k if var.create_kms_keys }
   #for_each      = toset(["app-eks", "blk-eks"])
   name          = "alias/${local.std_name}-${each.value}"
   target_key_id = aws_kms_key.eks_kms_key["${each.value}"].id
