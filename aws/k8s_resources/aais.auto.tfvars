@@ -52,7 +52,7 @@ blk_vpc_id = "vpc-0d3477e8efbb93293"
 #The source ip_address|cidr_block should be enabled in bastion host's security group for incoming ssh traffic.
 #in bastion hosts security group for ssh traffic
 
-create_bastion_host = "true"
+create_bastion_host = "false"
 
 #application cluster bastion host specifications
 app_bastion_sg_ingress =  [
@@ -108,7 +108,7 @@ email_sending_account        = "COGNITO_DEFAULT" # Options: COGNITO_DEFAULT | DE
 #--------------------------------------------------------------------------------------------------------------------
 # application cluster EKS specifications
 app_cluster_name              = "app-cluster"
-app_cluster_version           = "1.21"
+app_cluster_version           = "1.20"
 app_worker_nodes_ami_id = "ami-09fd0b5dd68327412"
 
 #--------------------------------------------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ s3_bucket_name_cloudtrail = "openidl-cloudtrial-logs" #s3 bucket name to manage 
 
 #--------------------------------------------------------------------------------------------------------------------
 #Name of the S3 bucket managing terraform state files - applicable when backend is S3
-#terraform_state_s3_bucket_name = "carrier-dev-hig-tfstate-backend"
+terraform_state_s3_bucket_name = ""
 
 #Applicable when backend environment is Terraform Cloud/Enterprise
 tfc_org_name = "openidl-aais"
@@ -133,6 +133,13 @@ tfc_workspace_name_aws_resources = "aais-dev-aws-resources"
 
 #Name of the S3 bucket used to store the data extracted from HDS for analytics
 s3_bucket_name_hds_analytics = "openidl-hds-analytics"
+
+#Name of the S3 bucket used to store images(logos/icons)
 create_s3_bucket_public = "false"
 s3_bucket_name_logos = "openidl-public-logos"
 
+#Custom tags to include
+custom_tags = {
+  custom_tag1 = "customtag1"
+  custom_tag2 = "customtag2"
+}

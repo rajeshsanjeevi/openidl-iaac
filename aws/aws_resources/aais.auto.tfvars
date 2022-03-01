@@ -24,16 +24,17 @@ blk_cluster_map_users = []
 app_cluster_map_roles = []
 blk_cluster_map_roles = []
 
-
 org_name = "aais" #Its an example
 aws_env = "dev" #set to dev|test|prod
 
 #--------------------------------------------------------------------------------------------------------------------
 create_vpc = "false"
 #Application cluster VPC specifications
+#key in VPC ids when create_vpc is false
 app_vpc_id = "vpc-0b768c6cfb07f8cba"
 blk_vpc_id = "vpc-0d3477e8efbb93293"
 
+#Key in inputs for the below when create_vpc is true
 #app_vpc_cidr           = "172.18.0.0/16"
 #app_availability_zones = ["us-east-2a", "us-east-2b"]
 #app_public_subnets     = ["172.18.1.0/24", "172.18.2.0/24"]
@@ -41,6 +42,7 @@ blk_vpc_id = "vpc-0d3477e8efbb93293"
 
 #-------------------------------------------------------------------------------------------------------------------
 #Blockchain cluster VPC specifications
+#Key in inputs for the below when create_vpc is true
 #blk_vpc_cidr           = "172.19.0.0/16"
 #blk_availability_zones = ["us-east-2a", "us-east-2b"]
 #blk_public_subnets     = ["172.19.1.0/24", "172.19.2.0/24"]
@@ -55,29 +57,13 @@ blk_vpc_id = "vpc-0d3477e8efbb93293"
 create_bastion_host = "true"
 
 #application cluster bastion host specifications
-app_bastion_sg_ingress =  [
-    {rule="ssh-tcp", cidr_blocks = "172.18.0.0/16"},
-    {rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}
-    ]
-app_bastion_sg_egress =   [
-    {rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
-    {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
-    {rule="ssh-tcp", cidr_blocks = "172.18.0.0/16"},
-    {rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}
-    ]
+app_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}]
+app_bastion_sg_egress =   [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}]
 
 #blockchain cluster bastion host specifications
 #bastion host security specifications
-blk_bastion_sg_ingress =  [
-    {rule="ssh-tcp", cidr_blocks = "172.19.0.0/16"},
-    {rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}
-    ]
-blk_bastion_sg_egress =   [
-    {rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
-    {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
-    {rule="ssh-tcp", cidr_blocks = "172.19.0.0/16"},
-    {rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}
-    ]
+blk_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}]
+blk_bastion_sg_egress =   [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}]
 #--------------------------------------------------------------------------------------------------------------------
 #Route53 (PUBLIC) DNS domain related specifications
 domain_info = {
@@ -93,9 +79,9 @@ tgw_amazon_side_asn = "64532" #default is 64532
 
 #--------------------------------------------------------------------------------------------------------------------
 #Cognito specifications
-create_cognito_userpool = "false"
+create_cognito_userpool = "true"
 userpool_name                = "openidl-pool" #unique user_pool name
-client_app_name              = "openidl-client" #a name of the application that uses user pool
+client_app_name              = "openidl-client" #name of the application client
 client_callback_urls         = ["https://openidl-dev-aais.thetech.digital/callback", "https://openidl-dev-aais.thetech.digital/redirect"] #ensure to add redirect url part of callback urls, as this is required
 client_default_redirect_url  = "https://openidl-dev-aais.thetech.digital/redirect" #redirect url
 client_logout_urls           = ["https://openidl-dev-aais.thetech.digital/signout"] #logout url
@@ -106,46 +92,9 @@ cognito_domain               = "aais-openidl" #unique domain name
 email_sending_account        = "COGNITO_DEFAULT" # Options: COGNITO_DEFAULT | DEVELOPER
 
 #--------------------------------------------------------------------------------------------------------------------
-#Any additional traffic required to open to worker nodes in future, below are required to set (app cluster)
-app_eks_workers_app_sg_ingress = []
-   #[{
-   # from_port = 443
-   # to_port = 443
-   # protocol = "tcp"
-   # description = "inbound https traffic"
-   # cidr_blocks = "172.18.0.0/16"
-   #},
-   #{
-   # from_port = 443
-   # to_port = 443
-   # protocol = "tcp"
-   # description = "inbound https traffic"
-   # cidr_blocks = "172.19.0.0/16"
-   #}]
-app_eks_workers_app_sg_egress = [{rule = "all-all"}]
-
-#Any additional traffic required to open to worker nodes in future, below are required to set (blk cluster)
-blk_eks_workers_app_sg_ingress = []
-  #[{
-  #  from_port = 443
-  #  to_port = 443
-  #  protocol = "tcp"
-  #  description = "inbound https traffic"
-  #  cidr_blocks = "172.18.0.0/16"
-  #},
-  #{
-  #  from_port = 443
-  #  to_port = 443
-  #  protocol = "tcp"
-  #  description = "inbound https traffic"
-  #  cidr_blocks = "172.19.0.0/16"
-  # }]
-blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
-
-#--------------------------------------------------------------------------------------------------------------------
 # application cluster EKS specifications
 app_cluster_name              = "app-cluster"
-app_cluster_version           = "1.21"
+app_cluster_version           = "1.20"
 app_worker_nodes_ami_id = "ami-09fd0b5dd68327412"
 
 #--------------------------------------------------------------------------------------------------------------------
@@ -156,7 +105,7 @@ blk_worker_nodes_ami_id = "ami-09fd0b5dd68327412"
 
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related
-create_cloudtrial = "false"
+create_cloudtrial = "true"
 cw_logs_retention_period = "90" #example 90 days
 s3_bucket_name_cloudtrail = "openidl-cloudtrial-logs" #s3 bucket name to manage cloudtrail logs
 
@@ -172,8 +121,14 @@ tfc_workspace_name_aws_resources = "aais-dev-aws-resources"
 s3_bucket_name_hds_analytics = "openidl-hds-analytics"
 
 #Name of the S3 bucket used to store images(logos/icons)
-create_s3_bucket_public = "false"
+create_s3_bucket_public = "true"
 s3_bucket_name_logos = "openidl-public-logos"
+
+#KMS Key arn to be used when create_kms_keys is set to false
+create_kms_keys = "false"
+s3_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/e9927e06-fa45-4c6a-a099-6a85d40b44da"
+eks_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/5d195cea-aeee-4894-b68e-baa10f8dd898"
+cloudtrail_cwlogs_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/16dea929-c226-4da7-bf10-334f034b92f6"
 
 #Custom tags to include
 custom_tags = {
