@@ -7,7 +7,7 @@ resource "aws_route53_zone" "public_zones" {
     local.tags,
     {
       "name"         = "${var.domain_info.domain_name}"
-      "cluster_type" = "Both"
+      "cluster_type" = "both"
   }, )
 }
 #setting dns entry for bastion host in app cluster vpc

@@ -712,12 +712,7 @@ variable "s3_kms_key_arn" {
   default = ""
   description ="KMS Key arn to be used for S3 buckets"
 }
-variable "eks_secrets_kms_key_arn" {
-  type = string
-  default = ""
-  description ="KMS Key arn to be used for EKS secrets encryption"
-}
-variable "eks_cwlogs_kms_key_arn" {
+variable "eks_kms_key_arn" {
   type = string
   default = ""
   description = "KMS Key arn to be used for EKS related cloudwatch logs"

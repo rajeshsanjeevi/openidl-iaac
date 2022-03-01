@@ -67,7 +67,7 @@ data "aws_availability_zones" "app_vpc_azs" {
 }
 #reading application cluster public subnets
 data "aws_subnet_ids" "app_vpc_public_subnets" {
-  vpc_id     = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
+  vpc_id     = var.create_vpc ? module.app_vpc.vpc_id : data.aws_vpc.app_vpc.id
  # filter {
  #   name   = "cidr"
  #   values = var.app_public_subnets
@@ -78,7 +78,7 @@ data "aws_subnet_ids" "app_vpc_public_subnets" {
 }
 #reading application cluster private subnets
 data "aws_subnet_ids" "app_vpc_private_subnets" {
-  vpc_id     = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
+  vpc_id     = var.create_vpc ? module.app_vpc.vpc_id : data.aws_vpc.app_vpc.id
  # filter {
  #   name   = "cidr"
  #   values = var.app_private_subnets
@@ -89,7 +89,7 @@ data "aws_subnet_ids" "app_vpc_private_subnets" {
 }
 #reading blockchain cluster public subnets
 data "aws_subnet_ids" "blk_vpc_public_subnets" {
-  vpc_id     = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+  vpc_id     = var.create_vpc ? module.blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
   #filter {
   #  name   = "cidr"
   #  values = var.blk_public_subnets
@@ -100,7 +100,7 @@ data "aws_subnet_ids" "blk_vpc_public_subnets" {
 }
 #reading blockchain cluster private subnets
 data "aws_subnet_ids" "blk_vpc_private_subnets" {
-  vpc_id     = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+  vpc_id     = var.create_vpc ? module.blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
  # filter {
  #   name   = "cidr"
  #   values = var.blk_private_subnets

@@ -1,12 +1,12 @@
 #kms key for hcp vault cluster unseal
 resource "aws_kms_key" "vault_kms_key" {
   count = var.create_kms_keys ? 1 : 0
-  description             = "The KMS key for vault cluster"
-  deletion_window_in_days = 7
+  description             = "The KMS key used for vault cluster"
+  deletion_window_in_days = 30
   key_usage               = "ENCRYPT_DECRYPT"
   enable_key_rotation     = true
   policy = jsonencode({
-    "Id" : "${local.std_name}-vault-kmskey-policy",
+    "Id" : "${local.std_name}-vault-kms-key",
     "Version" : "2012-10-17",
     "Statement" : [
       {
@@ -80,12 +80,12 @@ resource "aws_kms_key" "vault_kms_key" {
   tags = merge(
     local.tags,
     {
-      "name"         = "${local.std_name}-vault-kmskey"
+      "name"         = "${local.std_name}-vault-kms-key"
       "cluster_type" = "both"
   }, )
 }
 resource "aws_kms_alias" "vault_kms_key_alias" {
   count = var.create_kms_keys ? 1 : 0
-  name          = "alias/${local.std_name}-vault-kmskey"
+  name          = "alias/${local.std_name}-vault-kms-key"
   target_key_id = aws_kms_key.vault_kms_key[0].id
 }

@@ -5,7 +5,7 @@ module "app_bastion_sg" {
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-app-bastion-sg"
   description              = "Security group associated with app cluster bastion host"
-  vpc_id                   = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
+  vpc_id                   = var.create_vpc ? module.app_vpc.vpc_id : data.aws_vpc.app_vpc.id
   ingress_with_cidr_blocks = distinct(concat(var.app_bastion_sg_ingress, local.def_app_bastion_sg_ingress))
   egress_with_cidr_blocks  = distinct(concat(var.app_bastion_sg_egress, local.def_app_bastion_sg_egress))
   tags = merge(
@@ -38,8 +38,8 @@ module "app_bastion_nlb" {
   enable_cross_zone_load_balancing = true
   internal                         = false
   ip_address_type                  = "ipv4"
-  vpc_id                           = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
-  subnets                          = var.create_vpc ? module.aais_app_vpc.public_subnets : data.aws_subnet_ids.app_vpc_public_subnets.ids
+  vpc_id                           = var.create_vpc ? module.app_vpc.vpc_id : data.aws_vpc.app_vpc.id
+  subnets                          = var.create_vpc ? module.app_vpc.public_subnets : data.aws_subnet_ids.app_vpc_public_subnets.ids
   http_tcp_listeners = [
     {
       port        = 22
@@ -103,7 +103,7 @@ module "app_bastion_host_asg" {
   health_check_type         = "EC2"
   target_group_arns         = module.app_bastion_nlb[0].target_group_arns
   health_check_grace_period = 300
-  vpc_zone_identifier       = var.create_vpc ? module.aais_app_vpc.public_subnets : data.aws_subnet_ids.app_vpc_public_subnets.ids
+  vpc_zone_identifier       = var.create_vpc ? module.app_vpc.public_subnets : data.aws_subnet_ids.app_vpc_public_subnets.ids
   #service_linked_role_arn   = aws_iam_service_linked_role.autoscaling_svc_role.arn
   #launch template specifics
   image_id      = data.aws_ami.amazon_linux.id
@@ -146,7 +146,7 @@ module "blk_bastion_sg" {
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-blk-bastion-sg"
   description              = "Security group associated with blk cluster bastion host"
-  vpc_id                   = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+  vpc_id                   = var.create_vpc ? module.blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
   ingress_with_cidr_blocks = distinct(concat(var.blk_bastion_sg_ingress, local.def_blk_bastion_sg_ingress))
   egress_with_cidr_blocks  = distinct(concat(var.blk_bastion_sg_egress, local.def_blk_bastion_sg_egress))
   tags = merge(
@@ -179,8 +179,8 @@ module "blk_bastion_nlb" {
   enable_cross_zone_load_balancing = true
   internal                         = false
   ip_address_type                  = "ipv4"
-  vpc_id                           = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
-  subnets                          = var.create_vpc ? module.aais_blk_vpc.public_subnets : data.aws_subnet_ids.blk_vpc_public_subnets.ids
+  vpc_id                           = var.create_vpc ? module.blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+  subnets                          = var.create_vpc ? module.blk_vpc.public_subnets : data.aws_subnet_ids.blk_vpc_public_subnets.ids
   http_tcp_listeners = [
     {
       port        = 22
@@ -244,7 +244,7 @@ module "blk_bastion_host_asg" {
   health_check_type         = "EC2"
   target_group_arns         = module.blk_bastion_nlb[0].target_group_arns
   health_check_grace_period = 300
-  vpc_zone_identifier       = var.create_vpc ? module.aais_blk_vpc.public_subnets : data.aws_subnet_ids.blk_vpc_public_subnets.ids
+  vpc_zone_identifier       = var.create_vpc ? module.blk_vpc.public_subnets : data.aws_subnet_ids.blk_vpc_public_subnets.ids
   #service_linked_role_arn   = aws_iam_service_linked_role.autoscaling_svc_role.arn
   #launch template specifics
   image_id      = data.aws_ami.amazon_linux.id

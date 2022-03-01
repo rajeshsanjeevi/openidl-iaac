@@ -7,7 +7,7 @@ resource "aws_iam_instance_profile" "eks_instance_profile" {
 }
 #ssh key pair for application cluster worker nodes (eks)
 module "app_eks_worker_nodes_key_pair_external" {
-  #depends_on = [module.aais_app_vpc]
+  #depends_on = [module.app_vpc]
   source     = "terraform-aws-modules/key-pair/aws"
   key_name   = "${local.std_name}-app-eks-worker-nodes-external"
   public_key = var.app_eks_worker_nodes_ssh_key
@@ -21,14 +21,14 @@ module "app_eks_worker_nodes_key_pair_external" {
 #setting up application cluster (eks)
 module "app_eks_cluster" {
   #source                                             = "terraform-aws-modules/eks/aws"
-  source                                              = "./modules/eks_cluster"
+  source                                              = "modules/eks-cluster"
   #version                                            = "17.1.0"
   create_eks                                         = true
   cluster_name                                       = local.app_cluster_name
   enable_irsa                                        = true
   cluster_version                                    = var.app_cluster_version
-  subnets                                            = var.create_vpc ? module.aais_app_vpc.private_subnets : data.aws_subnet_ids.app_vpc_private_subnets.ids
-  vpc_id                                             = var.create_vpc ? module.aais_app_vpc.vpc_id : data.aws_vpc.app_vpc.id
+  subnets                                            = var.create_vpc ? module.app_vpc.private_subnets : data.aws_subnet_ids.app_vpc_private_subnets.ids
+  vpc_id                                             = var.create_vpc ? module.app_vpc.vpc_id : data.aws_vpc.app_vpc.id
   write_kubeconfig                                   = false
   #cluster_service_ipv4_cidr                          = var.app_cluster_service_ipv4_cidr
   kubeconfig_output_path                             = var.kubeconfig_output_path
@@ -46,7 +46,7 @@ module "app_eks_cluster" {
   manage_worker_iam_resources                        = false
   cluster_enabled_log_types                          = var.eks_cluster_logs
   cluster_iam_role_name                              = aws_iam_role.eks_cluster_role["app-eks"].name
-  cluster_log_kms_key_id                             = var.create_kms_keys ? aws_kms_key.eks_kms_key["app-eks"].arn : var.eks_cwlogs_kms_key_arn
+  cluster_log_kms_key_id                             = var.create_kms_keys ? aws_kms_key.eks_kms_key[0].id : var.eks_kms_key_arn
   cluster_log_retention_in_days                      = 365
   worker_create_security_group                       = false
   worker_security_group_id                           = module.app_eks_worker_node_group_sg.security_group_id
@@ -55,7 +55,7 @@ module "app_eks_cluster" {
 #  map_users                                          = concat(local.app_cluster_map_users, local.app_cluster_map_users_list)
   cluster_encryption_config = [
     {
-      provider_key_arn = var.create_kms_keys ? aws_kms_key.eks_kms_key["app-eks"].arn : var.eks_secrets_kms_key_arn
+      provider_key_arn = var.create_kms_keys ? aws_kms_key.eks_kms_key[0].id : var.eks_kms_key_arn
       resources        = ["secrets"]
     }
   ]
@@ -76,7 +76,7 @@ module "app_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.app_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.aais_app_vpc.private_subnets[0] : data.aws_subnet_ids.app_vpc_private_subnets.id
+      subnet_id                     = var.create_vpc ? module.app_vpc.private_subnets[0] : data.aws_subnet_ids.app_vpc_private_subnets.id
       #target_group_arns             = module.app_eks_nlb.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -103,7 +103,7 @@ module "app_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.app_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.aais_app_vpc.private_subnets[1] : data.aws_subnet_ids.app_vpc_private_subnets.id
+      subnet_id                     = var.create_vpc ? module.app_vpc.private_subnets[1] : data.aws_subnet_ids.app_vpc_private_subnets.id
       #target_group_arns             = module.app_eks_nlb.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -121,7 +121,7 @@ module "app_eks_cluster" {
       "name"         = "${local.app_cluster_name}"
       "cluster_type" = "application"
   }, )
-  depends_on = [module.aais_app_vpc,
+  depends_on = [module.app_vpc,
     module.app_eks_control_plane_sg,
     module.app_eks_worker_node_group_sg,
     aws_iam_role.eks_cluster_role,
@@ -141,7 +141,7 @@ module "app_eks_cluster" {
 #blockchain cluster specific
 #ssh key pair for blockchain cluster worker nodes (eks)
 module "blk_eks_worker_nodes_key_pair_external" {
-  #depends_on = [module.aais_blk_vpc]
+  #depends_on = [module.blk_vpc]
   source     = "terraform-aws-modules/key-pair/aws"
   key_name   = "${local.std_name}-blk-eks-worker-nodes-external"
   public_key = var.blk_eks_worker_nodes_ssh_key
@@ -155,14 +155,14 @@ module "blk_eks_worker_nodes_key_pair_external" {
 #setting up blockchain cluster (eks)
 module "blk_eks_cluster" {
   #source                                             = "terraform-aws-modules/eks/aws"
-  source                                              = "./modules/eks_cluster"
+  source                                              = "modules/eks-cluster"
   #version                                            = "17.1.0"
   create_eks                                         = true
   cluster_name                                       = local.blk_cluster_name
   enable_irsa                                        = true
   cluster_version                                    = var.blk_cluster_version
-  subnets                                            = var.create_vpc ? module.aais_blk_vpc.private_subnets : data.aws_subnet_ids.blk_vpc_private_subnets.ids
-  vpc_id                                             = var.create_vpc ? module.aais_blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+  subnets                                            = var.create_vpc ? module.blk_vpc.private_subnets : data.aws_subnet_ids.blk_vpc_private_subnets.ids
+  vpc_id                                             = var.create_vpc ? module.blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
   write_kubeconfig                                   = false
   #cluster_service_ipv4_cidr                          = var.blk_cluster_service_ipv4_cidr
   kubeconfig_output_path                             = var.kubeconfig_output_path
@@ -180,7 +180,7 @@ module "blk_eks_cluster" {
   manage_worker_iam_resources                        = false
   cluster_enabled_log_types                          = var.eks_cluster_logs
   cluster_iam_role_name                              = aws_iam_role.eks_cluster_role["blk-eks"].name
-  cluster_log_kms_key_id                             = var.create_kms_keys ? aws_kms_key.eks_kms_key["blk-eks"].arn : var.eks_cwlogs_kms_key_arn
+  cluster_log_kms_key_id                             = var.create_kms_keys ? aws_kms_key.eks_kms_key[0].id : var.eks_kms_key_arn
   cluster_log_retention_in_days                      = 365
   worker_create_security_group                       = false
   worker_security_group_id                           = module.blk_eks_worker_node_group_sg.security_group_id
@@ -189,7 +189,7 @@ module "blk_eks_cluster" {
 #  map_users                                          = concat(local.blk_cluster_map_users, local.blk_cluster_map_users_list)
   cluster_encryption_config = [
     {
-      provider_key_arn = var.create_kms_keys ? aws_kms_key.eks_kms_key["blk-eks"].arn : var.eks_secrets_kms_key_arn
+      provider_key_arn = var.create_kms_keys ? aws_kms_key.eks_kms_key[0].id : var.eks_kms_key_arn
       resources        = ["secrets"]
     }
   ]
@@ -210,7 +210,7 @@ module "blk_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.aais_blk_vpc.private_subnets[0] : data.aws_subnet_ids.blk_vpc_private_subnets.id
+      subnet_id                     = var.create_vpc ? module.blk_vpc.private_subnets[0] : data.aws_subnet_ids.blk_vpc_private_subnets.id
       #target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -237,7 +237,7 @@ module "blk_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.aais_blk_vpc.private_subnets[1] : data.aws_subnet_ids.blk_vpc_private_subnets.id
+      subnet_id                     = var.create_vpc ? module.blk_vpc.private_subnets[1] : data.aws_subnet_ids.blk_vpc_private_subnets.id
       #target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -264,7 +264,7 @@ module "blk_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.aais_blk_vpc.private_subnets[1] : data.aws_subnet_ids.blk_vpc_private_subnets.id
+      subnet_id                     = var.create_vpc ? module.blk_vpc.private_subnets[1] : data.aws_subnet_ids.blk_vpc_private_subnets.id
       #target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -282,7 +282,7 @@ module "blk_eks_cluster" {
       "name"         = "${local.blk_cluster_name}"
       "cluster_type" = "blockchain"
   }, )
-  depends_on = [module.aais_blk_vpc,
+  depends_on = [module.blk_vpc,
     module.blk_eks_control_plane_sg,
     module.blk_eks_worker_node_group_sg,
     aws_iam_role.eks_cluster_role,

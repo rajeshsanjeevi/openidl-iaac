@@ -12,8 +12,8 @@ locals {
     node_type   = var.org_name
   })
 
-  bastion_host_userdata = filebase64("resources/bootstrap_scripts/bastion_host.sh")
-  worker_nodes_userdata = filebase64("resources/bootstrap_scripts/worker_nodes.sh")
+  bastion_host_userdata = filebase64("resources/bootstrap-scripts/bastion_host.sh")
+  worker_nodes_userdata = filebase64("resources/bootstrap-scripts/worker_nodes.sh")
 
   #sub domain specific
   public_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"

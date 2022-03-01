@@ -10,5 +10,5 @@ terraform {
   }
 }
 #terraform {
-#  backend "local" {}
+#  backend "s3" {}
 #}

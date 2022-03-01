@@ -1,5 +1,5 @@
 #Creating an application cluster VPC
-module "aais_app_vpc" {
+module "app_vpc" {
   create_vpc      = var.create_vpc ? true : false
   source          = "terraform-aws-modules/vpc/aws"
   name            = "${local.std_name}-app-vpc"
@@ -55,7 +55,7 @@ module "aais_app_vpc" {
   })
 }
 #Creating an blockchain cluster VPC
-module "aais_blk_vpc" {
+module "blk_vpc" {
   create_vpc      = var.create_vpc ? true : false
   source          = "terraform-aws-modules/vpc/aws"
   name            = "${local.std_name}-blk-vpc"
@@ -114,7 +114,7 @@ module "aais_blk_vpc" {
 #setting up transit gateway to use with app_vpc and blk_vpc
 module "transit_gateway" {
   count = var.create_vpc ? 1 : 0
-  depends_on                            = [module.aais_app_vpc, module.aais_blk_vpc]
+  depends_on                            = [module.app_vpc, module.blk_vpc]
   source                                = "./modules/transit-gateway"
   create_tgw                            = true
   share_tgw                             = false
@@ -125,20 +125,20 @@ module "transit_gateway" {
   enable_vpn_ecmp_support               = true
   vpc_attachments = {
     app_vpc = {
-      vpc_id                                          = module.aais_app_vpc.vpc_id
-      vpc_route_table_ids                             = module.aais_app_vpc.private_route_table_ids
+      vpc_id                                          = module.app_vpc.vpc_id
+      vpc_route_table_ids                             = module.app_vpc.private_route_table_ids
       tgw_destination_cidr                            = local.app_tgw_destination_cidr
-      subnet_ids                                      = module.aais_app_vpc.private_subnets
+      subnet_ids                                      = module.app_vpc.private_subnets
       dns_support                                     = true
       transit_gateway_default_route_table_association = true
       transit_gateway_default_route_table_propagation = true
       tgw_routes                                      = local.app_tgw_routes
     },
     blk_vpc = {
-      vpc_id                                          = module.aais_blk_vpc.vpc_id
-      vpc_route_table_ids                             = module.aais_blk_vpc.private_route_table_ids
+      vpc_id                                          = module.blk_vpc.vpc_id
+      vpc_route_table_ids                             = module.blk_vpc.private_route_table_ids
       tgw_destination_cidr                            = local.blk_tgw_destination_cidr
-      subnet_ids                                      = module.aais_blk_vpc.private_subnets
+      subnet_ids                                      = module.blk_vpc.private_subnets
       dns_support                                     = true
       transit_gateway_default_route_table_association = true
       transit_gateway_default_route_table_propagation = true
