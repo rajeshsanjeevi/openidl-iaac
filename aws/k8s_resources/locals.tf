@@ -5,10 +5,10 @@ locals {
   blk_cluster_name  = "${local.std_name}-${var.blk_cluster_name}"
   policy_arn_prefix = "arn:aws:iam::aws:policy"
   tags = merge(var.custom_tags, {
-    Application = "openidl"
-    Environment = var.aws_env
-    Managed_by  = "terraform"
-    Node_type   = var.org_name
+    application = "openidl"
+    environment = var.aws_env
+    managed_by  = "terraform"
+    node_type   = var.org_name
   })
 
   #sub domain specific
