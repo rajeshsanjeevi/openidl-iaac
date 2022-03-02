@@ -1,11 +1,11 @@
 #creating an s3 bucket for HDS data extract for analytics node
 resource "aws_s3_bucket" "s3_bucket_hds" {
-  count = var.org_name == "aais" ? 0 : 1
+  count = var.org_name == "aais" ? 1 : 1 #update to 0 : 1
   bucket = "${local.std_name}-${var.s3_bucket_name_hds_analytics}"
   acl    = "private"
   force_destroy = true
   versioning {
-    enabled = false
+    enabled = true
   }
   tags = merge(
     local.tags,
@@ -23,7 +23,7 @@ resource "aws_s3_bucket" "s3_bucket_hds" {
 }
 #blocking public access to s3 bucket used for HDS data extract for analytics node
 resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_hds" {
-  count = var.org_name == "aais" ? 0 : 1
+  count = var.org_name == "aais" ? 1 : 1
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
@@ -33,7 +33,7 @@ resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_hds"
 }
 #setting up a bucket policy to restrict access to s3 bucket used for HDS data extract for analytics node
 resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
-  count = var.org_name == "aais" ? 0 : 1
+  count = var.org_name == "aais" ? 1 : 1
   bucket     = "${local.std_name}-${var.s3_bucket_name_hds_analytics}"
   depends_on = [aws_s3_bucket.s3_bucket_hds]
   policy = jsonencode({
@@ -43,7 +43,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
             "Sid": "AllowGetAndPutObjects",
             "Effect": "Allow",
             "Principal": {
-                "AWS": ["${aws_iam_user.openidl_apps_user.arn}", "${aws_iam_role.openidl_apps_iam_role}"]
+                "AWS": ["${aws_iam_role.openidl_apps_iam_role.arn}", "${aws_iam_user.openidl_apps_user.arn}"]
             },
             "Action": [
                 "s3:GetObject",
@@ -58,7 +58,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
                 "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*"
             ]
         },
-      {
+        {
             "Sid": "AllowAccessIAMRole",
             "Effect": "Allow",
             "Principal": {
@@ -67,21 +67,44 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
             "Action": "*",
             "Resource": [
                 "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}",
-                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*"
             ]
         },
-      {
-        Sid       = "HTTPRestrict"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = "s3:*"
-        Resource = "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*",
-        Condition = {
-          Bool = {
-            "aws:SecureTransport" = "false"
-          }
-        }
-      }
+        {
+            "Sid": "HTTPRestrict",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": ["arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*", "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}" ],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport" = "false"
+                }
+            }
+        },
+        {
+			"Sid": "DenyOthers",
+			"Effect": "Deny",
+			"Principal": "*",
+            "Action": "*",
+			"Resource": [
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_hds_analytics}/*"
+            ],
+			"Condition": {
+				"StringNotLike": {
+					"aws:userid": [
+                        "${aws_iam_role.openidl_apps_iam_role.unique_id}:*",
+                        "${aws_iam_user.openidl_apps_user.unique_id}",
+                        "${data.aws_iam_role.terraform_role.unique_id}:*",
+						"${var.aws_account_number}",
+                        "arn:aws:sts:::${var.aws_account_number}:assumed-role/${local.terraform_role_name[1]}/terraform",
+                        "arn:aws:sts:::${var.aws_account_number}:assumed-role/${aws_iam_role.openidl_apps_iam_role.name}/openidl"
+
+					]
+				}
+			}
+		}
     ]
 })
 }
@@ -92,7 +115,7 @@ resource "aws_s3_bucket" "s3_bucket_logos_public" {
   acl    = "private"
   force_destroy = true
   versioning {
-    enabled = false
+    enabled = true
   }
   tags = merge(
     local.tags,
@@ -122,7 +145,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_logos_policy" {
             "Sid": "AllowPublicAccess",
             "Effect": "Allow",
             "Principal": "*",
-            "Action": "s3:GetObject",
+            "Action": [ "s3:GetObject", "s3:GetObjectVersion"],
             "Resource": [
                 "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}",
                 "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*",
@@ -133,7 +156,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_logos_policy" {
             "Sid": "AllowIAMAccess",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "${var.aws_role_arn}"
+                "AWS": ["${var.aws_role_arn}"]
             },
             "Action": "*",
             "Resource": [
@@ -142,16 +165,38 @@ resource "aws_s3_bucket_policy" "s3_bucket_logos_policy" {
             ]
         },
       {
-        Sid       = "HTTPRestrict"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = "s3:*"
-        Resource = "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*",
-        Condition = {
-          Bool = {
-            "aws:SecureTransport" = "false"
+        "Sid":  "HTTPRestrict",
+        "Effect": "Deny",
+        "Principal":  "*",
+        "Action": "s3:*",
+        "Resource": ["arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*", "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}" ]
+        "Condition": {
+          "Bool": {
+            "aws:SecureTransport": "false"
           }
         }
+      },
+      {
+        "Sid": "DenyOthers",
+        "Effect": "Deny",
+        "Principal": "*",
+        "NotAction": [ "s3:GetObject", "s3:GetObjectVersion"],
+        "Resource": [
+          "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}",
+          "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_logos}/*",
+        ],
+        "Condition": {
+		  "StringNotLike": {
+		      "aws:userid": [
+                  "${aws_iam_role.openidl_apps_iam_role.unique_id}:*",
+                  "${aws_iam_user.openidl_apps_user.unique_id}",
+                  "${data.aws_iam_role.terraform_role.unique_id}:*",
+				  "${var.aws_account_number}",
+                  "arn:aws:sts:::${var.aws_account_number}:assumed-role/${local.terraform_role_name[1]}/terraform",
+                  "arn:aws:sts:::${var.aws_account_number}:assumed-role/${aws_iam_role.openidl_apps_iam_role.name}/openidl"
+              ]
+          }
+		}
       }
     ]
   })

@@ -672,7 +672,7 @@ variable "create_bastion_host" {
   default = true
   description = "Determines whether to create bastion host in the VPC network"
 }
-variable "create_cloudtrial" {
+variable "create_cloudtrail" {
   type = bool
   default = true
   description = "Determines whether to enable cloudtrial"

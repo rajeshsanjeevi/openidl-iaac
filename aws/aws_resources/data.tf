@@ -1,3 +1,10 @@
+#reading
+data "aws_iam_user" "terraform_user" {
+  user_name = local.terraform_user_name[1]
+}
+data "aws_iam_role" "terraform_role" {
+  name = local.terraform_role_name[1]
+}
 #AMI used with bastion host, this identifies the filtered ami from the region
 data "aws_ami" "amazon_linux" {
   most_recent = true
@@ -157,7 +164,7 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
     actions = ["kms:*"]
     principals {
       type = "AWS"
-      identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
+      identifiers = ["${var.aws_role_arn}"]
     }
     resources = ["*"]
   }
@@ -238,7 +245,7 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
     ]
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
+      identifiers = ["${var.aws_role_arn}"]
     }
     condition {
       test     = "StringEquals"
@@ -269,4 +276,3 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
     resources = ["*"]
   }
 }
-

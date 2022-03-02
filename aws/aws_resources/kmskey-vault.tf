@@ -10,15 +10,6 @@ resource "aws_kms_key" "vault_kms_key" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Sid" : "EnableIAMUserPermissions",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "arn:aws:iam::${var.aws_account_number}:root"
-        },
-        "Action" : "kms:*",
-        "Resource" : "*"
-      },
-      {
         "Sid" : "AllowaccessforKeyAdministrators",
         "Effect" : "Allow",
         "Principal" : {

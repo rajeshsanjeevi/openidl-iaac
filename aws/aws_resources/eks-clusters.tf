@@ -21,7 +21,7 @@ module "app_eks_worker_nodes_key_pair_external" {
 #setting up application cluster (eks)
 module "app_eks_cluster" {
   #source                                             = "terraform-aws-modules/eks/aws"
-  source                                              = "modules/eks-cluster"
+  source                                              = "./modules/eks-cluster"
   #version                                            = "17.1.0"
   create_eks                                         = true
   cluster_name                                       = local.app_cluster_name
@@ -155,7 +155,7 @@ module "blk_eks_worker_nodes_key_pair_external" {
 #setting up blockchain cluster (eks)
 module "blk_eks_cluster" {
   #source                                             = "terraform-aws-modules/eks/aws"
-  source                                              = "modules/eks-cluster"
+  source                                              = "./modules/eks-cluster"
   #version                                            = "17.1.0"
   create_eks                                         = true
   cluster_name                                       = local.blk_cluster_name

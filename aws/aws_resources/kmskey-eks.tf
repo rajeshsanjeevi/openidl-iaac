@@ -12,15 +12,6 @@ resource "aws_kms_key" "eks_kms_key" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Sid" : "Enable IAM User Permissions",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "arn:aws:iam::${var.aws_account_number}:root"
-        },
-        "Action" : "kms:*",
-        "Resource" : "*"
-      },
-      {
         "Sid" : "Allow access for Key Administrators",
         "Effect" : "Allow",
         "Principal" : {

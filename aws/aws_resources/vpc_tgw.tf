@@ -36,11 +36,11 @@ module "app_vpc" {
   create_flow_log_cloudwatch_iam_role  = true
   flow_log_max_aggregation_interval    = 60
 
-  private_route_table_tags       = { tier = "private"}
-  public_route_table_tags        = { tier = "public" }
-  default_route_table_tags             = { DefaultRouteTable = true }
-  tags                                 = merge(local.tags, { "cluster_type" = "application" })
-  vpc_tags                             = merge(local.tags, { "cluster_type" = "application" })
+  private_route_table_tags       = merge(local.tags, { tier = "private"})
+  public_route_table_tags        = merge(local.tags, { tier = "public" })
+  default_route_table_tags       = merge(local.tags, { DefaultRouteTable = true })
+  tags                           = merge(local.tags, { "cluster_type" = "application" })
+  vpc_tags                       = merge(local.tags, { "cluster_type" = "application" })
   public_subnet_tags = merge(local.tags, {
     "kubernetes.io/cluster/${local.app_cluster_name}" = "shared"
     "kubernetes.io/role/elb"                          = "1"
@@ -93,11 +93,11 @@ module "blk_vpc" {
   flow_log_max_aggregation_interval    = 60
 
 
-  default_route_table_tags             = { DefaultRouteTable = true }
-  private_route_table_tags       = { tier = "private"}
-  public_route_table_tags        = { tier = "public" }
-  tags                                 = merge(local.tags, { "cluster_type" = "blockchain" })
-  vpc_tags                             = merge(local.tags, { "cluster_type" = "blockchain" })
+  default_route_table_tags       = merge(local.tags, { DefaultRouteTable = true })
+  private_route_table_tags       = merge(local.tags, { tier = "private"})
+  public_route_table_tags        = merge(local.tags, { tier = "public" })
+  tags                           = merge(local.tags, { "cluster_type" = "blockchain" })
+  vpc_tags                       = merge(local.tags, { "cluster_type" = "blockchain" })
   public_subnet_tags = merge(local.tags, {
     "kubernetes.io/cluster/${local.blk_cluster_name}" = "shared"
     "kubernetes.io/role/elb"                          = "1"

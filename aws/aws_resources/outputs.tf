@@ -63,7 +63,7 @@ output "blk_eks_nodegroup_role_arn" {
 #-----------------------------------------------------------------------------------------------------------------
 #cloudtrail related
 output "cloudtrail_s3_bucket_name" {
-  value = var.create_cloudtrial ? aws_s3_bucket.ct_cw_s3_bucket[0].bucket : "cloudtrail not opted"
+  value = var.create_cloudtrail ? aws_s3_bucket.ct_cw_s3_bucket[0].bucket : "cloudtrail not opted"
 }
 output "hds_data_s3_bucket_name" {
   value = var.org_name == "aais" ? "s3 bucket for hds data analytics not applicable for AAIS node" : aws_s3_bucket.s3_bucket_hds[0].bucket

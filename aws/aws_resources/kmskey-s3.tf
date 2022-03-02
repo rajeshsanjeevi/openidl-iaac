@@ -15,15 +15,6 @@ resource "aws_kms_key" "s3_kms_key" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "EnableIAMUserPermissions",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "arn:aws:iam::357396431244:root"
-            },
-            "Action": "kms:*",
-            "Resource": "*"
-        },
-        {
             "Sid": "AllowaccessforKeyAdministrators",
             "Effect": "Allow",
             "Principal": {
