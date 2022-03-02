@@ -5,10 +5,10 @@
 #when nodetype is other carrier set org_name="<carrier_org_name>" , example: org_name = "travelers" etc.,
 
 aws_account_number = "357396431244"
-aws_access_key = "AKIAVGNT4YGGJI5HSLXA"
-aws_secret_key = "xFr5zICmdgaP+K1SXgHy35XAB6IRu3aGJFH86UGb"
-#aws_access_key = "AKIAYKTVXHYPOF7MN7OG"
-#aws_secret_key = "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"
+aws_access_key = ""
+aws_secret_key = ""
+#aws_access_key = ""
+#aws_secret_key = ""
 aws_user_arn = "arn:aws:iam::357396431244:user/terraform_dev_user"
 aws_role_arn = "arn:aws:iam::357396431244:role/tf_dev_automation"
 aws_region = "us-east-2"
@@ -105,9 +105,9 @@ blk_worker_nodes_ami_id = "ami-09fd0b5dd68327412"
 
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related
-create_cloudtrial = "true"
+create_cloudtrail = "true"
 cw_logs_retention_period = "90" #example 90 days
-s3_bucket_name_cloudtrail = "openidl-cloudtrial-logs" #s3 bucket name to manage cloudtrail logs
+s3_bucket_name_cloudtrail = "openidl-cloudtrail" #s3 bucket name to manage cloudtrail logs
 
 #--------------------------------------------------------------------------------------------------------------------
 #Name of the S3 bucket managing terraform state files - applicable when backend is S3
@@ -118,11 +118,15 @@ tfc_org_name = "openidl-aais"
 tfc_workspace_name_aws_resources = "aais-dev-aws-resources"
 
 #Name of the S3 bucket used to store the data extracted from HDS for analytics
-s3_bucket_name_hds_analytics = "openidl-hds-analytics"
+s3_bucket_name_hds_analytics = "openidl-hdsdata"
 
 #Name of the S3 bucket used to store images(logos/icons)
 create_s3_bucket_public = "true"
 s3_bucket_name_logos = "openidl-public-logos"
+
+#Name of the S3 bucket to store access logs of S3 buckets and its objects
+enable_s3_access_logging = "false"
+s3_bucket_name_access_logs = "access-logs"
 
 #KMS Key arn to be used when create_kms_keys is set to false
 create_kms_keys = "false"
@@ -130,8 +134,8 @@ s3_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/e9927e06-fa45-4c6a-a099
 eks_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/5d195cea-aeee-4894-b68e-baa10f8dd898"
 cloudtrail_cwlogs_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/16dea929-c226-4da7-bf10-334f034b92f6"
 
-#Custom tags to include
+#Custom tags - any set of key:value pairs to be included part of tags.
 custom_tags = {
-  custom_tag1 = "customtag1"
-  custom_tag2 = "customtag2"
+  custom_key1 = "custom_value1"
+  custom_key2 = "custom_value2"
 }

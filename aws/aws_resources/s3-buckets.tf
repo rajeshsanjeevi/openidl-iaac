@@ -20,6 +20,10 @@ resource "aws_s3_bucket" "s3_bucket_hds" {
       }
     }
   }
+  #logging {
+  #  target_bucket = var.enable_s3_access_logging ? aws_s3_bucket.s3_bucket_access_logs[0].id : ""
+  #  target_prefix = var.enable_s3_access_logging ? "log-hds/" : ""
+  #}
 }
 #blocking public access to s3 bucket used for HDS data extract for analytics node
 resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_hds" {
@@ -198,6 +202,93 @@ resource "aws_s3_bucket_policy" "s3_bucket_logos_policy" {
           }
 		}
       }
+    ]
+  })
+}
+#S3 bucket for storing access logs of s3 and its objects
+resource "aws_s3_bucket" "s3_bucket_access_logs" {
+  count = var.enable_s3_access_logging ? 1 : 0
+  bucket = "${local.std_name}-${var.s3_bucket_name_access_logs}"
+  acl    = "private"
+  force_destroy = true
+  versioning {
+    enabled = true
+  }
+  tags = merge(
+    local.tags,
+    {
+      "name" = "${local.std_name}-${var.s3_bucket_name_access_logs}"
+    },)
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "aws:kms"
+        kms_master_key_id = var.create_kms_keys ? aws_kms_key.s3_kms_key[0].id : var.s3_kms_key_arn
+      }
+    }
+  }
+}
+#blocking public access to s3 bucket used for s3 access logging
+resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_access_logs" {
+  count = var.enable_s3_access_logging ? 1 : 0
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+  bucket                  = aws_s3_bucket.s3_bucket_access_logs[0].id
+  depends_on              = [aws_s3_bucket.s3_bucket_access_logs, aws_s3_bucket_policy.s3_bucket_policy_access_logs]
+}
+#setting up a bucket policy to restrict access to s3 bucket used for s3 access logging
+resource "aws_s3_bucket_policy" "s3_bucket_policy_access_logs" {
+  count = var.enable_s3_access_logging ? 1 : 0
+  bucket     = "${local.std_name}-${var.s3_bucket_name_access_logs}"
+  depends_on = [aws_s3_bucket.s3_bucket_access_logs]
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowAccessIAMRole",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${var.aws_role_arn}"
+            },
+            "Action": "*",
+            "Resource": [
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_access_logs}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_access_logs}/*"
+            ]
+        },
+        {
+            "Sid": "HTTPRestrict",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": ["arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_access_logs}/*", "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_access_logs}"],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport" = "false"
+                }
+            }
+        },
+        {
+			"Sid": "DenyOthers",
+			"Effect": "Deny",
+			"Principal": "*",
+            "Action": "*",
+			"Resource": [
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_access_logs}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_access_logs}/*"
+            ],
+			"Condition": {
+				"StringNotLike": {
+					"aws:userid": [
+                        "${data.aws_iam_role.terraform_role.unique_id}:*",
+						"${var.aws_account_number}",
+                        "arn:aws:sts:::${var.aws_account_number}:assumed-role/${local.terraform_role_name[1]}/terraform",
+					]
+				}
+			}
+		}
     ]
   })
 }

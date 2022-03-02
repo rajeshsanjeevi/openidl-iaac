@@ -5,10 +5,10 @@
 #when nodetype is other carrier set org_name="<carrier_org_name>" , example: org_name = "travelers" etc.,
 
 aws_account_number = "357396431244"
-aws_access_key = "AKIAVGNT4YGGJI5HSLXA"
-aws_secret_key = "xFr5zICmdgaP+K1SXgHy35XAB6IRu3aGJFH86UGb"
-#aws_access_key = "AKIAYKTVXHYPOF7MN7OG"
-#aws_secret_key = "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"
+aws_access_key = ""
+aws_secret_key = ""
+#aws_access_key = ""
+#aws_secret_key = ""
 aws_user_arn = "arn:aws:iam::357396431244:user/terraform_dev_user"
 aws_role_arn = "arn:aws:iam::357396431244:role/tf_dev_automation"
 aws_region = "us-east-2"

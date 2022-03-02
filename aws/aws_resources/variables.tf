@@ -727,3 +727,13 @@ variable "create_kms_keys" {
   default = "true"
   description = "Determine whether KMS keys are required to create"
 }
+variable "s3_bucket_name_access_logs" {
+  type = string
+  description = "The name of s3 bucket used to access logs of s3 buckets"
+  default = ""
+}
+variable "enable_s3_access_logging" {
+  type = bool
+  default = "true"
+  description = "Determine whether s3 access logging is required"
+}
