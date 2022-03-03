@@ -1,16 +1,16 @@
 #Creating an application cluster VPC
-module "app_vpc" {
+module "vpc" {
   count = var.create_vpc ? 1 : 0
   create_vpc      = true
   source          = "terraform-aws-modules/vpc/aws"
-  name            = "${local.std_name}-app-vpc"
-  cidr            = var.app_vpc_cidr
-  azs             = var.app_availability_zones
-  private_subnets = var.app_private_subnets
-  public_subnets  = var.app_public_subnets
+  name            = "${local.std_name}-vpc"
+  cidr            = var.vpc_cidr
+  azs             = var.availability_zones
+  private_subnets = var.private_subnets
+  public_subnets  = var.public_subnets
 
   enable_nat_gateway     = true
-  single_nat_gateway     = var.aws_env == "prod" ? false : true #set to 1 for dev
+  single_nat_gateway     = false
   one_nat_gateway_per_az = true
   enable_dns_hostnames   = true
   enable_dns_support     = true
@@ -18,7 +18,7 @@ module "app_vpc" {
   enable_ipv6            = false
 
   manage_default_network_acl    = false
-  default_security_group_name   = "${local.std_name}-app-vpc-default-sg"
+  default_security_group_name   = "${local.std_name}-vpc-default-sg"
   manage_default_security_group = true
   manage_default_route_table    = true
   public_dedicated_network_acl  = false
@@ -26,21 +26,19 @@ module "app_vpc" {
 
   default_network_acl_ingress    = var.default_nacl_rules["inbound"]
   default_network_acl_egress     = var.default_nacl_rules["outbound"]
-  public_inbound_acl_rules       = var.app_public_nacl_rules["inbound"]
-  public_outbound_acl_rules      = var.app_public_nacl_rules["outbound"]
-  private_inbound_acl_rules      = var.app_private_nacl_rules["inbound"]
-  private_outbound_acl_rules     = var.app_private_nacl_rules["outbound"]
+  public_inbound_acl_rules       = var.public_nacl_rules["inbound"]
+  public_outbound_acl_rules      = var.public_nacl_rules["outbound"]
+  private_inbound_acl_rules      = var.private_nacl_rules["inbound"]
+  private_outbound_acl_rules     = var.private_nacl_rules["outbound"]
   default_security_group_egress  = local.def_sg_egress
-  default_security_group_ingress = local.app_def_sg_ingress
+  default_security_group_ingress = local.def_sg_ingress
 
   enable_flow_log                      = true
   flow_log_destination_type            = "cloud-watch-logs"
-  #flow_log_destination_arn             = aws_cloudwatch_log_group.ct_cw_logs[0].arn
-  #flow_log_cloudwatch_iam_role_arn     = aws_iam_role.vpc_flow_log_cloudwatch[0].arn
   flow_log_cloudwatch_log_group_kms_key_id = var.create_kms_keys ? aws_kms_key.vpc_flowlogs_kms_key[0].arn : var.vpc_flowlogs_kms_key_arn
-  flow_log_cloudwatch_log_group_name_prefix = "/aws/app-vpc-flow-log/"
+  flow_log_cloudwatch_log_group_name_prefix = "/aws/vpc-flow-log/"
   flow_log_cloudwatch_log_group_retention_in_days = var.cw_logs_retention_period
-  vpc_flow_log_tags = merge(local.tags, { name = "app-vpc-flow-logs-cw-logs"})
+  vpc_flow_log_tags = merge(local.tags, { name = "vpc-flow-logs-cw-logs"})
   create_flow_log_cloudwatch_log_group = true
   create_flow_log_cloudwatch_iam_role  = true
   flow_log_max_aggregation_interval    = 60
@@ -48,123 +46,20 @@ module "app_vpc" {
   private_route_table_tags       = merge(local.tags, { tier = "private"})
   public_route_table_tags        = merge(local.tags, { tier = "public" })
   default_route_table_tags       = merge(local.tags, { DefaultRouteTable = true })
-  tags                           = merge(local.tags, { "cluster_type" = "application" })
-  vpc_tags                       = merge(local.tags, { "cluster_type" = "application" })
+  tags                           = merge(local.tags, { "cluster_type" = "both" })
+  vpc_tags                       = merge(local.tags, { "cluster_type" = "both" })
   public_subnet_tags = merge(local.tags, {
     "kubernetes.io/cluster/${local.app_cluster_name}" = "shared"
     "kubernetes.io/role/elb"                          = "1"
-    "cluster_type"                                    = "application"
+    "cluster_type"                                    = "both"
     "tier"                                            = "public"
   })
   private_subnet_tags = merge(local.tags, {
     "kubernetes.io/cluster/${local.app_cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"                 = "1"
-    "cluster_type"                                    = "application"
+    "cluster_type"                                    = "both"
     "tier"                                            = "private"
   })
-}
-#Creating an blockchain cluster VPC
-module "blk_vpc" {
-  count = var.create_vpc ? 1 : 0 
-  create_vpc      = true
-  source          = "terraform-aws-modules/vpc/aws"
-  name            = "${local.std_name}-blk-vpc"
-  cidr            = var.blk_vpc_cidr
-  azs             = var.blk_availability_zones
-  private_subnets = var.blk_private_subnets
-  public_subnets  = var.blk_public_subnets
-
-  enable_nat_gateway     = true
-  single_nat_gateway     = var.aws_env == "prod" ? false : true #set to 1 for dev
-  one_nat_gateway_per_az = true
-  enable_dns_hostnames   = true
-  enable_dns_support     = true
-  enable_dhcp_options    = true
-  enable_ipv6            = false
-
-  manage_default_network_acl    = false
-  default_security_group_name   = "${local.std_name}-blk-vpc-default-sg"
-  manage_default_security_group = true
-  manage_default_route_table    = true
-  public_dedicated_network_acl  = false
-  private_dedicated_network_acl = false
-
-  default_network_acl_ingress    = var.default_nacl_rules["inbound"]
-  default_network_acl_egress     = var.default_nacl_rules["outbound"]
-  public_inbound_acl_rules       = var.blk_public_nacl_rules["inbound"]
-  public_outbound_acl_rules      = var.blk_public_nacl_rules["outbound"]
-  private_inbound_acl_rules      = var.blk_private_nacl_rules["inbound"]
-  private_outbound_acl_rules     = var.blk_private_nacl_rules["outbound"]
-  default_security_group_egress  = local.def_sg_egress
-  default_security_group_ingress = local.blk_def_sg_ingress
-
-  enable_flow_log                      = true
-  flow_log_destination_type            = "cloud-watch-logs"
-  flow_log_cloudwatch_log_group_kms_key_id = var.create_kms_keys ? aws_kms_key.vpc_flowlogs_kms_key[0].arn : var.vpc_flowlogs_kms_key_arn
-  flow_log_cloudwatch_log_group_name_prefix = "/aws/blk-vpc-flow-log/"
-  flow_log_cloudwatch_log_group_retention_in_days = var.cw_logs_retention_period
-  vpc_flow_log_tags = merge(local.tags, { name = "blk-vpc-flow-logs-cw-logs"})
-  create_flow_log_cloudwatch_log_group = true
-  create_flow_log_cloudwatch_iam_role  = true
-  flow_log_max_aggregation_interval    = 60
-
-  default_route_table_tags       = merge(local.tags, { DefaultRouteTable = true })
-  private_route_table_tags       = merge(local.tags, { tier = "private"})
-  public_route_table_tags        = merge(local.tags, { tier = "public" })
-  tags                           = merge(local.tags, { "cluster_type" = "blockchain" })
-  vpc_tags                       = merge(local.tags, { "cluster_type" = "blockchain" })
-  public_subnet_tags = merge(local.tags, {
-    "kubernetes.io/cluster/${local.blk_cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                          = "1"
-    "cluster_type"                                    = "blockchain"
-    "tier"                                            = "public"
-  })
-  private_subnet_tags = merge(local.tags, {
-    "kubernetes.io/cluster/${local.blk_cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"                 = "1"
-    "cluster_type"                                    = "blockchain"
-    "tier"                                            = "private"
-  })
-}
-#setting up transit gateway to use with app_vpc and blk_vpc
-module "transit_gateway" {
-  count = var.create_vpc ? 1 : 0
-  depends_on                            = [module.app_vpc, module.blk_vpc]
-  source                                = "./modules/transit-gateway"
-  create_tgw                            = true
-  share_tgw                             = false
-  name                                  = "${local.std_name}-central-tgw"
-  amazon_side_asn                       = var.tgw_amazon_side_asn
-  description                           = "The core tgw in the environment to which app_vpc and blk_vpc will connect"
-  enable_auto_accept_shared_attachments = true
-  enable_vpn_ecmp_support               = true
-  vpc_attachments = {
-    app_vpc = {
-      vpc_id                                          = module.app_vpc[0].vpc_id
-      vpc_route_table_ids                             = module.app_vpc[0].private_route_table_ids
-      tgw_destination_cidr                            = local.app_tgw_destination_cidr
-      subnet_ids                                      = module.app_vpc[0].private_subnets
-      dns_support                                     = true
-      transit_gateway_default_route_table_association = true
-      transit_gateway_default_route_table_propagation = true
-      tgw_routes                                      = local.app_tgw_routes
-    },
-    blk_vpc = {
-      vpc_id                                          = module.blk_vpc[0].vpc_id
-      vpc_route_table_ids                             = module.blk_vpc[0].private_route_table_ids
-      tgw_destination_cidr                            = local.blk_tgw_destination_cidr
-      subnet_ids                                      = module.blk_vpc[0].private_subnets
-      dns_support                                     = true
-      transit_gateway_default_route_table_association = true
-      transit_gateway_default_route_table_propagation = true
-      tgw_routes                                      = local.blk_tgw_routes
-    }
-  }
-  tags                         = merge(local.tags, { "cluster_type" = "both" })
-  tgw_default_route_table_tags = merge(local.tags, { "cluster_type" = "both" })
-  tgw_route_table_tags         = merge(local.tags, { "cluster_type" = "both" })
-  tgw_tags                     = merge(local.tags, { "cluster_type" = "both" })
-  tgw_vpc_attachment_tags      = merge(local.tags, { "cluster_type" = "both" })
 }
 #VPC flow logging related
 resource "aws_kms_key" "vpc_flowlogs_kms_key" {
