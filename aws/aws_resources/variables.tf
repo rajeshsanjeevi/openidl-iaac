@@ -715,12 +715,17 @@ variable "s3_kms_key_arn" {
 variable "eks_kms_key_arn" {
   type = string
   default = ""
-  description = "KMS Key arn to be used for EKS related cloudwatch logs"
+  description = "KMS Key arn to be used for EKS related cloudwatch logs group"
 }
 variable "cloudtrail_cwlogs_kms_key_arn" {
   type = string
   default = ""
-  description = "KMS Key arn to be used for EKS related cloudwatch logs"
+  description = "KMS Key arn to be used for EKS related cloudwatch logs group"
+}
+variable "vpc_flowlogs_kms_key_arn" {
+  type = string
+  default = ""
+  description = "KMS Key arn to be used for VPC flow logs related cloudwatch logs group"
 }
 variable "create_kms_keys" {
   type = bool

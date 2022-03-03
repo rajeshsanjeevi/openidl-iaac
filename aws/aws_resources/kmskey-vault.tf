@@ -10,49 +10,43 @@ resource "aws_kms_key" "vault_kms_key" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Sid" : "AllowaccessforKeyAdministrators",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : ["${var.aws_role_arn}"]
-        },
-        "Action" : [
-          "kms:Create*",
-          "kms:Describe*",
-          "kms:Enable*",
-          "kms:List*",
-          "kms:Put*",
-          "kms:Update*",
-          "kms:Revoke*",
-          "kms:Disable*",
-          "kms:Get*",
-          "kms:Delete*",
-          "kms:TagResource",
-          "kms:UntagResource",
-          "kms:ScheduleKeyDeletion",
-          "kms:CancelKeyDeletion",
-        ],
-        "Resource" : "*"
-      },
-      {
-            "Sid": "Allowuseofthekey",
+            "Sid": "Enable Read Permissions",
             "Effect": "Allow",
             "Principal": {
-                "AWS": ["${var.aws_role_arn}", aws_iam_role.git_actions_admin_role.arn, aws_iam_role.eks_nodegroup_role["app-node-group"].arn, aws_iam_role.eks_nodegroup_role["blk-node-group"].arn ]
+                "AWS": "arn:aws:iam::${var.aws_account_number}:root"
             },
-            "Action": [
-                "kms:Encrypt",
-                "kms:Decrypt",
-                "kms:ReEncrypt*",
-                "kms:GenerateDataKey*",
-                "kms:DescribeKey"
-            ],
+            "Action": ["kms:List*", "kms:Describe*", "kms:Get*"],
             "Resource": "*"
       },
       {
-        "Sid" : "Allowattachmentofpersistentresources",
+          "Sid" : "Allow access for Key Administrators",
+          "Effect" : "Allow",
+          "Principal" : {
+            "AWS" : ["${var.aws_role_arn}"]
+          },
+          "Action" : "*",
+          "Resource" : "*"
+      },
+      {
+          "Sid": "Allow use of the key",
+          "Effect": "Allow",
+          "Principal": {
+            "AWS": ["${var.aws_role_arn}", aws_iam_role.baf_user_role.arn, aws_iam_role.git_actions_admin_role.arn, aws_iam_role.eks_nodegroup_role["app-node-group"].arn, aws_iam_role.eks_nodegroup_role["blk-node-group"].arn ]
+          },
+          "Action": [
+              "kms:Encrypt",
+              "kms:Decrypt",
+              "kms:ReEncrypt*",
+              "kms:GenerateDataKey*",
+              "kms:DescribeKey"
+          ],
+          "Resource": "*"
+      },
+      {
+        "Sid" : "Allow attachment of persistent resources",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : ["${var.aws_role_arn}", aws_iam_role.git_actions_admin_role.arn, aws_iam_role.eks_nodegroup_role["app-node-group"].arn, aws_iam_role.eks_nodegroup_role["blk-node-group"].arn ]
+          "AWS" : ["${var.aws_role_arn}", aws_iam_role.baf_user_role.arn, aws_iam_role.git_actions_admin_role.arn, aws_iam_role.eks_nodegroup_role["app-node-group"].arn, aws_iam_role.eks_nodegroup_role["blk-node-group"].arn ]
         },
         "Action" : [
           "kms:CreateGrant",

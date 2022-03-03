@@ -1,6 +1,7 @@
 #Creating an application cluster VPC
 module "app_vpc" {
-  create_vpc      = var.create_vpc ? true : false
+  count = var.create_vpc ? 1 : 0
+  create_vpc      = true
   source          = "terraform-aws-modules/vpc/aws"
   name            = "${local.std_name}-app-vpc"
   cidr            = var.app_vpc_cidr
@@ -31,7 +32,15 @@ module "app_vpc" {
   private_outbound_acl_rules     = var.app_private_nacl_rules["outbound"]
   default_security_group_egress  = local.def_sg_egress
   default_security_group_ingress = local.app_def_sg_ingress
+
   enable_flow_log                      = true
+  flow_log_destination_type            = "cloud-watch-logs"
+  #flow_log_destination_arn             = aws_cloudwatch_log_group.ct_cw_logs[0].arn
+  #flow_log_cloudwatch_iam_role_arn     = aws_iam_role.vpc_flow_log_cloudwatch[0].arn
+  flow_log_cloudwatch_log_group_kms_key_id = var.create_kms_keys ? aws_kms_key.vpc_flowlogs_kms_key[0].arn : var.vpc_flowlogs_kms_key_arn
+  flow_log_cloudwatch_log_group_name_prefix = "/aws/app-vpc-flow-log/"
+  flow_log_cloudwatch_log_group_retention_in_days = var.cw_logs_retention_period
+  vpc_flow_log_tags = merge(local.tags, { name = "app-vpc-flow-logs-cw-logs"})
   create_flow_log_cloudwatch_log_group = true
   create_flow_log_cloudwatch_iam_role  = true
   flow_log_max_aggregation_interval    = 60
@@ -56,7 +65,8 @@ module "app_vpc" {
 }
 #Creating an blockchain cluster VPC
 module "blk_vpc" {
-  create_vpc      = var.create_vpc ? true : false
+  count = var.create_vpc ? 1 : 0 
+  create_vpc      = true
   source          = "terraform-aws-modules/vpc/aws"
   name            = "${local.std_name}-blk-vpc"
   cidr            = var.blk_vpc_cidr
@@ -87,11 +97,16 @@ module "blk_vpc" {
   private_outbound_acl_rules     = var.blk_private_nacl_rules["outbound"]
   default_security_group_egress  = local.def_sg_egress
   default_security_group_ingress = local.blk_def_sg_ingress
+
   enable_flow_log                      = true
+  flow_log_destination_type            = "cloud-watch-logs"
+  flow_log_cloudwatch_log_group_kms_key_id = var.create_kms_keys ? aws_kms_key.vpc_flowlogs_kms_key[0].arn : var.vpc_flowlogs_kms_key_arn
+  flow_log_cloudwatch_log_group_name_prefix = "/aws/blk-vpc-flow-log/"
+  flow_log_cloudwatch_log_group_retention_in_days = var.cw_logs_retention_period
+  vpc_flow_log_tags = merge(local.tags, { name = "blk-vpc-flow-logs-cw-logs"})
   create_flow_log_cloudwatch_log_group = true
   create_flow_log_cloudwatch_iam_role  = true
   flow_log_max_aggregation_interval    = 60
-
 
   default_route_table_tags       = merge(local.tags, { DefaultRouteTable = true })
   private_route_table_tags       = merge(local.tags, { tier = "private"})
@@ -125,20 +140,20 @@ module "transit_gateway" {
   enable_vpn_ecmp_support               = true
   vpc_attachments = {
     app_vpc = {
-      vpc_id                                          = module.app_vpc.vpc_id
-      vpc_route_table_ids                             = module.app_vpc.private_route_table_ids
+      vpc_id                                          = module.app_vpc[0].vpc_id
+      vpc_route_table_ids                             = module.app_vpc[0].private_route_table_ids
       tgw_destination_cidr                            = local.app_tgw_destination_cidr
-      subnet_ids                                      = module.app_vpc.private_subnets
+      subnet_ids                                      = module.app_vpc[0].private_subnets
       dns_support                                     = true
       transit_gateway_default_route_table_association = true
       transit_gateway_default_route_table_propagation = true
       tgw_routes                                      = local.app_tgw_routes
     },
     blk_vpc = {
-      vpc_id                                          = module.blk_vpc.vpc_id
-      vpc_route_table_ids                             = module.blk_vpc.private_route_table_ids
+      vpc_id                                          = module.blk_vpc[0].vpc_id
+      vpc_route_table_ids                             = module.blk_vpc[0].private_route_table_ids
       tgw_destination_cidr                            = local.blk_tgw_destination_cidr
-      subnet_ids                                      = module.blk_vpc.private_subnets
+      subnet_ids                                      = module.blk_vpc[0].private_subnets
       dns_support                                     = true
       transit_gateway_default_route_table_association = true
       transit_gateway_default_route_table_propagation = true
@@ -150,5 +165,100 @@ module "transit_gateway" {
   tgw_route_table_tags         = merge(local.tags, { "cluster_type" = "both" })
   tgw_tags                     = merge(local.tags, { "cluster_type" = "both" })
   tgw_vpc_attachment_tags      = merge(local.tags, { "cluster_type" = "both" })
+}
+#VPC flow logging related
+resource "aws_kms_key" "vpc_flowlogs_kms_key" {
+  count = var.create_vpc && var.create_kms_keys ? 1 : 0
+  description             = "The KMS key for ${var.org_name}-${var.aws_env}-vpc-flowlogs-key"
+  deletion_window_in_days = 30
+  key_usage               = "ENCRYPT_DECRYPT"
+  enable_key_rotation     = true
+  policy = jsonencode({
+    "Id" : "${local.std_name}-vpc-flowlogs-key",
+    "Version" : "2012-10-17",
+    "Statement" : [
+        {
+            "Sid": "Enable Read Permissions",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::${var.aws_account_number}:root"
+            },
+            "Action": ["kms:List*", "kms:Describe*", "kms:Get*"],
+            "Resource": "*"
+      },
+        {
+            "Sid": "Allow use of the key",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": ["${var.aws_role_arn}"]
+            },
+            "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid" : "Allow access for Key Administrators",
+            "Effect" : "Allow",
+            "Principal" : {
+              "AWS" : ["${var.aws_role_arn}"]
+        },
+            "Action" : "*"
+            "Resource" : "*"
+      },
+      {
+            "Sid" : "Allow attachment of persistent resources",
+            "Effect" : "Allow",
+            "Principal" : {
+                "AWS" : ["${var.aws_role_arn}"]
+            },
+            "Action" : [
+                "kms:CreateGrant",
+                "kms:ListGrants",
+                "kms:RevokeGrant"
+            ],
+            "Resource" : "*",
+            "Condition" : {
+              "Bool" : {
+                  "kms:GrantIsForAWSResource" : "true"
+              }
+            }
+      },
+      {
+          "Effect" : "Allow",
+          "Principal" : {
+              "Service" : ["logs.amazonaws.com"]
+          },
+          "Action" : [
+              "kms:Encrypt*",
+              "kms:Decrypt*",
+              "kms:ReEncrypt*",
+              "kms:GenerateDataKey*",
+              "kms:Describe*"
+            ],
+          "Resource" : "*",
+          "Condition" : {
+              "ArnLike" : {
+                  "kms:EncryptionContext:aws:logs:arn": "arn:aws:logs:${var.aws_region}:${var.aws_account_number}:*"
+              }
+          }
+      }
+    ]
+  })
+  tags = merge(
+    local.tags,
+    {
+      "name"         = "${local.std_name}-vpc-flowlogs-key"
+      "cluster_type" = "both"
+  }, )
+}
+resource "aws_kms_alias" "vpc_flow_logs_kms_key_alias" {
+  count = var.create_vpc && var.create_kms_keys ? 1 : 0
+  name          = "alias/${local.std_name}-vpc-flow-logs-key"
+  target_key_id = aws_kms_key.vpc_flowlogs_kms_key[0].id
 }
 

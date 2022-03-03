@@ -62,10 +62,12 @@ data "aws_eks_cluster_auth" "blk_eks_cluster_auth" {
 }
 #reading existing VPC (app vpc)
 data "aws_vpc" "app_vpc" {
+  count = var.create_vpc ? 0 : 1
   id = var.app_vpc_id
 }
 #reading existing VPC (blk vpc)
 data "aws_vpc" "blk_vpc" {
+  count = var.create_vpc ? 0 : 1
   id = var.blk_vpc_id
 }
 #reading availability zones
@@ -74,7 +76,7 @@ data "aws_availability_zones" "app_vpc_azs" {
 }
 #reading application cluster public subnets
 data "aws_subnet_ids" "app_vpc_public_subnets" {
-  vpc_id     = var.create_vpc ? module.app_vpc.vpc_id : data.aws_vpc.app_vpc.id
+  vpc_id     = var.create_vpc ? module.app_vpc[0].vpc_id : data.aws_vpc.app_vpc[0].id
  # filter {
  #   name   = "cidr"
  #   values = var.app_public_subnets
@@ -85,7 +87,7 @@ data "aws_subnet_ids" "app_vpc_public_subnets" {
 }
 #reading application cluster private subnets
 data "aws_subnet_ids" "app_vpc_private_subnets" {
-  vpc_id     = var.create_vpc ? module.app_vpc.vpc_id : data.aws_vpc.app_vpc.id
+  vpc_id     = var.create_vpc ? module.app_vpc[0].vpc_id : data.aws_vpc.app_vpc[0].id
  # filter {
  #   name   = "cidr"
  #   values = var.app_private_subnets
@@ -96,7 +98,7 @@ data "aws_subnet_ids" "app_vpc_private_subnets" {
 }
 #reading blockchain cluster public subnets
 data "aws_subnet_ids" "blk_vpc_public_subnets" {
-  vpc_id     = var.create_vpc ? module.blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+  vpc_id     = var.create_vpc ? module.blk_vpc[0].vpc_id : data.aws_vpc.blk_vpc[0].id
   #filter {
   #  name   = "cidr"
   #  values = var.blk_public_subnets
@@ -107,7 +109,7 @@ data "aws_subnet_ids" "blk_vpc_public_subnets" {
 }
 #reading blockchain cluster private subnets
 data "aws_subnet_ids" "blk_vpc_private_subnets" {
-  vpc_id     = var.create_vpc ? module.blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+  vpc_id     = var.create_vpc ? module.blk_vpc[0].vpc_id : data.aws_vpc.blk_vpc[0].id
  # filter {
  #   name   = "cidr"
  #   values = var.blk_private_subnets
@@ -159,7 +161,17 @@ data "aws_iam_policy_document" "cloudtrail_cloudwatch_logs" {
 #iam policy for KMS related to cloudtrail
 data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
   statement {
-    sid     = "Enable IAM User Permissions"
+    sid     = "Enable Read Permissions"
+    effect  = "Allow"
+    actions = ["kms:List*", "kms:Describe*", "kms:Get*"]
+    principals {
+      type = "AWS"
+      identifiers = ["arn:aws:iam::${var.aws_account_number}:root"]
+    }
+    resources = ["*"]
+  }
+  statement {
+    sid     = "Enable IAM User Administrator Permissions"
     effect  = "Allow"
     actions = ["kms:*"]
     principals {
@@ -222,7 +234,7 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
     actions = ["kms:CreateAlias"]
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
+      identifiers = ["${var.aws_role_arn}"]
     }
     condition {
       test     = "StringEquals"

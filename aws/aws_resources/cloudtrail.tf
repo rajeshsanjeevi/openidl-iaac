@@ -158,6 +158,34 @@ resource "aws_s3_bucket_policy" "ct_cw_s3_bucket_policy" {
             }
         },
         {
+			"Sid": "AllowRestrictedUsers",
+			"Effect": "Allow",
+			"Principal": {
+              "AWS": [
+                "${var.aws_role_arn}",
+                "arn:aws:iam::${var.aws_account_number}:root",
+                "arn:aws:sts::${var.aws_account_number}:assumed-role/${local.terraform_role_name[1]}/terraform"
+              ]
+            },
+			"Action": "*",
+			"Resource": [
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_cloudtrail}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_cloudtrail}/*"
+            ]
+		},
+        {
+            "Sid": "AllowRestrictedServices",
+			"Effect": "Allow",
+			"Principal": {
+                "Service": ["cloudtrail.amazonaws.com", "logs.amazonaws.com"]
+            },
+			"Action": "*",
+			"Resource": [
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_cloudtrail}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_cloudtrail}/*"
+            ]
+        },
+      /*  {
 			"Sid": "DenyOthers",
 			"Effect": "Deny",
 			"NotPrincipal": {
@@ -184,7 +212,7 @@ resource "aws_s3_bucket_policy" "ct_cw_s3_bucket_policy" {
                 "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_cloudtrail}",
                 "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_cloudtrail}/*"
             ]
-        }
+        }*/
     ]
   })
 }

@@ -3,7 +3,7 @@ module "app_eks_control_plane_sg" {
   #for_each = {"app-eks-sg" = "aais_app_vpc", "blk-eks-sg" = "aais_blk_vpc"}
   source                                                   = "terraform-aws-modules/security-group/aws"
   name                                                     = "${local.std_name}-app-eks-ctrl-plane-sg"
-  vpc_id                                                   = var.create_vpc ? module.app_vpc.vpc_id : data.aws_vpc.app_vpc.id
+  vpc_id                                                   = var.create_vpc ? module.app_vpc[0].vpc_id : data.aws_vpc.app_vpc[0].id
   egress_rules                                             = ["all-all"]
   number_of_computed_ingress_with_source_security_group_id = var.create_bastion_host ? 4 : 2
   computed_ingress_with_source_security_group_id = local.app_eks_control_plane_sg_computed_ingress
@@ -16,7 +16,7 @@ module "blk_eks_control_plane_sg" {
   #for_each = {"app-eks-sg" = "aais_app_vpc", "blk-eks-sg" = "aais_blk_vpc"}
   source                                                   = "terraform-aws-modules/security-group/aws"
   name                                                     = "${local.std_name}-blk-eks-ctrl-plane-sg"
-  vpc_id                                                   = var.create_vpc ? module.blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+  vpc_id                                                   = var.create_vpc ? module.blk_vpc[0].vpc_id : data.aws_vpc.blk_vpc[0].id
   egress_rules                                             = ["all-all"]
   number_of_computed_ingress_with_source_security_group_id = var.create_bastion_host ? 4 : 2
   computed_ingress_with_source_security_group_id = local.blk_eks_control_plane_sg_computed_ingress
@@ -28,8 +28,8 @@ module "blk_eks_control_plane_sg" {
 module "app_eks_worker_node_group_sg" {
   source                                                   = "terraform-aws-modules/security-group/aws"
   name                                                     = "${local.std_name}-app-eks-worker-node-group-sg"
-  vpc_id                                                   = var.create_vpc ? module.app_vpc.vpc_id : data.aws_vpc.app_vpc.id
-  ingress_cidr_blocks                                      = var.create_vpc ? [var.app_vpc_cidr] : [data.aws_vpc.app_vpc.cidr_block]
+  vpc_id                                                   = var.create_vpc ? module.app_vpc[0].vpc_id : data.aws_vpc.app_vpc[0].id
+  ingress_cidr_blocks                                      = var.create_vpc ? [var.app_vpc_cidr] : [data.aws_vpc.app_vpc[0].cidr_block]
   ingress_rules                                            = ["ssh-tcp", "https-443-tcp", "http-80-tcp"]
   number_of_computed_ingress_with_source_security_group_id = var.create_bastion_host ? 7 : 6
   egress_rules                                             = ["all-all"]
@@ -43,8 +43,8 @@ module "app_eks_worker_node_group_sg" {
 module "blk_eks_worker_node_group_sg" {
   source                                                   = "terraform-aws-modules/security-group/aws"
   name                                                     = "${local.std_name}-blk-eks-worker-node-group-sg"
-  vpc_id                                                   = var.create_vpc ? module.blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
-  ingress_cidr_blocks                                      = var.create_vpc ? [var.blk_vpc_cidr] : [data.aws_vpc.blk_vpc.cidr_block]
+  vpc_id                                                   = var.create_vpc ? module.blk_vpc[0].vpc_id : data.aws_vpc.blk_vpc[0].id
+  ingress_cidr_blocks                                      = var.create_vpc ? [var.blk_vpc_cidr] : [data.aws_vpc.blk_vpc[0].cidr_block]
   ingress_rules                                            = ["ssh-tcp", "https-443-tcp", "http-80-tcp"]
   number_of_computed_ingress_with_source_security_group_id = var.create_bastion_host ? 7 : 6
   egress_rules                                             = ["all-all"]
@@ -61,7 +61,7 @@ module "app_eks_workers_app_traffic_sg" {
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-app-eks-workers-app-traffic-sg"
   description              = "Security group associated app eks workers group for app specific traffic"
-  vpc_id                   = var.create_vpc ? module.app_vpc.vpc_id : data.aws_vpc.app_vpc.id
+  vpc_id                   = var.create_vpc ? module.app_vpc[0].vpc_id : data.aws_vpc.app_vpc[0].id
   ingress_with_cidr_blocks = var.app_eks_workers_app_sg_ingress
   egress_with_cidr_blocks  = var.app_eks_workers_app_sg_egress
   tags = merge(
@@ -76,7 +76,7 @@ module "blk_eks_workers_app_traffic_sg" {
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-blk-eks-workers-app-traffic-sg"
   description              = "Security group associated blk eks workers group for app specific traffic"
-  vpc_id                   = var.create_vpc ? module.blk_vpc.vpc_id : data.aws_vpc.blk_vpc.id
+  vpc_id                   = var.create_vpc ? module.blk_vpc[0].vpc_id : data.aws_vpc.blk_vpc[0].id
   ingress_with_cidr_blocks = var.blk_eks_workers_app_sg_ingress
   egress_with_cidr_blocks  = var.blk_eks_workers_app_sg_egress
   tags = merge(
