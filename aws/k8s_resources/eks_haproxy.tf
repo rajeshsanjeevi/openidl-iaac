@@ -16,7 +16,7 @@ resource "helm_release" "blk_haproxy" {
   depends_on = [data.aws_eks_cluster.blk_eks_cluster, data.aws_eks_cluster_auth.blk_eks_cluster_auth, kubernetes_config_map.blk_config_map]
   provider = helm.blk_cluster
   cleanup_on_fail = true
-  name = "haproxy-ingress"
+  name = "haproxy-ingress-1"
   chart ="resources/haproxy-blk-cluster"
   timeout = 600
   force_update = true

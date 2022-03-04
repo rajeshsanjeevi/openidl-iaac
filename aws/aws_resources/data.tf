@@ -60,76 +60,41 @@ data "aws_eks_cluster_auth" "blk_eks_cluster_auth" {
   depends_on = [data.aws_eks_cluster.blk_eks_cluster]
   name       = module.blk_eks_cluster.cluster_id
 }
-#reading existing VPC (app vpc)
-data "aws_vpc" "app_vpc" {
+#reading existing VPC
+data "aws_vpc" "vpc" {
   count = var.create_vpc ? 0 : 1
-  id = var.app_vpc_id
-}
-#reading existing VPC (blk vpc)
-data "aws_vpc" "blk_vpc" {
-  count = var.create_vpc ? 0 : 1
-  id = var.blk_vpc_id
+  id = var.vpc_id
 }
 #reading availability zones
-data "aws_availability_zones" "app_vpc_azs" {
+data "aws_availability_zones" "vpc_azs" {
   state = "available"
 }
 #reading application cluster public subnets
-data "aws_subnet_ids" "app_vpc_public_subnets" {
-  vpc_id     = var.create_vpc ? module.app_vpc[0].vpc_id : data.aws_vpc.app_vpc[0].id
+data "aws_subnet_ids" "vpc_public_subnets" {
+  vpc_id     = var.create_vpc ? module.vpc[0].vpc_id : data.aws_vpc.vpc[0].id
  # filter {
  #   name   = "cidr"
- #   values = var.app_public_subnets
+ #   values = var.public_subnets
  # }
   tags = {
     tier = "public"
   }
 }
 #reading application cluster private subnets
-data "aws_subnet_ids" "app_vpc_private_subnets" {
-  vpc_id     = var.create_vpc ? module.app_vpc[0].vpc_id : data.aws_vpc.app_vpc[0].id
+data "aws_subnet_ids" "vpc_private_subnets" {
+  vpc_id     = var.create_vpc ? module.vpc[0].vpc_id : data.aws_vpc.vpc[0].id
  # filter {
  #   name   = "cidr"
- #   values = var.app_private_subnets
- # }
-  tags = {
-    tier = "private"
-  }
-}
-#reading blockchain cluster public subnets
-data "aws_subnet_ids" "blk_vpc_public_subnets" {
-  vpc_id     = var.create_vpc ? module.blk_vpc[0].vpc_id : data.aws_vpc.blk_vpc[0].id
-  #filter {
-  #  name   = "cidr"
-  #  values = var.blk_public_subnets
-  #}
-  tags = {
-    tier = "public"
-  }
-}
-#reading blockchain cluster private subnets
-data "aws_subnet_ids" "blk_vpc_private_subnets" {
-  vpc_id     = var.create_vpc ? module.blk_vpc[0].vpc_id : data.aws_vpc.blk_vpc[0].id
- # filter {
- #   name   = "cidr"
- #   values = var.blk_private_subnets
+ #   values = var.private_subnets
  # }
   tags = {
     tier = "private"
   }
 }
 #reading private route tables
-data "aws_route_tables" "app_vpc_private_rt" {
+data "aws_route_tables" "vpc_private_rt" {
   count = var.create_vpc ? 0 : 1
-  vpc_id = var.app_vpc_id
-  filter {
-    name = "tag:tier"
-    values = ["private"]
-  }
-}
-data "aws_route_tables" "blk_vpc_private_rt" {
-  count = var.create_vpc ? 0 : 1
-  vpc_id = var.blk_vpc_id
+  vpc_id = var.vpc_id
   filter {
     name = "tag:tier"
     values = ["private"]

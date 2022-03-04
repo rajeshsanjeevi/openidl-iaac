@@ -7,7 +7,7 @@ resource "aws_iam_instance_profile" "eks_instance_profile" {
 }
 #ssh key pair for application cluster worker nodes (eks)
 module "app_eks_worker_nodes_key_pair_external" {
-  #depends_on = [module.app_vpc]
+  #depends_on = [module.vpc]
   source     = "terraform-aws-modules/key-pair/aws"
   key_name   = "${local.std_name}-app-eks-worker-nodes-external"
   public_key = var.app_eks_worker_nodes_ssh_key
@@ -27,8 +27,8 @@ module "app_eks_cluster" {
   cluster_name                                       = local.app_cluster_name
   enable_irsa                                        = true
   cluster_version                                    = var.app_cluster_version
-  subnets                                            = var.create_vpc ? module.app_vpc[0].private_subnets : data.aws_subnet_ids.app_vpc_private_subnets.ids
-  vpc_id                                             = var.create_vpc ? module.app_vpc[0].vpc_id : data.aws_vpc.app_vpc[0].id
+  subnets                                            = var.create_vpc ? module.vpc[0].private_subnets : data.aws_subnet_ids.vpc_private_subnets.ids
+  vpc_id                                             = var.create_vpc ? module.vpc[0].vpc_id : data.aws_vpc.vpc[0].id
   write_kubeconfig                                   = false
   #cluster_service_ipv4_cidr                          = var.app_cluster_service_ipv4_cidr
   kubeconfig_output_path                             = var.kubeconfig_output_path
@@ -37,7 +37,7 @@ module "app_eks_cluster" {
   cluster_create_endpoint_private_access_sg_rule     = true
   cluster_create_security_group                      = false
   cluster_security_group_id                          = module.app_eks_control_plane_sg.security_group_id
-  cluster_endpoint_private_access_cidrs              = var.create_vpc ? [var.app_vpc_cidr] : [data.aws_vpc.app_vpc[0].cidr_block]
+  cluster_endpoint_private_access_cidrs              = var.create_vpc ? [var.vpc_cidr] : [data.aws_vpc.vpc[0].cidr_block]
   cluster_endpoint_public_access_cidrs               = var.cluster_endpoint_public_access_cidrs
   cluster_create_timeout                             = var.cluster_create_timeout
   wait_for_cluster_timeout                           = var.wait_for_cluster_timeout
@@ -62,7 +62,7 @@ module "app_eks_cluster" {
   worker_groups = [
     {
       name                          = "${local.std_name}-app-worker-group-1"
-      instance_type                 = var.eks_worker_instance_type
+      instance_type                 = var.app_eks_worker_instance_type
       ami_id                        = var.app_worker_nodes_ami_id == "" ? data.aws_ami.eks_app_worker_nodes_ami.id : var.app_worker_nodes_ami_id
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
@@ -76,7 +76,7 @@ module "app_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.app_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.app_vpc[0].private_subnets[0] : data.aws_subnet_ids.app_vpc_private_subnets.id
+      subnet_id                     = var.create_vpc ? module.vpc[0].private_subnets[0] : data.aws_subnet_ids.vpc_private_subnets.id
       #target_group_arns             = module.app_eks_nlb.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -89,7 +89,7 @@ module "app_eks_cluster" {
     },
     {
       name                          = "${local.std_name}-app-worker-group-2"
-      instance_type                 = var.eks_worker_instance_type
+      instance_type                 = var.app_eks_worker_instance_type
       ami_id                        = var.app_worker_nodes_ami_id == "" ? data.aws_ami.eks_app_worker_nodes_ami.id : var.app_worker_nodes_ami_id
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
@@ -103,7 +103,7 @@ module "app_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.app_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.app_vpc[0].private_subnets[1] : data.aws_subnet_ids.app_vpc_private_subnets.id
+      subnet_id                     = var.create_vpc ? module.vpc[0].private_subnets[1] : data.aws_subnet_ids.vpc_private_subnets.id
       #target_group_arns             = module.app_eks_nlb.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -121,7 +121,7 @@ module "app_eks_cluster" {
       "name"         = "${local.app_cluster_name}"
       "cluster_type" = "application"
   }, )
-  depends_on = [module.app_vpc,
+  depends_on = [module.vpc,
     module.app_eks_control_plane_sg,
     module.app_eks_worker_node_group_sg,
     aws_iam_role.eks_cluster_role,
@@ -141,7 +141,7 @@ module "app_eks_cluster" {
 #blockchain cluster specific
 #ssh key pair for blockchain cluster worker nodes (eks)
 module "blk_eks_worker_nodes_key_pair_external" {
-  #depends_on = [module.blk_vpc]
+  #depends_on = [module.vpc]
   source     = "terraform-aws-modules/key-pair/aws"
   key_name   = "${local.std_name}-blk-eks-worker-nodes-external"
   public_key = var.blk_eks_worker_nodes_ssh_key
@@ -161,8 +161,8 @@ module "blk_eks_cluster" {
   cluster_name                                       = local.blk_cluster_name
   enable_irsa                                        = true
   cluster_version                                    = var.blk_cluster_version
-  subnets                                            = var.create_vpc ? module.blk_vpc[0].private_subnets : data.aws_subnet_ids.blk_vpc_private_subnets.ids
-  vpc_id                                             = var.create_vpc ? module.blk_vpc[0].vpc_id : data.aws_vpc.blk_vpc[0].id
+  subnets                                            = var.create_vpc ? module.vpc[0].private_subnets : data.aws_subnet_ids.vpc_private_subnets.ids
+  vpc_id                                             = var.create_vpc ? module.vpc[0].vpc_id : data.aws_vpc.vpc[0].id
   write_kubeconfig                                   = false
   #cluster_service_ipv4_cidr                          = var.blk_cluster_service_ipv4_cidr
   kubeconfig_output_path                             = var.kubeconfig_output_path
@@ -171,7 +171,7 @@ module "blk_eks_cluster" {
   cluster_create_endpoint_private_access_sg_rule     = true
   cluster_create_security_group                      = false
   cluster_security_group_id                          = module.blk_eks_control_plane_sg.security_group_id
-  cluster_endpoint_private_access_cidrs              = var.create_vpc ? [var.blk_vpc_cidr] : [data.aws_vpc.blk_vpc[0].cidr_block]
+  cluster_endpoint_private_access_cidrs              = var.create_vpc ? [var.vpc_cidr] : [data.aws_vpc.vpc[0].cidr_block]
   cluster_endpoint_public_access_cidrs               = var.cluster_endpoint_public_access_cidrs
   cluster_create_timeout                             = var.cluster_create_timeout
   wait_for_cluster_timeout                           = var.wait_for_cluster_timeout
@@ -196,7 +196,7 @@ module "blk_eks_cluster" {
   worker_groups = [
     {
       name                          = "${local.std_name}-blk-worker-group-1"
-      instance_type                 = var.eks_worker_instance_type
+      instance_type                 = var.blk_eks_worker_instance_type
       ami_id                        = var.blk_worker_nodes_ami_id == "" ? data.aws_ami.eks_blk_worker_nodes_ami.id : var.blk_worker_nodes_ami_id
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
@@ -210,7 +210,7 @@ module "blk_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.blk_vpc[0].private_subnets[0] : data.aws_subnet_ids.blk_vpc_private_subnets.id
+      subnet_id                     = var.create_vpc ? module.vpc[0].private_subnets[0] : data.aws_subnet_ids.vpc_private_subnets.id
       #target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -223,7 +223,7 @@ module "blk_eks_cluster" {
     },
     {
       name                          = "${local.std_name}-blk-worker-group-2"
-      instance_type                 = var.eks_worker_instance_type
+      instance_type                 = var.blk_eks_worker_instance_type
       ami_id                        = var.blk_worker_nodes_ami_id == "" ? data.aws_ami.eks_blk_worker_nodes_ami.id : var.blk_worker_nodes_ami_id
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
@@ -237,7 +237,7 @@ module "blk_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.blk_vpc[0].private_subnets[1] : data.aws_subnet_ids.blk_vpc_private_subnets.id
+      subnet_id                     = var.create_vpc ? module.vpc[0].private_subnets[1] : data.aws_subnet_ids.vpc_private_subnets.id
       #target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -250,7 +250,7 @@ module "blk_eks_cluster" {
   },
   {
       name                          = "${local.std_name}-blk-worker-group-3"
-      instance_type                 = var.eks_worker_instance_type
+      instance_type                 = var.blk_eks_worker_instance_type
       ami_id                        = var.blk_worker_nodes_ami_id == "" ? data.aws_ami.eks_blk_worker_nodes_ami.id : var.blk_worker_nodes_ami_id
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
@@ -264,7 +264,7 @@ module "blk_eks_cluster" {
       root_volume_size              = var.eks_wg_root_volume_size
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
-      subnet_id                     = var.create_vpc ? module.blk_vpc[0].private_subnets[1] : data.aws_subnet_ids.blk_vpc_private_subnets.id
+      subnet_id                     = var.create_vpc ? module.vpc[0].private_subnets[1] : data.aws_subnet_ids.vpc_private_subnets.id
       #target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
@@ -282,7 +282,7 @@ module "blk_eks_cluster" {
       "name"         = "${local.blk_cluster_name}"
       "cluster_type" = "blockchain"
   }, )
-  depends_on = [module.blk_vpc,
+  depends_on = [module.vpc,
     module.blk_eks_control_plane_sg,
     module.blk_eks_worker_node_group_sg,
     aws_iam_role.eks_cluster_role,

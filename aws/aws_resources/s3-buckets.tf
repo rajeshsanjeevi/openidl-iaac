@@ -162,7 +162,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
                 }
             }
         },
-        /*{
+        {
 			"Sid": "DenyOthers",
 			"Effect": "Deny",
 			"Principal": "*",
@@ -184,7 +184,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
 					]
 				}
 			}
-		}*/
+		}
     ]
 })
 }
@@ -343,7 +343,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_access_logs" {
                 }
             }
         },
-        /*{
+        {
 			"Sid": "DenyOthers",
 			"Effect": "Deny",
 			"Principal": "*",
@@ -361,7 +361,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_access_logs" {
 					]
 				}
 			}
-		}*/
+		}
     ]
   })
 }

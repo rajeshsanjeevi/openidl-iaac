@@ -21,6 +21,10 @@ locals {
   #sub domain specific
   public_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
   private_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
+  temp_domain = split(".", var.domain_info.domain_name)
+
+  #related to VPC endpoints
+  count = var.create_vpc ? length(module.vpc[0].private_route_table_ids) : length(data.aws_route_tables.vpc_private_rt[0].ids)
 
   #cognito custom attributes
   custom_attributes = [
@@ -29,44 +33,29 @@ locals {
     "stateName",
     "organizationId"]
 
-  app_def_sg_ingress = [{
-    cidr_blocks = var.create_vpc ? var.app_vpc_cidr : data.aws_vpc.app_vpc[0].cidr_block
-    description = "Inbound SSH traffic"
-    from_port   = "22"
-    to_port     = "22"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = var.create_vpc ? var.app_vpc_cidr : data.aws_vpc.app_vpc[0].cidr_block
-    description = "Inbound SSH traffic"
-    from_port   = "443"
-    to_port     = "443"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = var.create_vpc ? var.app_vpc_cidr : data.aws_vpc.app_vpc[0].cidr_block
-    description = "Inbound SSH traffic"
-    from_port   = "8443"
-    to_port     = "8443"
-    protocol    = "tcp"
-  }]
+  #cognito specifics
+  client_app_name              = "${local.std_name}-${var.userpool_name}-app-client" #name of the application client
+  client_callback_urls         = var.aws_env == "prod" ? ["https://openidl.${local.public_domain}/callback", "https://openidl.${local.public_domain}/redirect"] : ["https://openidl.${var.aws_env}.${local.public_domain}/callback", "https://openidl.${var.aws_env}.${local.public_domain}/redirect"]
+  client_default_redirect_url  = var.aws_env == "prod" ? "https://openidl.${local.public_domain}/redirect" : "https://openidl.${var.aws_env}.${local.public_domain}/redirect" #redirect url
+  client_logout_urls           = var.aws_env == "prod" ? ["https://openidl.${local.public_domain}/signout"] : ["https://openidl.${var.aws_env}.${local.public_domain}/signout"] #logout url
+  cognito_domain               = var.domain_info.sub_domain_name == "" ? local.temp_domain[0] : "${var.domain_info.sub_domain_name}-${local.temp_domain}"
 
-  blk_def_sg_ingress = [{
-    cidr_blocks = var.create_vpc ? var.blk_vpc_cidr : data.aws_vpc.blk_vpc[0].cidr_block
+  def_sg_ingress = [{
+    cidr_blocks = var.create_vpc ? var.vpc_cidr : data.aws_vpc.vpc[0].cidr_block
     description = "Inbound SSH traffic"
     from_port   = "22"
     to_port     = "22"
     protocol    = "tcp"
   },
   {
-    cidr_blocks = var.create_vpc ? var.blk_vpc_cidr : data.aws_vpc.blk_vpc[0].cidr_block
+    cidr_blocks = var.create_vpc ? var.vpc_cidr : data.aws_vpc.vpc[0].cidr_block
     description = "Inbound SSH traffic"
     from_port   = "443"
     to_port     = "443"
     protocol    = "tcp"
   },
   {
-    cidr_blocks = var.create_vpc ? var.blk_vpc_cidr : data.aws_vpc.blk_vpc[0].cidr_block
+    cidr_blocks = var.create_vpc ? var.vpc_cidr : data.aws_vpc.vpc[0].cidr_block
     description = "Inbound SSH traffic"
     from_port   = "8443"
     to_port     = "8443"
@@ -94,32 +83,19 @@ locals {
     protocol    = "tcp"
   }]
 
-  app_tgw_routes = [{destination_cidr_block = var.create_vpc ? var.blk_vpc_cidr : data.aws_vpc.blk_vpc[0].cidr_block}]
-  blk_tgw_routes = [{destination_cidr_block = var.create_vpc ? var.app_vpc_cidr : data.aws_vpc.app_vpc[0].cidr_block}]
-  app_tgw_destination_cidr = var.create_vpc ? ["${var.blk_vpc_cidr}"] : ["${data.aws_vpc.blk_vpc[0].cidr_block}"]
-  blk_tgw_destination_cidr = var.create_vpc ? ["${var.app_vpc_cidr}"] : ["${data.aws_vpc.app_vpc[0].cidr_block}"]
-
-  def_app_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.app_vpc_cidr}" : "${data.aws_vpc.app_vpc[0].cidr_block}"}]
-  def_app_bastion_sg_egress = [
+  def_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.vpc_cidr}" : "${data.aws_vpc.vpc[0].cidr_block}"}]
+  def_bastion_sg_egress = [
     {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
     {rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
-    {rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.app_vpc_cidr}" : "${data.aws_vpc.app_vpc[0].cidr_block}"}]
-
-  def_blk_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.blk_vpc_cidr}" : "${data.aws_vpc.blk_vpc[0].cidr_block}"}]
-  def_blk_bastion_sg_egress = [
-    {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
-    {rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
-    {rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.blk_vpc_cidr}" : "${data.aws_vpc.blk_vpc[0].cidr_block}"}]
+    {rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.vpc_cidr}" : "${data.aws_vpc.vpc[0].cidr_block}"}]
 
   dns_entries_list_non_prod = var.create_bastion_host ? {
-    "app-bastion.${var.aws_env}.${local.public_domain}" = module.app_bastion_nlb[0].lb_dns_name,
-    "blk-bastion.${var.aws_env}.${local.public_domain}.${var.domain_info.domain_name}"= module.blk_bastion_nlb[0].lb_dns_name,
+    "app-bastion.${var.aws_env}.${local.public_domain}" = module.bastion_nlb[0].lb_dns_name
     } : {}
 
   dns_entries_list_prod = var.create_bastion_host ? {
-    "app-bastion.${local.public_domain}" = module.app_bastion_nlb[0].lb_dns_name,
-    "blk-bastion.${local.public_domain}" = module.blk_bastion_nlb[0].lb_dns_name,
-  } : {}
+    "app-bastion.${local.public_domain}" = module.bastion_nlb[0].lb_dns_name
+    } : {}
 
   app_eks_control_plane_sg_computed_ingress = var.create_bastion_host ? [
     {
@@ -141,14 +117,14 @@ locals {
       to_port                  = 65535
       protocol                 = "tcp"
       description              = "Inbound from bastion sg to eks control plane sg-1024-65535"
-      source_security_group_id = module.app_bastion_sg[0].security_group_id
+      source_security_group_id = module.bastion_sg[0].security_group_id
     },
     {
       from_port                = 443
       to_port                  = 443
       protocol                 = "tcp"
       description              = "Inbound from bastion sg to eks control plane sg-443"
-      source_security_group_id = module.app_bastion_sg[0].security_group_id
+      source_security_group_id = module.bastion_sg[0].security_group_id
     }] : [
     {
       from_port                = 1024
@@ -185,14 +161,14 @@ locals {
       to_port                  = 65535
       protocol                 = "tcp"
       description              = "Inbound from bastion sg to eks control plane sg-1024-65535"
-      source_security_group_id = module.blk_bastion_sg[0].security_group_id
+      source_security_group_id = module.bastion_sg[0].security_group_id
     },
     {
       from_port                = 443
       to_port                  = 443
       protocol                 = "tcp"
       description              = "Inbound from bastion sg to eks control plane sg-443"
-      source_security_group_id = module.blk_bastion_sg[0].security_group_id
+      source_security_group_id = module.bastion_sg[0].security_group_id
     }] : [
     {
       from_port                = 1024
@@ -257,7 +233,7 @@ locals {
       to_port                  = 22
       protocol                 = "tcp"
       description              = "Inbound from bastion hosts sg to node group sg-22"
-      source_security_group_id = module.app_bastion_sg[0].security_group_id
+      source_security_group_id = module.bastion_sg[0].security_group_id
   }] : [
     {
       from_port                = 10250
@@ -350,7 +326,7 @@ locals {
       to_port                  = 22
       protocol                 = "tcp"
       description              = "Inbound from bastion hosts sg to node group sg-22"
-      source_security_group_id = module.blk_bastion_sg[0].security_group_id
+      source_security_group_id = module.bastion_sg[0].security_group_id
   }] : [
     {
       from_port                = 10250

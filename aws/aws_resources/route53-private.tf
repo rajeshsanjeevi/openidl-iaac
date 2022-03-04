@@ -3,10 +3,7 @@ resource "aws_route53_zone" "private_zones_internal" {
   name    = "internal.${var.domain_info.domain_name}"
   comment = "Private hosted zones for ${local.std_name}"
   vpc {
-    vpc_id = var.create_vpc ? module.app_vpc[0].vpc_id : data.aws_vpc.app_vpc[0].id
-  }
-  vpc {
-    vpc_id = var.create_vpc ? module.blk_vpc[0].vpc_id : data.aws_vpc.blk_vpc[0].id
+    vpc_id = var.create_vpc ? module.vpc[0].vpc_id : data.aws_vpc.vpc[0].id
   }
   tags = merge(
     local.tags,
@@ -20,10 +17,7 @@ resource "aws_route53_zone" "private_zones" {
   name    = "${var.aws_env}.${local.private_domain}"
   comment = "Private hosted zones for ${local.std_name}"
   vpc {
-    vpc_id = var.create_vpc ? module.app_vpc[0].vpc_id : data.aws_vpc.app_vpc[0].id
-  }
-  vpc {
-    vpc_id = var.create_vpc ? module.blk_vpc[0].vpc_id : data.aws_vpc.blk_vpc[0].id
+    vpc_id = var.create_vpc ? module.vpc[0].vpc_id : data.aws_vpc.vpc[0].id
   }
   tags = merge(
     local.tags,

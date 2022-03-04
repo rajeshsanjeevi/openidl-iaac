@@ -114,11 +114,8 @@ output "aws_name_servers" {
   value       = var.domain_info.r53_public_hosted_zone_required == "yes"  ? data.terraform_remote_state.base_setup.outputs.aws_name_servers : null
   description = "The name servers to be updated in the domain registrar"
 }
-output "public_blk_bastion_fqdn" {
-  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_fqdn : null
-}
-output "public_app_bastion_fqdn" {
-  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_fqdn : null
+output "public_bastion_fqdn" {
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_bastion_fqdn : null
 }
 #-----------------------------------------------------------------------------------------------------------------
 #KMS key related to vault unseal

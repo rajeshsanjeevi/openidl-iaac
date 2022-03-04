@@ -109,8 +109,7 @@ locals {
   }]
   dns_entries_list_non_prod = {
     "openidl.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
-    "app-bastion.${var.aws_env}.${local.public_domain}" = var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null,
-    "blk-bastion.${var.aws_env}.${local.public_domain}"= var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null,
+    "bastion.${var.aws_env}.${local.public_domain}" = var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_bastion_dns_name : null,
     "*.ordererorg.${var.aws_env}.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
     "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
     "data-call-app-service.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
@@ -119,8 +118,7 @@ locals {
   }
   dns_entries_list_prod = {
     "openidl.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
-    "app-bastion.${local.public_domain}" = var.create_bastion_host? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null,
-    "blk-bastion.${local.public_domain}" = var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null,
+    "bastion.${local.public_domain}" = var.create_bastion_host? data.terraform_remote_state.base_setup.outputs.public_bastion_dns_name : null,
     "*.ordererorg.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
     "*.${var.org_name}-net.${var.org_name}.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
     "data-call-app-service.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
