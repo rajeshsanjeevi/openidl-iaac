@@ -38,16 +38,16 @@ userpool_email_verification_message              = "Your username is {username} 
 
 #-------------------------------------------------------------------------------------------------------------------
 #EKS cluster default specifications
-eks_worker_instance_type             = "t3.medium"
+app_eks_worker_instance_type         = "t3.medium"
+blk_eks_worker_instance_type         = "t3.medium"
 kubeconfig_output_path               = "./kubeconfig_file/"
 manage_aws_auth                      = false
 cluster_endpoint_private_access      = true
 cluster_endpoint_public_access       = true
 cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
-cluster_create_timeout               = "30m"
+cluster_create_timeout               = "45m"
 wait_for_cluster_timeout             = "300"
 eks_cluster_logs                     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
-
 #-------------------------------------------------------------------------------------------------------------------
 #EKS worker nodes default specifications
 wg_asg_min_size             = "1"
@@ -59,12 +59,7 @@ eks_wg_public_ip            = false
 eks_wg_root_vol_encrypted   = true
 eks_wg_root_volume_size     = "40"
 eks_wg_root_volume_type     = "gp2"
-eks_wg_block_device_name    = "/dev/sdf"
-eks_wg_ebs_volume_size      = 100
-eks_wg_ebs_volume_type      = "gp2"
-eks_wg_ebs_vol_encrypted    = true
 eks_wg_health_check_type    = "EC2"
-
 #-------------------------------------------------------------------------------------------------------------------
 
 
