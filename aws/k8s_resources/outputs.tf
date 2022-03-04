@@ -43,7 +43,7 @@ output "dns_entries_required_to_add" {
   value = var.domain_info.r53_public_hosted_zone_required == "no" && var.aws_env != "prod" ? local.dns_entries_list_non_prod : null
 }
 #-----------------------------------------------------------------------------------------------------------------
-#aws cognito application client outputs
+#AWS cognito application client outputs
 output "cognito_user_pool_id" {
   value     = var.create_cognito_userpool ? data.terraform_remote_state.base_setup.outputs.cognito_user_pool_id : null
   sensitive = true
@@ -57,7 +57,7 @@ output "cognito_app_client_secret" {
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
-#git actions user and baf automation user outputs
+#IAM user ARN outputs
 output "git_actions_user_arn" {
   value = data.terraform_remote_state.base_setup.outputs.git_actions_iam_user_arn
 }
@@ -83,7 +83,7 @@ output "eks_admin_role_arn" {
   value = data.terraform_remote_state.base_setup.outputs.eks_admin_role_arn
 }
 #-----------------------------------------------------------------------------------------------------------------
-#application cluster (EKS) outputs
+#Application cluster (EKS) outputs
 output "app_cluster_endpoint" {
   value = data.terraform_remote_state.base_setup.outputs.app_cluster_endpoint
 }
@@ -91,7 +91,7 @@ output "app_cluster_name" {
   value = data.terraform_remote_state.base_setup.outputs.app_cluster_name
 }
 #-----------------------------------------------------------------------------------------------------------------
-#blockchain cluster (EKS) outputs
+#Blockchain cluster (EKS) outputs
 output "blk_cluster_endpoint" {
   value = data.terraform_remote_state.base_setup.outputs.blk_cluster_endpoint
 }
@@ -99,7 +99,7 @@ output "blk_cluster_name" {
   value = data.terraform_remote_state.base_setup.outputs.blk_cluster_name
 }
 #-----------------------------------------------------------------------------------------------------------------
-#cloudtrail related
+#Cloudtrail related
 output "cloudtrail_s3_bucket_name" {
   value = var.create_cloudtrial ? data.terraform_remote_state.base_setup.outputs.cloudtrail_s3_bucket_name : null
 }

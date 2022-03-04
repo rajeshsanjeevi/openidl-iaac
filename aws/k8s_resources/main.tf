@@ -3,6 +3,7 @@
 #terraform {
 #  backend "s3" {}
 #}
+#This code is when backend is TFC/TFE
 terraform {
   backend "remote" {
     hostname = "app.terraform.io"

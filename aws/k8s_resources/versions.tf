@@ -1,4 +1,4 @@
-##Define required terraform and provider version
+#Define required terraform and provider version
 terraform {
   required_version = ">= 1.1.3"
   required_providers {

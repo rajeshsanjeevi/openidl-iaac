@@ -1,4 +1,4 @@
-#setting up public dns entry for application
+#Setting up public dns entry for application
 resource "aws_route53_record" "app_nlb_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" ? 1 : 0
   zone_id = data.aws_route53_zone.public_zone[0].zone_id
@@ -10,7 +10,7 @@ resource "aws_route53_record" "app_nlb_r53_record" {
     evaluate_target_health = true
   }
 }
-#setting up public dns entry for ordererorg
+#Setting up public dns entry for ordererorg
 resource "aws_route53_record" "public_aais_orderorg_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" && var.org_name == "aais" ? 1 : 0
   zone_id = data.aws_route53_zone.public_zone[0].zone_id
@@ -22,7 +22,7 @@ resource "aws_route53_record" "public_aais_orderorg_r53_record" {
     evaluate_target_health = true
   }
 }
-#setting up public dns entry for org-net
+#Setting up public dns entry for org-net
 resource "aws_route53_record" "public_common_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" ? 1 : 0
   zone_id = data.aws_route53_zone.public_zone[0].zone_id
@@ -34,7 +34,7 @@ resource "aws_route53_record" "public_common_r53_record" {
     evaluate_target_health = true
   }
 }
-#setting up public dns entry for data call service
+#Setting up public dns entry for data call service
 resource "aws_route53_record" "public_data_call_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" ? 1 : 0
   zone_id = data.aws_route53_zone.public_zone[0].zone_id
@@ -46,7 +46,7 @@ resource "aws_route53_record" "public_data_call_r53_record" {
     evaluate_target_health = true
   }
 }
-#setting up public dns entry for insurance data manager
+#Setting up public dns entry for insurance data manager
 resource "aws_route53_record" "public_insurance_manager_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" ? 1 : 0
   zone_id = data.aws_route53_zone.public_zone[0].zone_id
@@ -58,7 +58,7 @@ resource "aws_route53_record" "public_insurance_manager_r53_record" {
     evaluate_target_health = true
   }
 }
-#setting up dns entry for utilities service
+#Setting up dns entry for utilities service
 resource "aws_route53_record" "public_utilities_service_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" ? 1 : 0
   zone_id = data.aws_route53_zone.public_zone[0].zone_id

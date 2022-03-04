@@ -1,4 +1,4 @@
-##local variables and their manipulation are here
+#Temporary variables and their manipulation are here
 locals {
   std_name          = "${substr(var.org_name,0,4)}-${var.aws_env}"
   app_cluster_name  = "${local.std_name}-${var.app_cluster_name}"
@@ -11,24 +11,24 @@ locals {
     node_type   = var.org_name
   })
 
-  #sub domain specific
+  #Sub domain specific
   public_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
   private_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.aws_env}" : "${var.aws_env}.${var.domain_info.sub_domain_name}"
 
-  #application cluster (eks) config-map (aws auth) - iam user to map
+  #Application cluster (eks) config-map (aws auth) - iam user to map
   app_cluster_map_users = [{
     userarn = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
     username = "admin"
     groups = ["system:masters"]
   }]
 
-  #application cluster (eks) config-map (aws auth) - iam user to map
+  #Blockchain cluster (eks) config-map (aws auth) - iam user to map
   blk_cluster_map_users = [{
     userarn = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
     username = "admin"
     groups = ["system:masters"]
   }]
-  #application cluster (eks) config-map (aws auth) - iam roles to map
+  #Application cluster (eks) config-map (aws auth) - iam roles to map
   app_cluster_map_roles = [
     {
       rolearn  = data.terraform_remote_state.base_setup.outputs.app_eks_nodegroup_role_arn
@@ -54,7 +54,7 @@ locals {
         "system:nodes",
         "system:bootstrappers"]
   }]
-  #blockchain cluster (eks) config-map (aws auth) - iam roles to map
+  #Blockchain cluster (eks) config-map (aws auth) - iam roles to map
   blk_cluster_map_roles = [
     {
       rolearn  = data.terraform_remote_state.base_setup.outputs.blk_eks_nodegroup_role_arn
@@ -107,6 +107,7 @@ locals {
       username = "admin"
       groups   = ["system:masters"]
   }]
+  #DNS entries prepared
   dns_entries_list_non_prod = {
     "openidl.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
     "bastion.${var.aws_env}.${local.public_domain}" = var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_bastion_dns_name : null,

@@ -1,4 +1,4 @@
-#aws environment definition variables
+#AWS environment definition variables
 variable "aws_region" {
   default     = "us-east-2"
   type        = string
