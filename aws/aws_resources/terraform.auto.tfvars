@@ -5,7 +5,6 @@ environment, it requires updates here*/
 instance_type                 = "t2.micro"
 root_block_device_volume_type = "gp2"
 root_block_device_volume_size = "40"
-
 #-------------------------------------------------------------------------------------------------------------------
 #Cognito default configurations
 client_allowed_oauth_flows                       = ["code", "implicit"] # [code,implicit,client_credentials] are options
@@ -35,7 +34,6 @@ userpool_advanced_security_mode                  = "AUDIT"
 userpool_enable_username_case_sensitivity        = false
 userpool_email_verification_subject              = "Your password"
 userpool_email_verification_message              = "Your username is {username} and password is {####}."
-
 #-------------------------------------------------------------------------------------------------------------------
 #EKS cluster default specifications
 app_eks_worker_instance_type         = "t3.medium"
