@@ -1,4 +1,4 @@
-#iam role for application cluster and blockchain cluster (eks)
+#IAM role for application cluster and blockchain cluster (eks)
 resource "aws_iam_role" "eks_cluster_role" {
   for_each           = toset(["app-eks", "blk-eks"])
   name               = "${local.std_name}-${each.value}"
@@ -41,7 +41,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEC2ContainerRegistr
   policy_arn = "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eks_cluster_role["${each.value}"].id
 }
-#iam role for worker groups of both application cluster and blockchain cluster (eks)
+#IAM role for worker nodes of both application cluster and blockchain cluster (eks)
 resource "aws_iam_role" "eks_nodegroup_role" {
   for_each           = toset(["app-node-group", "blk-node-group"])
   name               = "${local.std_name}-${each.value}"
@@ -68,7 +68,7 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonEKSCNIPolicy" {
   policy_arn = "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.eks_nodegroup_role["${each.value}"].id
 }
-#iam policy for the worker nodes to manage csi driver for persistent volumes
+#IAM policy for the worker nodes to manage csi driver for persistent volumes
 resource "aws_iam_policy" "eks_worker_node_ebs_policy" {
   name   = "${local.std_name}-AmazonEBSCSIDriverPolicy"
   policy = file("resources/policies/workergroup-role-ebs-ci-driver-policy.json")
@@ -81,7 +81,7 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonEKSEBSCSIDriverPo
   policy_arn = aws_iam_policy.eks_worker_node_ebs_policy.arn
   role       = aws_iam_role.eks_nodegroup_role["${each.value}"].id
 }
-#iam policy for the worker nodes to get access to Describe KMS key
+#IAM policy for the worker nodes to get access to Describe KMS key
 resource "aws_iam_policy" "eks_worker_node_kms_policy" {
   name   = "${local.std_name}-AmazonKMSKeyPolicy"
   policy = jsonencode({
@@ -103,7 +103,7 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonKMSKeyPolicy" {
   policy_arn = aws_iam_policy.eks_worker_node_kms_policy.arn
   role       = aws_iam_role.eks_nodegroup_role["${each.value}"].id
 }
-#iam policy for eks admin role
+#IAM policy for EKS admin role
 resource "aws_iam_policy" "eks_admin_policy" {
   name   = "${local.std_name}-EKSAdminPolicy"
   policy = jsonencode({
@@ -219,7 +219,7 @@ resource "aws_iam_policy" "eks_admin_policy" {
     { "name" = "${local.std_name}-EKSAdminPolicy",
   "cluster_type" = "both" })
 }
-#iam role - to perform eks administrative tasks
+#IAM role - to perform EKS administrative tasks
 resource "aws_iam_role" "eks_admin_role" {
   name = "${local.std_name}-eksadmin"
   assume_role_policy = jsonencode({
@@ -239,16 +239,16 @@ resource "aws_iam_role" "eks_admin_role" {
   description = "The iam role that is used to manage EKS cluster administrative tasks"
   max_session_duration = 3600
 }
-#iam group that allows users to assume eks-admin-role
+#IAM group that allows users to assume eks-admin-role
 resource "aws_iam_group" "eks_admin_group" {
   name = "${local.std_name}-eks-admin"
 }
-#iam group eks-admin and its related policy attachment
+#IAM group eks-admin and its related policy attachment
 resource "aws_iam_group_policy_attachment" "eks_admin_group_policy_attachment" {
   group = aws_iam_group.eks_admin_group.name
   policy_arn = aws_iam_policy.eks_admin_group_assume_policy.arn
 }
-#iam policy for eks admin role
+#IAM policy for eks-admin-role
 resource "aws_iam_policy" "eks_admin_group_assume_policy" {
   name = "${local.std_name}-EKSAdmPolicy"
   policy = jsonencode({

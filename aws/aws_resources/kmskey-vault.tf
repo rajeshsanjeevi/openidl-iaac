@@ -1,4 +1,4 @@
-#kms key for hcp vault cluster unseal
+#KMS key for hcp vault cluster unseal
 resource "aws_kms_key" "vault_kms_key" {
   count = var.create_kms_keys ? 1 : 0
   description             = "The KMS key used for vault cluster"

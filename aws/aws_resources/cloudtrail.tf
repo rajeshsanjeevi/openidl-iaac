@@ -1,4 +1,4 @@
-#kms key for application cluster and blockchain cluster encryption
+#KMS key used for cloudtrail (S3 bucket and Cloudwatch logs)
 resource "aws_kms_key" "ct_cw_logs_kms_key" {
   count = var.create_cloudtrail && var.create_kms_keys ? 1 : 0
   description             = "The KMS key used for cloudwatch log group receives events from cloudtrail"
@@ -13,13 +13,13 @@ resource "aws_kms_key" "ct_cw_logs_kms_key" {
       "cluster_type" = "both"
     },)
 }
-#kms key alias for cloudwatch logs related to cloudtrail
+#KMS key alias for cloudtrail KMS key 
 resource "aws_kms_alias" "ct_cw_logs_kms_key_alias" {
   count = var.create_cloudtrail && var.create_kms_keys ? 1 : 0
   name          = "alias/${local.std_name}-ct-cw-logs-key"
   target_key_id = aws_kms_key.ct_cw_logs_kms_key[0].id
 }
-#setting up cloudwatch logs
+#Setting up cloudwatch logs group 
 resource "aws_cloudwatch_log_group" "ct_cw_logs" {
   count = var.create_cloudtrail ? 1 : 0
   name = "${local.std_name}-cloudtrail-logs"
@@ -28,13 +28,13 @@ resource "aws_cloudwatch_log_group" "ct_cw_logs" {
   tags = merge(local.tags, { name = "${local.std_name}-ct-cw-logs-group", cluster_type = "both"})
   depends_on = [aws_kms_key.ct_cw_logs_kms_key]
 }
-#setting up iam role for cloudwatch related to cloudtrail
+#Setting up IAM role for cloudwatch related to cloudtrail
 resource "aws_iam_role" "ct_cw_role" {
   count = var.create_cloudtrail ? 1 : 0
   name = "${local.std_name}-ct-cw"
   assume_role_policy = data.aws_iam_policy_document.cloudtrail_assume_role.json
 }
-#enabling cloudtrail
+#Enabling cloudtrail events 
 resource "aws_cloudtrail" "ct_events" {
     count = var.create_cloudtrail ? 1 : 0
     name = "${local.std_name}-cloudtrail"
@@ -54,20 +54,20 @@ resource "aws_cloudtrail" "ct_events" {
     tags = merge(local.tags, {name = "${local.std_name}-cloudtrail", cluster_type = "both"})
     depends_on = [aws_cloudwatch_log_group.ct_cw_logs, aws_s3_bucket_policy.ct_cw_s3_bucket_policy]
 }
-#iam policy for cloudwatch logs related to cloudtrail
+#IAM policy for cloudwatch logs related to cloudtrail
 resource "aws_iam_policy" "ct_cw_logs" {
   count = var.create_cloudtrail ? 1 : 0
   name   = "${local.std_name}-CTCWLogsPolicy"
   policy = data.aws_iam_policy_document.cloudtrail_cloudwatch_logs.json
 }
-#iam policy attachment for cloudwatch logs related to cloudtrail
+#IAM policy attachment for cloudwatch logs related to cloudtrail
 resource "aws_iam_policy_attachment" "ct_cw_policy_attachment" {
   count = var.create_cloudtrail ? 1 : 0
   name       = "${local.std_name}-ct-cw-policy"
   policy_arn = aws_iam_policy.ct_cw_logs[0].arn
   roles      = [aws_iam_role.ct_cw_role[0].name]
 }
-#creating an s3 bucket
+#Creating an S3 bucket for cloudtrail 
 resource "aws_s3_bucket" "ct_cw_s3_bucket" {
   count = var.create_cloudtrail ? 1 : 0
   bucket = "${local.std_name}-${var.s3_bucket_name_cloudtrail}"
@@ -91,7 +91,7 @@ resource "aws_s3_bucket" "ct_cw_s3_bucket" {
     }
   }
 }
-#blocking public access to s3 bucket
+#Blocking public access to S3 bucket
 resource "aws_s3_bucket_public_access_block" "ct_cw_s3_bucket_public_access_block" {
   count = var.create_cloudtrail ? 1 : 0
   block_public_acls       = true
@@ -101,7 +101,7 @@ resource "aws_s3_bucket_public_access_block" "ct_cw_s3_bucket_public_access_bloc
   bucket                  = aws_s3_bucket.ct_cw_s3_bucket[0].id
   depends_on              = [aws_s3_bucket.ct_cw_s3_bucket, aws_s3_bucket_policy.ct_cw_s3_bucket_policy]
 }
-#setting up a bucket policy to restrict access
+#Setting up a bucket policy to restrict access
 resource "aws_s3_bucket_policy" "ct_cw_s3_bucket_policy" {
   count = var.create_cloudtrail ? 1 : 0
   bucket     = "${local.std_name}-${var.s3_bucket_name_cloudtrail}"

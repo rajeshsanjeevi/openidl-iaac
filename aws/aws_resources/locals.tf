@@ -1,4 +1,4 @@
-##local variables and their manipulation are here
+#Temporary variables and its manipulations are here 
 locals {
   terraform_user_name = split("/", var.aws_user_arn)
   terraform_role_name = split("/", var.aws_role_arn)
@@ -13,6 +13,7 @@ locals {
     environment = var.aws_env
     managed_by  = "terraform"
     node_type   = var.org_name
+    owner = "arn:aws:iam::${var.aws_account_number}:role/${local.std_name}-openidl-admin"
   })
 
   bastion_host_userdata = filebase64("resources/bootstrap-scripts/bastion_host.sh")

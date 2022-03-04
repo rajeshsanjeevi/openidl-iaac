@@ -1,4 +1,4 @@
-#kms key for application cluster and blockchain cluster encryption
+#KMS key for application cluster and blockchain cluster encryption
 resource "aws_kms_key" "eks_kms_key" {
   count = var.create_kms_keys ? 1 : 0
   #for_each = {for k in ["app-eks", "blk-eks"] : k => k if var.create_kms_keys }

@@ -1,4 +1,4 @@
-#application cluster(eks) vpc endpoints
+#VPC endpoints for EKS cluster when it is set to be private cluster
 resource "aws_vpc_endpoint" "eks_s3" {
   count =  var.cluster_endpoint_public_access == false ? 1 : 0
   vpc_id       = var.create_vpc ? module.vpc[0].vpc_id : data.aws_vpc.vpc[0].id

@@ -1,4 +1,4 @@
-#control plane security group for application cluster (eks)
+#Control plane security group for application cluster (eks)
 module "app_eks_control_plane_sg" {
   #for_each = {"app-eks-sg" = "aais_vpc", "blk-eks-sg" = "aais_vpc"}
   source                                                   = "terraform-aws-modules/security-group/aws"
@@ -11,7 +11,7 @@ module "app_eks_control_plane_sg" {
     name = "${local.std_name}-app-eks-ctrl-plane-sg",
   "cluster_type" = "application" })
 }
-#control plane security group for blockchain cluster (eks)
+#Control plane security group for blockchain cluster (eks)
 module "blk_eks_control_plane_sg" {
   #for_each = {"app-eks-sg" = "aais_vpc", "blk-eks-sg" = "aais_vpc"}
   source                                                   = "terraform-aws-modules/security-group/aws"
@@ -24,7 +24,7 @@ module "blk_eks_control_plane_sg" {
     name = "${local.std_name}-blk-eks-ctrl-plane-sg",
   "cluster_type" = "blockchain" })
 }
-#workers security group for application cluster (eks)
+#Worker nodes security group for application cluster (eks)
 module "app_eks_worker_node_group_sg" {
   source                                                   = "terraform-aws-modules/security-group/aws"
   name                                                     = "${local.std_name}-app-eks-worker-node-group-sg"
@@ -39,7 +39,7 @@ module "app_eks_worker_node_group_sg" {
     "kubernetes.io/cluster/${local.app_cluster_name}" = "owned"
   "cluster_type" = "application" })
 }
-#workers security group for blockchain cluster (eks)
+#Worker nodes security group for blockchain cluster (eks)
 module "blk_eks_worker_node_group_sg" {
   source                                                   = "terraform-aws-modules/security-group/aws"
   name                                                     = "${local.std_name}-blk-eks-worker-node-group-sg"
@@ -55,7 +55,7 @@ module "blk_eks_worker_node_group_sg" {
   "cluster_type" = "application" })
 }
 /*
-# app cluster worker nodes additional security group to manage application specific traffic requirements
+#Application cluster worker nodes additional security group to manage application specific traffic requirements
 module "app_eks_workers_app_traffic_sg" {
   depends_on               = [module.vpc]
   source                   = "terraform-aws-modules/security-group/aws"
@@ -70,7 +70,7 @@ module "app_eks_workers_app_traffic_sg" {
       "cluster_type" = "application"
   }, )
 }
-# blk cluster worker nodes additional security group to manage application specific traffic requirements
+#Blockchain cluster worker nodes additional security group to manage application specific traffic requirements
 module "blk_eks_workers_app_traffic_sg" {
   depends_on               = [module.vpc]
   source                   = "terraform-aws-modules/security-group/aws"

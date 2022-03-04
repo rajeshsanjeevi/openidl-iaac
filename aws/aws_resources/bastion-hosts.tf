@@ -1,5 +1,5 @@
-#bastion host setup in the application cluster vpc
-#security group for the bastion hosts in application cluster vpc
+#Code specifics to provision bastion host in the network 
+#Security group for the bastion host 
 module "bastion_sg" {
   count = var.create_bastion_host ? 1 : 0
   source                   = "terraform-aws-modules/security-group/aws"
@@ -14,7 +14,7 @@ module "bastion_sg" {
       "cluster_type" = "both"
   }, )
 }
-#ssh keypair for the bastion host in application cluster vpc
+#SSH key pair for the bastion host access
 module "bastion_host_key_pair_external" {
   count = var.create_bastion_host ? 1 : 0
   source     = "terraform-aws-modules/key-pair/aws"
@@ -27,7 +27,7 @@ module "bastion_host_key_pair_external" {
       "cluster_type" = "both"
   }, )
 }
-#network load balancer for the bastion hosts in application cluster vpc
+#Network load balancer used for the bastion host access 
 module "bastion_nlb" {
   count = var.create_bastion_host ? 1 : 0
   source     = "terraform-aws-modules/alb/aws"
@@ -83,7 +83,7 @@ module "bastion_nlb" {
       "cluster_type" = "both"
   }, )
 }
-#auto scaling group for the bastion hosts in application cluster vpc
+#Autoscaling group used for the bastion host
 module "bastion_host_asg" {
   count = var.create_bastion_host ? 1 : 0
   source     = "terraform-aws-modules/autoscaling/aws"

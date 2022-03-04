@@ -1,11 +1,11 @@
-#application cluster specific
-#iam instance profile for worker nodes of application cluster and blockchain cluster (eks)
+#Application cluster specific
+#IAM instance profile for worker nodes of application cluster and blockchain cluster (eks)
 resource "aws_iam_instance_profile" "eks_instance_profile" {
   for_each = toset(["app-node-group", "blk-node-group"])
   name     = "${local.std_name}-${each.value}-instance-profile"
   role     = aws_iam_role.eks_nodegroup_role["${each.value}"].id
 }
-#ssh key pair for application cluster worker nodes (eks)
+#SSH key pair for application cluster worker nodes (eks)
 module "app_eks_worker_nodes_key_pair_external" {
   #depends_on = [module.vpc]
   source     = "terraform-aws-modules/key-pair/aws"
@@ -18,7 +18,7 @@ module "app_eks_worker_nodes_key_pair_external" {
       "cluster_type" = "application"
   }, )
 }
-#setting up application cluster (eks)
+#Setting up application cluster (eks)
 module "app_eks_cluster" {
   #source                                             = "terraform-aws-modules/eks/aws"
   source                                              = "./modules/eks-cluster"
@@ -51,8 +51,8 @@ module "app_eks_cluster" {
   worker_create_security_group                       = false
   worker_security_group_id                           = module.app_eks_worker_node_group_sg.security_group_id
   worker_create_cluster_primary_security_group_rules = true
-#  map_roles                                          = concat(local.app_cluster_map_roles, local.app_cluster_map_roles_list)
-#  map_users                                          = concat(local.app_cluster_map_users, local.app_cluster_map_users_list)
+  #map_roles                                          = concat(local.app_cluster_map_roles, local.app_cluster_map_roles_list)
+  #map_users                                          = concat(local.app_cluster_map_users, local.app_cluster_map_users_list)
   cluster_encryption_config = [
     {
       provider_key_arn = var.create_kms_keys ? aws_kms_key.eks_kms_key[0].arn : var.eks_kms_key_arn
@@ -97,7 +97,7 @@ module "app_eks_cluster" {
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
       security_groups               = module.app_eks_worker_node_group_sg.security_group_id
-    #  additional_security_group_ids = module.app_eks_workers_app_traffic_sg.security_group_id
+      #additional_security_group_ids = module.app_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size              = var.eks_wg_root_volume_size
@@ -138,8 +138,8 @@ module "app_eks_cluster" {
     aws_iam_role_policy_attachment.eks_nodegroup_AmazonEKSWorkerNodePolicy,
     aws_iam_instance_profile.eks_instance_profile]
 }
-#blockchain cluster specific
-#ssh key pair for blockchain cluster worker nodes (eks)
+#Blockchain cluster specific
+#SSH key pair for blockchain cluster worker nodes (eks)
 module "blk_eks_worker_nodes_key_pair_external" {
   #depends_on = [module.vpc]
   source     = "terraform-aws-modules/key-pair/aws"
@@ -152,7 +152,7 @@ module "blk_eks_worker_nodes_key_pair_external" {
       "cluster_type" = "blockchain"
   }, )
 }
-#setting up blockchain cluster (eks)
+#Setting up blockchain cluster (eks)
 module "blk_eks_cluster" {
   #source                                             = "terraform-aws-modules/eks/aws"
   source                                              = "./modules/eks-cluster"
@@ -185,8 +185,8 @@ module "blk_eks_cluster" {
   worker_create_security_group                       = false
   worker_security_group_id                           = module.blk_eks_worker_node_group_sg.security_group_id
   worker_create_cluster_primary_security_group_rules = true
-#  map_roles                                          = concat(local.blk_cluster_map_roles, local.blk_cluster_map_roles_list)
-#  map_users                                          = concat(local.blk_cluster_map_users, local.blk_cluster_map_users_list)
+  #map_roles                                          = concat(local.blk_cluster_map_roles, local.blk_cluster_map_roles_list)
+  #map_users                                          = concat(local.blk_cluster_map_users, local.blk_cluster_map_users_list)
   cluster_encryption_config = [
     {
       provider_key_arn = var.create_kms_keys ? aws_kms_key.eks_kms_key[0].arn : var.eks_kms_key_arn
@@ -204,7 +204,7 @@ module "blk_eks_cluster" {
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
       security_groups               = module.blk_eks_worker_node_group_sg.security_group_id
-    #  additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
+      #additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size              = var.eks_wg_root_volume_size
@@ -231,7 +231,7 @@ module "blk_eks_cluster" {
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
       security_groups               = module.blk_eks_worker_node_group_sg.security_group_id
-    #  additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
+      #additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size              = var.eks_wg_root_volume_size
@@ -258,7 +258,7 @@ module "blk_eks_cluster" {
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
       security_groups               = module.blk_eks_worker_node_group_sg.security_group_id
-  #    additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
+      #additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size              = var.eks_wg_root_volume_size

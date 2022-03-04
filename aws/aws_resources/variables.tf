@@ -1,4 +1,4 @@
-#aws environment definition variables
+#AWS environment definition variables
 variable "aws_region" {
   default     = "us-east-2"
   type        = string
@@ -28,7 +28,7 @@ variable "aws_role_arn" {
   type        = string
   description = "The iam role which will have access to s3 bucket and kms key"
 }
-#variables related to VPC
+#Variables related to VPC
 variable "default_nacl_rules" {
   type        = map(any)
   description = "The list of default access rules to be allowed"
@@ -68,7 +68,7 @@ variable "private_nacl_rules" {
   description = "The list of network access rules to be allowed for private subnets"
   default     = { inbound = [{}], outbound = [{}] }
 }
-#bastion host related
+#Bastion host related
 variable "bastion_sg_ingress" {
   type        = list(any)
   default     = []
@@ -115,8 +115,8 @@ variable "root_block_device_volume_type" {
 variable "root_block_device_volume_size" {
   description = "root_block_device volume Size"
 }
-#aws cognito variables
-#aws cognito application client specific variables
+#AWS cognito variables
+#AWS cognito application client specific variables
 variable "client_app_name" {
   type        = string
   description = "The name of the application client"
@@ -213,7 +213,7 @@ variable "email_sending_account" {
   type        = string
   description = "The email sending account type. COGNITO_DEFAULT | DEVELOPER"
 }
-#aws cognito domain (default/custom) specific variables
+#AWS cognito domain (default/custom) specific variables
 variable "cognito_domain" {
   type        = string
   description = "The cognito or custom domain to be used"
@@ -224,7 +224,7 @@ variable "acm_cert_arn" {
   description = "The acm certificate arn of the custom domain"
   default     = ""
 }
-#aws cognito user pool specific variables
+#AWS cognito user pool specific variables
 variable "userpool_recovery_mechanisms" {
   description = "The list of Account Recovery Options"
   type        = list(any)
@@ -348,6 +348,7 @@ variable "domain_info" {
   default     = {}
 }
 #-------------------------------------------------------------------------------------------------------------------
+#EKS cluster related
 variable "app_cluster_name" {
   description = "The name of application cluster (eks)"
   type        = string
@@ -523,27 +524,35 @@ variable "blk_cluster_map_users" {
   default     = []
 }
 #-------------------------------------------------------------------------------------------------------------------
-#cloudtrail related
+#Logs retention related
 variable "cw_logs_retention_period" {
   type        = number
   description = "The number of days to retain cloudwatch logs related to cloudtrail events"
   default = 90
 }
+#-------------------------------------------------------------------------------------------------------------------
+#Cloudtrail related
 variable "s3_bucket_name_cloudtrail" {
   type        = string
   description = "The name of s3 bucket to store the cloudtrail logs"
   default = ""
 }
+#-------------------------------------------------------------------------------------------------------------------
+#Org name related
 variable "org_name" {
   type = string
   description = "The name of the organization"
   default = ""
 }
+#-------------------------------------------------------------------------------------------------------------------
+#S3 as backend related 
 variable "terraform_state_s3_bucket_name" {
   type = string
   description = "The name of the s3 bucket will manage terraform state files"
   default = ""
 }
+#-------------------------------------------------------------------------------------------------------------------
+#Terraform cloud/enterprise as backend related 
 variable "tfc_workspace_name_aws_resources" {
   type = string
   description = "The terraform cloud workspace of AWS resources provisioned"
@@ -554,6 +563,8 @@ variable "tfc_org_name" {
   description = "The terraform cloud organisation name"
   default = ""
 }
+#-------------------------------------------------------------------------------------------------------------------
+#EKS related 
 variable "app_worker_nodes_ami_id" {
   type = string
   description = "The AMI id of the app cluster worker nodes"
@@ -564,6 +575,8 @@ variable "blk_worker_nodes_ami_id" {
   description = "The AMI id of the blk cluster worker nodes"
   default = ""
 }
+#-------------------------------------------------------------------------------------------------------------------
+#AWS access related 
 variable "aws_access_key" {
   type = string
   default = ""
@@ -579,6 +592,8 @@ variable "aws_external_id" {
   default = "terraform"
   description = "External Id setup while setting up IAM user and and its relevant roles"
 }
+#-------------------------------------------------------------------------------------------------------------------
+#S3 related 
 variable "s3_bucket_name_hds_analytics" {
   type = string
   description = "The name of s3 bucket for reporting relevant only to carrier and analytics node"
@@ -589,6 +604,13 @@ variable "s3_bucket_name_logos" {
   description = "The name of s3 bucket used to manage logos (public s3 bucket)"
   default = ""
 }
+variable "s3_bucket_name_access_logs" {
+  type = string
+  description = "The name of s3 bucket used to access logs of s3 buckets"
+  default = ""
+}
+#-------------------------------------------------------------------------------------------------------------------
+#Resource choice related
 variable "create_bastion_host" {
   type = bool
   default = true
@@ -614,16 +636,13 @@ variable "create_vpc" {
   default = true
   description = "Determines whether to create vpc or use existing vpc"
 }
-variable "vpc_id" {
-  type = string
-  default = ""
-  description = "Existing VPC ID to use"
+variable "create_kms_keys" {
+  type = bool
+  default = "true"
+  description = "Determine whether KMS keys are required to create"
 }
-variable "custom_tags" {
-  type = map
-  default = {}
-  description ="List of custom tags to include"
-}
+#-------------------------------------------------------------------------------------------------------------------
+#KMS key related 
 variable "s3_kms_key_arn" {
   type = string
   default = ""
@@ -644,18 +663,17 @@ variable "vpc_flow_logs_kms_key_arn" {
   default = ""
   description = "KMS Key arn to be used for VPC flow logs related cloudwatch logs group"
 }
-variable "create_kms_keys" {
-  type = bool
-  default = "true"
-  description = "Determine whether KMS keys are required to create"
-}
-variable "s3_bucket_name_access_logs" {
+#-------------------------------------------------------------------------------------------------------------------
+#Existing VPC related 
+variable "vpc_id" {
   type = string
-  description = "The name of s3 bucket used to access logs of s3 buckets"
   default = ""
+  description = "Existing VPC ID to use"
 }
-variable "enable_s3_access_logging" {
-  type = bool
-  default = "true"
-  description = "Determine whether s3 access logging is required"
+#-------------------------------------------------------------------------------------------------------------------
+#Custom tags related 
+variable "custom_tags" {
+  type = map
+  default = {}
+  description ="List of custom tags to include"
 }

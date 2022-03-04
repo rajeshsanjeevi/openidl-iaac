@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------------------------------------------
-#aws cognito application client outputs
+#AWS cognito application client outputs
 output "cognito_user_pool_id" {
   value     = var.create_cognito_userpool ? aws_cognito_user_pool.user_pool[0].id : "cognito userpool not opted"
   sensitive = true
@@ -13,7 +13,7 @@ output "cognito_app_client_secret" {
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
-#git actions user and baf automation user outputs
+#Git actions user and baf automation user outputs
 output "git_actions_iam_user_arn" {
   value = aws_iam_user.git_actions_user.arn
 }
@@ -39,7 +39,7 @@ output "eks_admin_role_arn" {
   value = aws_iam_role.eks_admin_role.arn
 }
 #-----------------------------------------------------------------------------------------------------------------
-#application cluster (EKS) outputs
+#Application cluster (EKS) outputs
 output "app_cluster_endpoint" {
   value = module.app_eks_cluster.cluster_endpoint
 }
@@ -50,7 +50,7 @@ output "app_eks_nodegroup_role_arn" {
   value = aws_iam_role.eks_nodegroup_role["app-node-group"].arn
 }
 #-----------------------------------------------------------------------------------------------------------------
-#blockchain cluster (EKS) outputs
+#Blockchain cluster (EKS) outputs
 output "blk_cluster_endpoint" {
   value = module.blk_eks_cluster.cluster_endpoint
 }
@@ -61,7 +61,7 @@ output "blk_eks_nodegroup_role_arn" {
   value = aws_iam_role.eks_nodegroup_role["blk-node-group"].arn
 }
 #-----------------------------------------------------------------------------------------------------------------
-#cloudtrail related
+#Cloudtrail related
 output "cloudtrail_s3_bucket_name" {
   value = var.create_cloudtrail ? aws_s3_bucket.ct_cw_s3_bucket[0].bucket : "cloudtrail not opted"
 }

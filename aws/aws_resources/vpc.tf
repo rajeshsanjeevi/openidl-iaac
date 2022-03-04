@@ -1,4 +1,4 @@
-#Creating an application cluster VPC
+#Creating required VPC
 module "vpc" {
   count = var.create_vpc ? 1 : 0
   create_vpc      = true
@@ -63,7 +63,7 @@ module "vpc" {
     "tier"                                            = "private"
   })
 }
-#VPC flow logging related
+#VPC flow logging related-KMS key
 resource "aws_kms_key" "vpc_flow_logs_kms_key" {
   count = var.create_vpc && var.create_kms_keys ? 1 : 0
   description             = "The KMS key for ${var.org_name}-${var.aws_env}-vpc flow logs"

@@ -1,11 +1,11 @@
-#reading
+#Reading IAM identities required 
 data "aws_iam_user" "terraform_user" {
   user_name = local.terraform_user_name[1]
 }
 data "aws_iam_role" "terraform_role" {
   name = local.terraform_role_name[1]
 }
-#AMI used with bastion host, this identifies the filtered ami from the region
+#AMI for the bastion host, this identifies the filtered AMI from the region
 data "aws_ami" "amazon_linux" {
   most_recent = true
   owners      = ["amazon"]
@@ -22,7 +22,7 @@ data "aws_ami" "amazon_linux" {
     ]
   }
 }
-#AMI used with eks worker nodes, this identifies the filtered ami from the region
+#AMI used for EKS worker nodes, this identifies the filtered AMI from the region
 data "aws_ami" "eks_app_worker_nodes_ami" {
   most_recent = true
   owners      = ["amazon"]
@@ -39,10 +39,10 @@ data "aws_ami" "eks_blk_worker_nodes_ami" {
     values = ["amazon-eks-node-${var.blk_cluster_version}-v*"]
   }
 }
-#reading identifying iam identity
+#Reading IAM identity
 data "aws_caller_identity" "current" {
 }
-#reading application cluster info
+#Reading application cluster info
 data "aws_eks_cluster" "app_eks_cluster" {
   name = module.app_eks_cluster.cluster_id
   depends_on = [module.app_eks_cluster.cluster_id]
@@ -51,7 +51,7 @@ data "aws_eks_cluster_auth" "app_eks_cluster_auth" {
   depends_on = [data.aws_eks_cluster.app_eks_cluster]
   name       = module.app_eks_cluster.cluster_id
 }
-#reading blockchain cluster info
+#Reading blockchain cluster info
 data "aws_eks_cluster" "blk_eks_cluster" {
   name = module.blk_eks_cluster.cluster_id
   depends_on = [module.blk_eks_cluster.cluster_id]
@@ -60,16 +60,16 @@ data "aws_eks_cluster_auth" "blk_eks_cluster_auth" {
   depends_on = [data.aws_eks_cluster.blk_eks_cluster]
   name       = module.blk_eks_cluster.cluster_id
 }
-#reading existing VPC
+#Reading existing VPC
 data "aws_vpc" "vpc" {
   count = var.create_vpc ? 0 : 1
   id = var.vpc_id
 }
-#reading availability zones
+#Reading availability zones
 data "aws_availability_zones" "vpc_azs" {
   state = "available"
 }
-#reading application cluster public subnets
+#Reading application cluster public subnets
 data "aws_subnet_ids" "vpc_public_subnets" {
   vpc_id     = var.create_vpc ? module.vpc[0].vpc_id : data.aws_vpc.vpc[0].id
  # filter {
@@ -80,7 +80,7 @@ data "aws_subnet_ids" "vpc_public_subnets" {
     tier = "public"
   }
 }
-#reading application cluster private subnets
+#Reading application cluster private subnets
 data "aws_subnet_ids" "vpc_private_subnets" {
   vpc_id     = var.create_vpc ? module.vpc[0].vpc_id : data.aws_vpc.vpc[0].id
  # filter {
@@ -91,7 +91,7 @@ data "aws_subnet_ids" "vpc_private_subnets" {
     tier = "private"
   }
 }
-#reading private route tables
+#Reading private route tables
 data "aws_route_tables" "vpc_private_rt" {
   count = var.create_vpc ? 0 : 1
   vpc_id = var.vpc_id
@@ -100,7 +100,7 @@ data "aws_route_tables" "vpc_private_rt" {
     values = ["private"]
   }
 }
-#iam policy for cloudtrail
+#IAM policy for cloudtrail
 data "aws_iam_policy_document" "cloudtrail_assume_role" {
   statement {
     effect  = "Allow"
@@ -111,7 +111,7 @@ data "aws_iam_policy_document" "cloudtrail_assume_role" {
     }
   }
 }
-#iam policy for cloudtrail cloudwatch logs
+#IAM policy for cloudtrail cloudwatch logs
 data "aws_iam_policy_document" "cloudtrail_cloudwatch_logs" {
   statement {
     sid    = "WriteCloudWatchLogs"
@@ -123,7 +123,7 @@ data "aws_iam_policy_document" "cloudtrail_cloudwatch_logs" {
     resources = ["arn:aws:logs:${var.aws_region}:${var.aws_account_number}:log-group:${local.std_name}-cloudtrail-logs:*"]
   }
 }
-#iam policy for KMS related to cloudtrail
+#IAM policy for KMS related to cloudtrail
 data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
   statement {
     sid     = "Enable Read Permissions"

@@ -1,4 +1,4 @@
-#creating public hosted zones
+#Creating public hosted zones
 resource "aws_route53_zone" "public_zones" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" ? 1 : 0
   name    = lookup(var.domain_info, "domain_name")
@@ -10,7 +10,7 @@ resource "aws_route53_zone" "public_zones" {
       "cluster_type" = "both"
   }, )
 }
-#setting dns entry for bastion host in the vpc
+#Setting dns entry for bastion host in the vpc
 resource "aws_route53_record" "nlb_bastion_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" && var.create_bastion_host ? 1 : 0
   zone_id = aws_route53_zone.public_zones[0].id

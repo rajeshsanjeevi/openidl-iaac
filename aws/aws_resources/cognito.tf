@@ -1,4 +1,4 @@
-#setting up congnito user pool
+#Setting up congnito user pool
 resource "aws_cognito_user_pool" "user_pool" {
   count = var.create_cognito_userpool ? 1 : 0
   name = "${local.std_name}-${var.userpool_name}"
@@ -81,7 +81,7 @@ resource "aws_cognito_user_pool" "user_pool" {
       "cluster_type" = "application"
   }, )
 }
-#setting up cognito application client in the userpool
+#Setting up cognito application client in the userpool
 resource "aws_cognito_user_pool_client" "cognito_app_client" {
   count = var.create_cognito_userpool ? 1 : 0
   name                                 = "${local.client_app_name}"
@@ -107,7 +107,7 @@ resource "aws_cognito_user_pool_client" "cognito_app_client" {
     refresh_token = lookup(var.client_token_validity_units, "refresh_token", null)
   }
 }
-#aws cognito domain (custom/out-of-box) specification
+#AWS cognito domain (custom/out-of-box) specification
 resource "aws_cognito_user_pool_domain" "domain" {
   count = var.create_cognito_userpool ? 1 : 0
   domain = local.cognito_domain

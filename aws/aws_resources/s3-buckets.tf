@@ -1,4 +1,4 @@
-#creating kms key that is used to encrypt data at rest in S3 bucket
+#Creating kms key that is used to encrypt data at rest in S3 bucket
 resource "aws_kms_key" "s3_kms_key" {
   count = var.create_kms_keys ? 1 : 0
   description             = "The kms key for ${var.org_name}-${var.aws_env}-s3-key"
@@ -68,13 +68,13 @@ resource "aws_kms_key" "s3_kms_key" {
     ]
 })
 }
-#setting up an alias for the kms key used with s3 bucket data encryption
+#Setting up an alias for the kms key used with s3 bucket data encryption
 resource "aws_kms_alias" "s3_kms_key_alais" {
   count = var.create_kms_keys ? 1 : 0
   name          = "alias/${local.std_name}-s3-key"
   target_key_id = aws_kms_key.s3_kms_key[0].id
 }
-#creating an s3 bucket for HDS data extract for analytics node
+#Creating an s3 bucket for HDS data extract for analytics node
 resource "aws_s3_bucket" "s3_bucket_hds" {
   count = var.org_name == "aais" ? 1 : 1 #update to 0 : 1
   bucket = "${local.std_name}-${var.s3_bucket_name_hds_analytics}"
@@ -101,7 +101,7 @@ resource "aws_s3_bucket" "s3_bucket_hds" {
     target_prefix = "log-hds/"
   }
 }
-#blocking public access to s3 bucket used for HDS data extract for analytics node
+#Blocking public access to s3 bucket used for HDS data extract for analytics node
 resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_hds" {
   count = var.org_name == "aais" ? 1 : 1
   block_public_acls       = true
@@ -111,7 +111,7 @@ resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_hds"
   bucket                  = aws_s3_bucket.s3_bucket_hds[0].id
   depends_on              = [aws_s3_bucket.s3_bucket_hds, aws_s3_bucket_policy.s3_bucket_policy_hds]
 }
-#setting up a bucket policy to restrict access to s3 bucket used for HDS data extract for analytics node
+#Setting up a bucket policy to restrict access to s3 bucket used for HDS data extract for analytics node
 resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
   count = var.org_name == "aais" ? 1 : 1
   bucket     = "${local.std_name}-${var.s3_bucket_name_hds_analytics}"
@@ -188,7 +188,7 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_hds" {
     ]
 })
 }
-#creating an s3 bucket for HDS data extract for analytics node
+#Creating an s3 bucket for HDS data extract for analytics node
 resource "aws_s3_bucket" "s3_bucket_logos_public" {
   count = var.create_s3_bucket_public ? 1 : 0
   bucket = "${local.std_name}-${var.s3_bucket_name_logos}"
@@ -203,7 +203,7 @@ resource "aws_s3_bucket" "s3_bucket_logos_public" {
       "name" = "${local.std_name}-${var.s3_bucket_name_logos}"
     },)
 }
-#blocking public access to s3 bucket
+#Blocking public access to s3 bucket
 resource "aws_s3_bucket_public_access_block" "s3_bucket_logos_public_access_block" {
   count = var.create_s3_bucket_public ? 1 : 0
   block_public_acls       = false
@@ -303,7 +303,7 @@ resource "aws_s3_bucket" "s3_bucket_access_logs" {
     }
   }
 }
-#blocking public access to s3 bucket used for s3 access logging
+#Blocking public access to s3 bucket used for s3 access logging
 resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_access_logs" {
   block_public_acls       = true
   block_public_policy     = true
@@ -312,7 +312,7 @@ resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_acce
   bucket                  = aws_s3_bucket.s3_bucket_access_logs.id
   depends_on              = [aws_s3_bucket.s3_bucket_access_logs, aws_s3_bucket_policy.s3_bucket_policy_access_logs]
 }
-#setting up a bucket policy to restrict access to s3 bucket used for s3 access logging
+#Setting up a bucket policy to restrict access to s3 bucket used for s3 access logging
 resource "aws_s3_bucket_policy" "s3_bucket_policy_access_logs" {
   bucket     = "${local.std_name}-${var.s3_bucket_name_access_logs}"
   depends_on = [aws_s3_bucket.s3_bucket_access_logs]

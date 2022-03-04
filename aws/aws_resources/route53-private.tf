@@ -1,4 +1,4 @@
-#creating private hosted zones for internal vpc dns resolution - databases and vault
+#Creating private hosted zones for internal vpc dns resolution - databases and vault
 resource "aws_route53_zone" "private_zones_internal" {
   name    = "internal.${var.domain_info.domain_name}"
   comment = "Private hosted zones for ${local.std_name}"
@@ -12,7 +12,7 @@ resource "aws_route53_zone" "private_zones_internal" {
       "cluster_type" = "both"
   },)
 }
-#creating private hosted zones for internal vpc dns resolution - others
+#Creating private hosted zones for internal vpc dns resolution - others
 resource "aws_route53_zone" "private_zones" {
   name    = "${var.aws_env}.${local.private_domain}"
   comment = "Private hosted zones for ${local.std_name}"
