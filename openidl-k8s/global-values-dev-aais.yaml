@@ -8,8 +8,8 @@ global:
         targetport: 8080
         servicename: data-call-app-service
         ingressenabled: false
-        ingresshostname: data-call-app-service.dev.aais.internal.thetech.digital
-        publicingresshostname: data-call-app-service.dev.aais.thetech.digital
+        ingresshostname: data-call-app-service.dev.openidl.internal.aaisdirect.com
+        publicingresshostname: data-call-app-service.dev.openidl.aaisdirect.com
         image:
             repository: ghcr.io/openidl-org/openidl-data-call-app
             pullPolicy: IfNotPresent
@@ -20,8 +20,8 @@ global:
         targetport: 8080
         servicename: utilities-service
         ingressenabled: false
-        ingresshostname: utilities-service.dev.aais.internal.thetech.digital
-        publicingresshostname: utilities-service.dev.aais.thetech.digital
+        ingresshostname: utilities-service.dev.openidl.internal.aaisdirect.com
+        publicingresshostname: utilities-service.dev.openidl.aaisdirect.com
         image:
             repository: ghcr.io/openidl-org/openidl-utilities
             pullPolicy: IfNotPresent
@@ -32,22 +32,22 @@ global:
         port: 8080
         targetport: 8080
         ingressenabled: false
-        ingresshostname: openidl.dev.aais.thetech.digital
+        ingresshostname: openidl.dev.openidl.aaisdirect.com
         image:
-            repository: ghcr.io/rajeshsanjeevi/openidl-main/openidl-org/openidl-ui
+            repository: ghcr.io/openidl-org/openidl-ui
             pullPolicy: IfNotPresent
-            tag: 12-develop-jenkins-792d1bb-021120221556
+            tag: 9-cognito-fabric-node14-helm-f84a367-093020211950
     insurancedatamanager:
         install: true
         port: 8080
         targetport: 8080
         servicename: insurance-data-manager-service
         ingressenabled: false
-        ingresshostname: insurance-data-manager-service.dev.aais.thetech.digital
+        ingresshostname: insurance-data-manager-service.dev.openidl.aaisdirect.com
         image:
-            repository: ghcr.io/rajeshsanjeevi/openidl-main/openidl-insurance-data-manager
+            repository: ghcr.io/openidl-org/openidl-insurance-data-manager
             pullPolicy: IfNotPresent
-            tag: 5-develop-jenkins-fc7183a-021120221548
+            tag: 5-cognito-fabric-node14-helm-f84a367-093020211950
     datacallprocessor:
         install: true
         port: 8080
@@ -90,7 +90,7 @@ global:
         port: 8080
         targetport: 8080
         ingressenabled: false
-        ingresshostname: aais.dev.aais.aais.thetech.digital
+        ingresshostname: openidl.dev.aais.openidl.aaisdirect.com
         image:
             repository: ghcr.io/openidl-org/openidl-carrier-ui
             pullPolicy: IfNotPresent

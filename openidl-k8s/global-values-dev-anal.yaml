@@ -8,8 +8,8 @@ global:
         targetport: 8080
         servicename: data-call-app-service
         ingressenabled: false
-        ingresshostname: data-call-app-service.dev.analytics.internal.thetech.digital
-        publicingresshostname: data-call-app-service.dev.analytics.thetech.digital
+        ingresshostname: data-call-app-service.dev.analytics.internal.aaisdirect.com
+        publicingresshostname: data-call-app-service.dev.analytics.openidl.aaisdirect.com
         image:
             repository: ghcr.io/openidl-org/openidl-data-call-app
             pullPolicy: IfNotPresent
@@ -20,8 +20,8 @@ global:
         targetport: 8080
         servicename: utilities-service
         ingressenabled: false
-        ingresshostname: utilities-service.dev.analytics.internal.thetech.digital
-        publicingresshostname: utilities-service.dev.analytics.thetech.digital
+        ingresshostname: utilities-service.dev.analytics.internal.aaisdirect.com
+        publicingresshostname: utilities-service.dev.analytics.openidl.aaisdirect.com
         image:
             repository: ghcr.io/openidl-org/openidl-utilities
             pullPolicy: IfNotPresent
@@ -32,11 +32,11 @@ global:
         port: 8080
         targetport: 8080
         ingressenabled: false
-        ingresshostname: openidl.dev.analytics.thetech.digital
+        ingresshostname: openidl.dev.analytics.openidl.aaisdirect.com
         image:
-            repository: ghcr.io/rajeshsanjeevi/openidl-main/openidl-org/openidl-ui
+            repository: ghcr.io/openidl-org/openidl-ui
             pullPolicy: IfNotPresent
-            tag: 12-develop-jenkins-792d1bb-021120221556
+            tag: 1-git-actions-helm-3b27ace-091420211922
     datacallmoodlistener:
         install: true
         port: 8080
@@ -70,7 +70,7 @@ global:
         targetport: 8080
         servicename: insurance-data-manager-service
         ingressenabled: false
-        ingresshostname: insurance-data-manager-service.dev.analytics.thetech.digital
+        ingresshostname: insurance-data-manager-service.dev.analytics.openidl.aaisdirect.com
         image:
             repository: ghcr.io/openidl-org/openidl-insurance-data-manager
             pullPolicy: IfNotPresent
@@ -90,7 +90,7 @@ global:
         port: 8080
         targetport: 8080
         ingressenabled: false
-        ingresshostname: openidl.dev.analytics.thetech.digital
+        ingresshostname: openidl.dev.analytics.openidl.aaisdirect.com
         image:
             repository: ghcr.io/openidl-org/openidl-carrier-ui
             pullPolicy: IfNotPresent
