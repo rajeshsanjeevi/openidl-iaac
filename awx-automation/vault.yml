@@ -51,5 +51,6 @@
         vault_kvs_user_token: "{{ kvs_user_token }}"
         registry: "{{ baf_image_repo }}"
         deploy_action: "{{ deploy_action }}"
+        aws_account_number: "{{ aws_account_number }}"
 
 

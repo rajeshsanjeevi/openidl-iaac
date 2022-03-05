@@ -68,3 +68,4 @@
         ca_user_token: "{{ ca_user_password }}"
         aws_region: "{{ aws_region }}"
         ca_user_token_status: "{{ ca_token_status.stdout }}"
+        aws_account_number: "{{ aws_account_number }}"
