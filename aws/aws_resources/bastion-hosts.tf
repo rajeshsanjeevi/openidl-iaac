@@ -1,5 +1,5 @@
-#Code specifics to provision bastion host in the network 
-#Security group for the bastion host 
+#Code specifics to provision bastion host in the network
+#Security group for the bastion host
 module "bastion_sg" {
   count = var.create_bastion_host ? 1 : 0
   source                   = "terraform-aws-modules/security-group/aws"
