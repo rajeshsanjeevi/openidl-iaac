@@ -13,7 +13,7 @@ locals {
     environment = var.aws_env
     managed_by  = "terraform"
     node_type   = var.org_name
-    owner = "arn:aws:iam::${var.aws_account_number}:role/${local.std_name}-openidl-admin"
+    owner = "${var.aws_role_arn}"
   })
 
   bastion_host_userdata = filebase64("resources/bootstrap-scripts/bastion_host.sh")

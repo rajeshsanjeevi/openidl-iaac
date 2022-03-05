@@ -98,8 +98,30 @@ resource "aws_s3_bucket" "s3_bucket_hds" {
   }
   logging {
     target_bucket = aws_s3_bucket.s3_bucket_access_logs.id
-    target_prefix = "log-hds/"
+    target_prefix = "logs-hds/"
   }
+  lifecycle_rule {
+    enabled = false
+    #prefix = ""
+    transition {
+      days = "90"
+      storage_class = "STANDARD_IA"
+    }
+    transition {
+      days = "180"
+      storage_class = "GLACIER"
+    }
+    expiration {
+      days = "365" 
+    }
+    noncurrent_version_transition {
+      days = "90"
+      storage_class = "GLACIER"
+    }
+    noncurrent_version_expiration {
+      days = "180"
+    }
+  }  
 }
 #Blocking public access to s3 bucket used for HDS data extract for analytics node
 resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_hds" {
@@ -195,7 +217,7 @@ resource "aws_s3_bucket" "s3_bucket_logos_public" {
   acl    = "private"
   force_destroy = true
   versioning {
-    enabled = true
+    enabled = false
   }
   tags = merge(
     local.tags,
@@ -284,10 +306,10 @@ resource "aws_s3_bucket_policy" "s3_bucket_logos_policy" {
 #S3 bucket for storing access logs of s3 and its objects
 resource "aws_s3_bucket" "s3_bucket_access_logs" {
   bucket = "${local.std_name}-${var.s3_bucket_name_access_logs}"
-  acl    = "private"
+  acl    = "log-delivery-write"
   force_destroy = true
   versioning {
-    enabled = true
+    enabled = false  
   }
   tags = merge(
     local.tags,
@@ -302,6 +324,28 @@ resource "aws_s3_bucket" "s3_bucket_access_logs" {
       }
     }
   }
+  lifecycle_rule {
+    enabled = false
+    #prefix = ""
+    transition {
+      days = "90"
+      storage_class = "STANDARD_IA"
+    }
+    transition {
+      days = "180"
+      storage_class = "GLACIER"
+    }
+    expiration {
+      days = "365" 
+    }
+    noncurrent_version_transition {
+      days = "90"
+      storage_class = "GLACIER"
+    }
+    noncurrent_version_expiration {
+      days = "180"
+    }
+  }  
 }
 #Blocking public access to s3 bucket used for s3 access logging
 resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block_access_logs" {

@@ -90,6 +90,32 @@ resource "aws_s3_bucket" "ct_cw_s3_bucket" {
       }
     }
   }
+  logging {
+    target_bucket = aws_s3_bucket.s3_bucket_access_logs.id
+    target_prefix = "logs-cloudtrail/"
+  }
+  lifecycle_rule {
+    enabled = false
+    #prefix = ""
+    transition {
+      days = "90"
+      storage_class = "STANDARD_IA"
+    }
+    transition {
+      days = "180"
+      storage_class = "GLACIER"
+    }
+    expiration {
+      days = "365" 
+    }
+    noncurrent_version_transition {
+      days = "90"
+      storage_class = "GLACIER"
+    }
+    noncurrent_version_expiration {
+      days = "180"
+    }
+  }  
 }
 #Blocking public access to S3 bucket
 resource "aws_s3_bucket_public_access_block" "ct_cw_s3_bucket_public_access_block" {
