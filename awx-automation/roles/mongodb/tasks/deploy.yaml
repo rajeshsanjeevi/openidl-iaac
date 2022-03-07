@@ -79,3 +79,7 @@
     - {{ network.org_name }}-{{ env }}-mongodb-user-token
     - {{ network.org_name }}-{{ env }}-mongodb-root-token
 
+- name: Delete aws resource policy file
+  file:
+    state: absent
+    path: ./aws_resources_policy.json

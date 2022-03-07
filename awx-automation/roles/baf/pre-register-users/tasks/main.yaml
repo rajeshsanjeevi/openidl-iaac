@@ -157,6 +157,7 @@
   shell: |
     export AWS_PROFILE=cicd-role
     aws secretsmanager put-resource-policy --secret-id {{ network.org_name }}-{{ env }}-ca-app-user-token --resource-policy file://aws_resource_policy.json --block-public-policy --region {{ aws_region }}
+  when: ca_user_token_status == "null"
 
 - name: Delete user script pod
   community.kubernetes.k8s:
@@ -187,3 +188,8 @@
   file:
     state: absent
     path: ./pre-register-users.sh
+
+- name: Delete aws resource policy file
+  file:
+    state: absent
+    path: ./aws_resources_policy.json
