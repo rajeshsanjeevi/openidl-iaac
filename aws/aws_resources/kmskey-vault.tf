@@ -6,7 +6,7 @@ resource "aws_kms_key" "vault_kms_key" {
   key_usage               = "ENCRYPT_DECRYPT"
   enable_key_rotation     = true
   policy = jsonencode({
-    "Id" : "${local.std_name}-vault-kms-key",
+    "Id" : "${local.std_name}-vault-kmskey",
     "Version" : "2012-10-17",
     "Statement" : [
       {

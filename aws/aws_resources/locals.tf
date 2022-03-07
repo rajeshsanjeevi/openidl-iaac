@@ -9,11 +9,12 @@ locals {
   policy_arn_prefix = "arn:aws:iam::aws:policy"
 
   tags = merge(var.custom_tags, {
-    application = "openidl"
+    organization = var.org_name
     environment = var.aws_env
+    application = "openIDL"
+    owner = var.aws_role_arn
+    user = var.aws_user_arn
     managed_by  = "terraform"
-    node_type   = var.org_name
-    owner = "${var.aws_role_arn}"
   })
 
   bastion_host_userdata = filebase64("resources/bootstrap-scripts/bastion_host.sh")
