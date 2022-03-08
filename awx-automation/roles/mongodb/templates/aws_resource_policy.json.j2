@@ -4,38 +4,46 @@
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS": [ "arn:aws:iam::{{ aws_account_number }}:role/{ network.org_name }}-{{ env }}-gitactions-admin",
-                 "arn:aws:iam::{{ aws_account_number }}:role/tf_automation"]
+        "AWS": [
+            "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-gitactions-admin",
+            "arn:aws:iam::{{ aws_account_number }}:role/tf_automation"
+            ]
       },
-      "Action": [
-		"secretsmanager:Get*",
-		"secretsmanager:CreateSecret",
-		"secretsmanager:Delete*",
-		"secretsmanager:DescribeSecret",
-		"secretsmanager:Put*",
-		"secretsmanager:RestoreSecret",
-		"secretsmanager:RotateSecret",
-		"secretsmanager:TagResource",
-		"secretsmanager:UnTagResource",
-		"secretsmanager:UpdateSecret",
-		"secretsmanager:ValidateResourcePolicy",
-		"secretsmanager:List*
-	  ]
+      "Action": "*",
       "Resource": "*"
     },
 	{
       "Effect": "Allow",
       "Principal": {
-        "AWS": [ "arn:aws:iam::{{ aws_account_number }}:role/{ network.org_name }}-{{ env }}-openidl-apps",
-				 "arn:aws:iam::{{ aws_account_number }}:role/{ network.org_name }}-{{ env }}-baf-automation"]
+        "AWS": [
+            "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-openidl-apps",
+			"arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-baf-automation"
+			]
       },
       "Action": [
 		"secretsmanager:GetSecretValue",
 		"secretsmanager:DescribeSecret",
 		"secretsmanager:GetRandomPassword",
-		"secretsmanager:List*
-	  ]
+		"secretsmanager:List*"
+	  ],
       "Resource": "*"
+    },
+    {
+        "Effect": "Deny",
+        "Principal": "*",
+        "Action": "*",
+        "Resource": "*",
+        "Condition": {
+		    "StringNotLike": {
+			    "aws:PrincipalArn": [
+			        "arn:aws:iam::{{ aws_account_number }}:root"
+			        "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-gitactions-admin",
+                    "arn:aws:iam::{{ aws_account_number }}:role/tf_automation",
+				    "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-openidl-apps",
+				    "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-baf-automation"
+				]
+			}
+		}
     }
   ]
 }

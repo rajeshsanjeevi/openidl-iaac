@@ -78,6 +78,7 @@
   with_items:
     - {{ network.org_name }}-{{ env }}-mongodb-user-token
     - {{ network.org_name }}-{{ env }}-mongodb-root-token
+    - {{ network.org_name }}-{{ env }}-mongodb-user
 
 - name: Delete aws resource policy file
   file:
