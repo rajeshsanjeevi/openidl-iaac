@@ -663,6 +663,11 @@ variable "vpc_flow_logs_kms_key_arn" {
   default = ""
   description = "KMS Key arn to be used for VPC flow logs related cloudwatch logs group"
 }
+variable "secrets_manager_kms_key_arn" {
+  type = string
+  default = ""
+  description = "KMS Key arn to be used for VPC flow logs related cloudwatch logs group"
+}
 #-------------------------------------------------------------------------------------------------------------------
 #Existing VPC related 
 variable "vpc_id" {

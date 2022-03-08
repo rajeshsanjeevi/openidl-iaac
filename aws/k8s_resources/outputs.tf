@@ -125,3 +125,11 @@ output "vault_kms_key_arn" {
 output "vault_kms_key_alais_name" {
   value = data.terraform_remote_state.base_setup.outputs.vault_kms_key_alias_name
 }
+#-----------------------------------------------------------------------------------------------------------------
+#KMS key related to AWS secrets
+output "secrets_kms_key_arn" {
+  value = data.terraform_remote_state.base_setup.outputs.secrets_kms_key_arn
+}
+output "secrets_kms_key_alais_name" {
+  value = data.terraform_remote_state.base_setup.outputs.secrets_kms_key_alias_name
+}
