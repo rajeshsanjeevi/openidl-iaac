@@ -309,7 +309,7 @@ resource "aws_s3_bucket" "s3_bucket_access_logs" {
   acl    = "log-delivery-write"
   force_destroy = true
   versioning {
-    enabled = false  
+    enabled = true
   }
   tags = merge(
     local.tags,
@@ -319,8 +319,7 @@ resource "aws_s3_bucket" "s3_bucket_access_logs" {
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        sse_algorithm     = "aws:kms"
-        kms_master_key_id = var.create_kms_keys ? aws_kms_key.s3_kms_key[0].id : var.s3_kms_key_arn
+        sse_algorithm     = "AES256"
       }
     }
   }
@@ -388,6 +387,18 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_access_logs" {
             }
         },
         {
+            "Sid": "AllowRestrictedServices",
+			"Effect": "Allow",
+			"Principal": {
+                "Service": ["logging.s3.amazonaws.com"]
+            },
+			"Action": "*",
+			"Resource":[
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_access_logs}",
+                "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_access_logs}/*"
+            ]
+        }
+        /*{
 			"Sid": "DenyOthers",
 			"Effect": "Deny",
 			"Principal": "*",
@@ -403,9 +414,9 @@ resource "aws_s3_bucket_policy" "s3_bucket_policy_access_logs" {
 						"${var.aws_account_number}",
                         "arn:aws:sts:::${var.aws_account_number}:assumed-role/${local.terraform_role_name[1]}/terraform",
 					]
-				}
+        		}
 			}
-		}
+		}*/
     ]
   })
 }

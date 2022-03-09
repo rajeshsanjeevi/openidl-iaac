@@ -107,7 +107,6 @@ resource "aws_cognito_user_pool_client" "cognito_app_client" {
     refresh_token = lookup(var.client_token_validity_units, "refresh_token", null)
   }
 }
-/*
 #AWS cognito domain (custom/out-of-box) specification
 resource "aws_cognito_user_pool_domain" "domain" {
   count = var.create_cognito_userpool ? 1 : 0
@@ -115,4 +114,3 @@ resource "aws_cognito_user_pool_domain" "domain" {
   # certificate_arn = var.acm_cert_arn #activate when custom domain is required
   user_pool_id = aws_cognito_user_pool.user_pool[0].id
 }
-*/

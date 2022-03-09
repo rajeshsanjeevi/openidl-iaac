@@ -86,8 +86,11 @@ output "bastion_dns_entries_required_to_update" {
 output "bastion_dns_entries_required_to_add" {
   value = var.domain_info.r53_public_hosted_zone_required == "no" && var.aws_env != "prod" && var.create_bastion_host ? local.dns_entries_list_non_prod : null
 }
-output "public_bastion_dns_name" {
-  value = var.create_bastion_host ? module.bastion_nlb[0].lb_dns_name : "bastion hosts opted out"
+#output "public_bastion_dns_name" {
+#  value = var.create_bastion_host ? module.bastion_nlb[0].lb_dns_name : "bastion hosts opted out"
+#}
+output "public_ip_bastion_host" {
+  value = var.create_bastion_host ? aws_eip.bastion_host_eip[0].public_ip : "bastion hosts not opted"
 }
 output "r53_public_hosted_zone_id" {
   value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_zone.public_zones[0].zone_id : "Route53 public zone opted out"

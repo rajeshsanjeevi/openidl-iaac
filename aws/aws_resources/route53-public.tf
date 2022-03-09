@@ -16,10 +16,11 @@ resource "aws_route53_record" "nlb_bastion_r53_record" {
   zone_id = aws_route53_zone.public_zones[0].id
   name    = var.aws_env != "prod" ? "bastion.${var.aws_env}.${local.public_domain}" : "bastion.${local.public_domain}"
   type    = "A"
-  alias {
-    name                   = module.bastion_nlb[0].lb_dns_name
-    zone_id                = module.bastion_nlb[0].lb_zone_id
-    evaluate_target_health = true
-  }
+  ttl     = "300"
+  records = [aws_eip.bastion_host_eip[0].public_ip]
+  #alias {
+  #  name                   = module.bastion_nlb[0].lb_dns_name
+  #  zone_id                = module.bastion_nlb[0].lb_zone_id
+  #  evaluate_target_health = true
+  #}
 }
-

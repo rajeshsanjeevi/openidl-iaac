@@ -17,9 +17,12 @@ locals {
     managed_by  = "terraform"
   })
 
-  bastion_host_userdata = filebase64("resources/bootstrap-scripts/bastion_host.sh")
+  #bastion_host_userdata = filebase64("resources/bootstrap-scripts/bastion_host.sh")
   worker_nodes_userdata = filebase64("resources/bootstrap-scripts/worker_nodes.sh")
-
+  bastion_userdata = templatefile("resources/bootstrap-scripts/bastion_host.tftpl",
+    { eip_id = "${aws_eip.bastion_host_eip[0].allocation_id}",
+      region = "${var.aws_region}"
+    })
   #sub domain specific
   public_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
   private_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.domain_info.domain_name}" : "${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
@@ -92,11 +95,11 @@ locals {
     {rule="ssh-tcp", cidr_blocks = var.create_vpc ? "${var.vpc_cidr}" : "${data.aws_vpc.vpc[0].cidr_block}"}]
 
   dns_entries_list_non_prod = var.create_bastion_host ? {
-    "app-bastion.${var.aws_env}.${local.public_domain}" = module.bastion_nlb[0].lb_dns_name
+    "app-bastion.${var.aws_env}.${local.public_domain}" = aws_eip.bastion_host_eip[0].public_ip #module.bastion_nlb[0].lb_dns_name
     } : {}
 
   dns_entries_list_prod = var.create_bastion_host ? {
-    "app-bastion.${local.public_domain}" = module.bastion_nlb[0].lb_dns_name
+    "app-bastion.${local.public_domain}" = aws_eip.bastion_host_eip[0].public_ip #module.bastion_nlb[0].lb_dns_name
     } : {}
 
   app_eks_control_plane_sg_computed_ingress = var.create_bastion_host ? [

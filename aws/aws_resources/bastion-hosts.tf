@@ -1,4 +1,55 @@
 #Code specifics to provision bastion host in the network
+#Reserve EIP for the bastion host
+resource "aws_eip" "bastion_host_eip" {
+  count = var.create_bastion_host ? 1 : 0
+  vpc = true
+  tags = merge(local.tags,{ "name" = "${local.std_name}-bastion-eip"})
+}
+#Instance Profile for the bastion host
+resource "aws_iam_instance_profile" "bastion_host_instance_profile" {
+  count = var.create_bastion_host ? 1 : 0
+  name = "${local.std_name}-bastion-instance-profile"
+  role = aws_iam_role.bastion_host_iam_role[0].name
+  tags = merge(local.tags, { "name" = "${local.std_name}-bastion-instance-profile"})
+}
+#IAM role for the bastion host to assume
+resource "aws_iam_role" "bastion_host_iam_role" {
+  count = var.create_bastion_host ? 1 : 0
+  name = "${local.std_name}-bastion-host"
+  path ="/"
+  tags = merge(local.tags, { "name" ="${local.std_name}-bastion-host"})
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "sts:AssumeRole",
+                "sts:TagSession"
+            ],
+            "Principal": { "Service": "ec2.amazonaws.com"},
+            "Effect": "Allow",
+        }
+    ]
+  })
+  inline_policy {
+    name = "${local.std_name}-bastion-policy"
+    policy = jsonencode({
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "ec2:DescribeAddresses",
+            "ec2:AllocateAddress",
+            "ec2:DescribeInstances",
+            "ec2:AssociateAddress"
+          ],
+          "Resource": "*"
+        }
+      ]
+    })
+  }
+}
 #Security group for the bastion host
 module "bastion_sg" {
   count = var.create_bastion_host ? 1 : 0
@@ -27,7 +78,8 @@ module "bastion_host_key_pair_external" {
       "cluster_type" = "both"
   }, )
 }
-#Network load balancer used for the bastion host access 
+#Network load balancer used for the bastion host access
+/*
 module "bastion_nlb" {
   count = var.create_bastion_host ? 1 : 0
   source     = "terraform-aws-modules/alb/aws"
@@ -82,7 +134,7 @@ module "bastion_nlb" {
       "name"         = "tg-bst"
       "cluster_type" = "both"
   }, )
-}
+}*/
 #Autoscaling group used for the bastion host
 module "bastion_host_asg" {
   count = var.create_bastion_host ? 1 : 0
@@ -95,19 +147,19 @@ module "bastion_host_asg" {
   #auto scaling group specifics
   use_lt                    = true
   min_size                  = 1
-  max_size                  = 2
+  max_size                  = 1
   desired_capacity          = 1
   wait_for_capacity_timeout = 0
   default_cooldown          = 600
   health_check_type         = "EC2"
-  target_group_arns         = module.bastion_nlb[0].target_group_arns
+  #target_group_arns         = module.bastion_nlb[0].target_group_arns
   health_check_grace_period = 300
   vpc_zone_identifier       = var.create_vpc ? module.vpc[0].public_subnets : data.aws_subnet_ids.vpc_public_subnets.ids
   #service_linked_role_arn   = aws_iam_service_linked_role.autoscaling_svc_role.arn
   #launch template specifics
   image_id      = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
-  #iam_instance_profile_arn = aws_iam_instance_profile.bastion_host_profile.arn
+  iam_instance_profile_arn = aws_iam_instance_profile.bastion_host_instance_profile[0].arn
   ebs_optimized                        = false
   enable_monitoring                    = false
   key_name                             = module.bastion_host_key_pair_external[0].key_pair_key_name
@@ -115,7 +167,7 @@ module "bastion_host_asg" {
   instance_initiated_shutdown_behavior = "stop"
   disable_api_termination              = false
   placement_tenancy                    = "default"
-  user_data_base64                     = local.bastion_host_userdata
+  user_data_base64                     = base64encode(local.bastion_userdata)
   block_device_mappings = [
     {
       device_name = "/dev/xvda"
