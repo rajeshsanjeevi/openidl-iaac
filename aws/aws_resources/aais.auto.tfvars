@@ -7,8 +7,8 @@
 aws_account_number = ""
 aws_access_key = ""
 aws_secret_key = ""
-aws_user_arn = ""
-aws_role_arn = ""
+aws_user_arn = "arn:aws:iam::357396431244:user/terraform_dev_user"
+aws_role_arn = "arn:aws:iam::357396431244:role/tf_dev_automation"
 aws_region = "us-east-2"
 aws_external_id = "terraform"
 bastion_ssh_key = ""
@@ -42,7 +42,7 @@ private_subnets = ["172.18.3.0/24", "172.18.4.0/24", "172.18.6.0/24"]
 #The source ip_address|cidr_block should be enabled in bastion host's security group for incoming ssh traffic.
 #in bastion hosts security group for ssh traffic
 
-create_bastion_host = "false"
+create_bastion_host = "true"
 bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}]
 bastion_sg_egress =   [{rule="ssh-tcp", cidr_blocks = "3.237.88.84/32"}]
 
@@ -93,7 +93,7 @@ tfc_workspace_name_aws_resources = "aais-dev-aws-resources"
 s3_bucket_name_hds_analytics = "openidl-hdsdata"
 
 #Name of the S3 bucket used to store images(logos/icons)
-create_s3_bucket_public = "false"
+create_s3_bucket_public = "true"
 s3_bucket_name_logos = "openidl-public-logos"
 
 #Name of the S3 bucket to store access logs of S3 buckets and its objects
@@ -101,11 +101,12 @@ s3_bucket_name_access_logs = "access-logs"
 
 #KMS Key arn to be used when create_kms_keys is set to false
 create_kms_keys = "true"
-s3_kms_key_arn = ""
-eks_kms_key_arn = ""
-cloudtrail_cw_logs_kms_key_arn = ""
-vpc_flow_logs_kms_key_arn = ""
-secrets_manager_kms_key_arn = ""
+s3_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/2beec660-bc74-4a26-add4-12d9918d5efb"
+eks_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/2beec660-bc74-4a26-add4-12d9918d5efb"
+cloudtrail_cw_logs_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/2beec660-bc74-4a26-add4-12d9918d5efb"
+vpc_flow_logs_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/2beec660-bc74-4a26-add4-12d9918d5efb"
+secrets_manager_kms_key_arn = "arn:aws:kms:us-east-2:357396431244:key/2beec660-bc74-4a26-add4-12d9918d5efb"
+#Finally look into EBS volume kms key
 
 #Cloudwatch logs retention period (VPC Flow logs, EKS Logs and Cloudtrail Logs)
 cw_logs_retention_period = "90" #example 90 days
