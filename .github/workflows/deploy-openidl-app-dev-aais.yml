@@ -31,7 +31,7 @@ defaults:
 
 jobs:
   deploy-openidl-app:
-    environment: dev-aais
+    #environment: dev-aais
 
     name: Deploy openIDL application on dev-aais
     runs-on: ubuntu-latest
