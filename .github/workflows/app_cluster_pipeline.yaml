@@ -31,7 +31,7 @@ defaults:
 
 jobs:
   app-cluster-pipeline:
-    environment: ${{ github.event.inputs.org_name }}_${{ github.event.inputs.environment }}
+    #environment: ${{ github.event.inputs.org_name }}_${{ github.event.inputs.environment }}
     name: app-cluster-pipeline
     runs-on: ubuntu-latest
 
