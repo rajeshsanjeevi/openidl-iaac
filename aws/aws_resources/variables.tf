@@ -233,7 +233,7 @@ variable "userpool_recovery_mechanisms" {
 variable "userpool_allow_admin_create_user_only" {
   type        = bool
   description = "Is the administrator allowed to create user profiles or users can sign themselves via app"
-  default     = false
+  default     = true
 }
 variable "userpool_alais_attributes" {
   type        = list(string)

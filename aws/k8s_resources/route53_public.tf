@@ -5,8 +5,8 @@ resource "aws_route53_record" "app_nlb_r53_record" {
   name    = var.aws_env != "prod" ? "openidl.${var.aws_env}.${local.public_domain}" : "openidl.${local.public_domain}"
   type    = "A"
   alias {
-    name                   = data.aws_alb.app_nlb.dns_name
-    zone_id                = data.aws_alb.app_nlb.zone_id
+    name                   = data.aws_alb.app_nlb_external.dns_name
+    zone_id                = data.aws_alb.app_nlb_external.zone_id
     evaluate_target_health = true
   }
 }
@@ -17,8 +17,8 @@ resource "aws_route53_record" "public_aais_orderorg_r53_record" {
   name = var.aws_env != "prod" ? "*.ordererorg.${var.aws_env}.${local.public_domain}" : "*.ordererorg.${local.public_domain}"
   type = "A"
   alias {
-    name                   = data.aws_alb.blk_nlb.dns_name
-    zone_id                = data.aws_alb.blk_nlb.zone_id
+    name                   = data.aws_alb.blk_nlb_external.dns_name
+    zone_id                = data.aws_alb.blk_nlb_external.zone_id
     evaluate_target_health = true
   }
 }
@@ -29,8 +29,8 @@ resource "aws_route53_record" "public_common_r53_record" {
   name = var.aws_env != "prod" ? "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${local.public_domain}" : "*.${var.org_name}-net.${var.org_name}.${local.public_domain}"
   type = "A"
   alias {
-    name                   = data.aws_alb.blk_nlb.dns_name
-    zone_id                = data.aws_alb.blk_nlb.zone_id
+    name                   = data.aws_alb.blk_nlb_external.dns_name
+    zone_id                = data.aws_alb.blk_nlb_external.zone_id
     evaluate_target_health = true
   }
 }
@@ -41,8 +41,8 @@ resource "aws_route53_record" "public_data_call_r53_record" {
   name = var.aws_env != "prod" ? "data-call-app-service.${var.aws_env}.${local.public_domain}" : "data-call-app-service.${local.public_domain}"
   type = "A"
   alias {
-    name                   = data.aws_alb.app_nlb.dns_name
-    zone_id                = data.aws_alb.app_nlb.zone_id
+    name                   = data.aws_alb.app_nlb_external.dns_name
+    zone_id                = data.aws_alb.app_nlb_external.zone_id
     evaluate_target_health = true
   }
 }
@@ -53,8 +53,8 @@ resource "aws_route53_record" "public_insurance_manager_r53_record" {
   name = var.aws_env != "prod" ? "insurance-data-manager-service.${var.aws_env}.${local.public_domain}" : "insurance-data-manager-service.${local.public_domain}"
   type = "A"
   alias {
-    name                   = data.aws_alb.app_nlb.dns_name
-    zone_id                = data.aws_alb.app_nlb.zone_id
+    name                   = data.aws_alb.app_nlb_external.dns_name
+    zone_id                = data.aws_alb.app_nlb_external.zone_id
     evaluate_target_health = true
   }
 }
@@ -65,8 +65,8 @@ resource "aws_route53_record" "public_utilities_service_r53_record" {
   name = var.aws_env != "prod" ? "utilities-service.${var.aws_env}.${local.public_domain}" : "utilities-service.${local.public_domain}"
   type = "A"
   alias {
-    name                   = data.aws_alb.app_nlb.dns_name
-    zone_id                = data.aws_alb.app_nlb.zone_id
+    name                   = data.aws_alb.app_nlb_external.dns_name
+    zone_id                = data.aws_alb.app_nlb_external.zone_id
     evaluate_target_health = true
   }
 }

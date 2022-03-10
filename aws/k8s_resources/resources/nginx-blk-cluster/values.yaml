@@ -10,7 +10,7 @@
 ## Labels to apply to all resources
 ##
 commonLabels:
-  cluster: app-cluster
+  cluster: blk-cluster
   component: nginx-ingress-controller
 
 controller:
@@ -499,7 +499,7 @@ controller:
 
     ports:
       http: 80
-      https: 443
+      https: 8443
 
     targetPorts:
       http: http

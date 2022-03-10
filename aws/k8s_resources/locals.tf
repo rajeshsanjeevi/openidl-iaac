@@ -109,21 +109,21 @@ locals {
   }]
   #DNS entries prepared
   dns_entries_list_non_prod = {
-    "openidl.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
+    "openidl.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb_external.dns_name,
     "bastion.${var.aws_env}.${local.public_domain}" = var.create_bastion_host ? data.terraform_remote_state.base_setup.outputs.public_ip_bastion_host : null,
-    "*.ordererorg.${var.aws_env}.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
-    "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
-    "data-call-app-service.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
-    "insurance-data-manager-service.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
-    "utilities-service.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb.dns_name
+    "*.ordererorg.${var.aws_env}.${local.public_domain}" = data.aws_alb.blk_nlb_external.dns_name,
+    "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${local.public_domain}" = data.aws_alb.blk_nlb_external.dns_name,
+    "data-call-app-service.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb_external.dns_name,
+    "insurance-data-manager-service.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb_external.dns_name,
+    "utilities-service.${var.aws_env}.${local.public_domain}" = data.aws_alb.app_nlb_external.dns_name
   }
   dns_entries_list_prod = {
-    "openidl.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
+    "openidl.${local.public_domain}" = data.aws_alb.app_nlb_external.dns_name,
     "bastion.${local.public_domain}" = var.create_bastion_host? data.terraform_remote_state.base_setup.outputs.public_ip_bastion_host : null,
-    "*.ordererorg.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
-    "*.${var.org_name}-net.${var.org_name}.${local.public_domain}" = data.aws_alb.blk_nlb.dns_name,
-    "data-call-app-service.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
-    "insurance-data-manager-service.${local.public_domain}" = data.aws_alb.app_nlb.dns_name,
-    "utilities-service.${local.public_domain}" = data.aws_alb.app_nlb.dns_name
+    "*.ordererorg.${local.public_domain}" = data.aws_alb.blk_nlb_external.dns_name,
+    "*.${var.org_name}-net.${var.org_name}.${local.public_domain}" = data.aws_alb.blk_nlb_external.dns_name,
+    "data-call-app-service.${local.public_domain}" = data.aws_alb.app_nlb_external.dns_name,
+    "insurance-data-manager-service.${local.public_domain}" = data.aws_alb.app_nlb_external.dns_name,
+    "utilities-service.${local.public_domain}" = data.aws_alb.app_nlb_external.dns_name
   }
 }
