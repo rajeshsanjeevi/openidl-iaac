@@ -87,8 +87,8 @@
   shell: |
     aws secretsmanager put-resource-policy --secret-id {{ item }} --resource-policy file://aws_resource_policy.json --block-public-policy
   with_items:
-  - "{{ network.org_name }}-{{ env }}-mongodb-user-token"
-  - "{{ network.org_name }}-{{ env }}-mongodb-root-token"
+  - "{{ network.org_name }}"-"{{ env }}"-mongodb-user-token
+  - "{{ network.org_name }}"-"{{ env }}"-mongodb-root-token
 
 - name: Delete aws resource policy file
   file:
