@@ -83,17 +83,25 @@
   shell: |
     aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-mongodb-root-token --description "Mongodb root token" --secret-string {{ mongodb_root_token }}
 
-- name: Add resource policy to the secret mongodb user
+- name: Add resource policy to the secret created {{ item }}
   shell: |
-    aws secretsmanager put-resource-policy --secret-id {{ network.org_name }}-{{ env }}-mongodb-user --resource-policy file://aws_resource_policy.json --block-public-policy
+    aws secretsmanager put-resource-policy --secret-id {{ item }} --resource-policy file://aws_resource_policy.json --block-public-policy
+  with_items:
+  - "{{ network.org_name }}-{{ env }}-mongodb-user-token"
+  - "{{ network.org_name }}-{{ env }}-mongodb-root-token"
+  - "{{ network.org_name }}-{{ env }}-mongodb-user"
   
-- name: Add resource policy to the secret mongodb user token
-  shell: |
-    aws secretsmanager put-resource-policy --secret-id {{ network.org_name }}-{{ env }}-mongodb-user-token --resource-policy file://aws_resource_policy.json --block-public-policy
-  
-- name: Add resource policy to the secret mongodb root token
-  shell: |
-    aws secretsmanager put-resource-policy --secret-id {{ network.org_name }}-{{ env }}-mongodb-root-token --resource-policy file://aws_resource_policy.json --block-public-policy
+#- name: Add resource policy to the secret mongodb user
+#  shell: |
+#    aws secretsmanager put-resource-policy --secret-id {{ network.org_name }}-{{ env }}-mongodb-user --resource-policy file://aws_resource_policy.json --block-public-policy
+##  
+#- name: Add resource policy to the secret mongodb user token
+#  shell: |
+#    aws secretsmanager put-resource-policy --secret-id {{ network.org_name }}-{{ env }}-mongodb-user-token --resource-policy file://aws_resource_policy.json --block-public-policy
+#  
+#- name: Add resource policy to the secret mongodb root token
+#  shell: |
+#    aws secretsmanager put-resource-policy --secret-id {{ network.org_name }}-{{ env }}-mongodb-root-token --resource-policy file://aws_resource_policy.json --block-public-policy
   
 - name: Delete aws resource policy file
   file:
