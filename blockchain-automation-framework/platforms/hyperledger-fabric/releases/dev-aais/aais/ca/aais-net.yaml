@@ -8,8 +8,8 @@ metadata:
 spec:
   releaseName: aais-net-ca
   chart:
-    git: https://github.com/rajeshsanjeevi/openidl-iaac.git
-    ref: develop-jenkins
+    git: https://github.com/rajeshsanjeevi/openidl-iaac
+    ref: develop-singlevpc
     path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/ca    
   values:
     metadata:
@@ -27,7 +27,7 @@ spec:
       storagesize: 20Gi
     vault:
       role: vault-role
-      address: http://vault.dev.aais.internal.thetech.digital
+      address: http://vault.dev.internal.thetech.digital
       authpath: devaais-net-auth
       secretcert: aais/crypto/peerOrganizations/aais-net/ca?ca.aais-net-cert.pem
       secretkey: aais/crypto/peerOrganizations/aais-net/ca?aais-net-CA.key
@@ -42,4 +42,4 @@ spec:
     proxy:
       provider: haproxy
       type: peer
-      external_url_suffix: aais.dev.aais.thetech.digital
+      external_url_suffix: aais.dev.thetech.digital
