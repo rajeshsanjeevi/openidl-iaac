@@ -1,7 +1,6 @@
 ordererorg_domain: "thetech.digital"
 domain: "thetech.digital"
 internal_domain: "internal.thetech.digital"
-env: "dev"
 add_org: ""
 chaincode_version: ""
 node_type: "aais"
