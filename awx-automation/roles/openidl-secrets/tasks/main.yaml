@@ -20,6 +20,7 @@
     state: present
 
 - name: Download git repository content
+  no_log: true
   git:
     repo: "https://{{ gitrepo_username|urlencode() }}:{{ gitrepo_password|urlencode() }}@{{ gitrepo_name }}"
     dest: /tmp/openidl
@@ -28,7 +29,7 @@
     version: "{{ gitrepo_branch }}"
 
 - name: Prepare a pod
-  no_log: True
+  no_log: true
   shell: |
     kubectl run deploy-secrets -n openidl --image=amazonlinux:latest --command sleep infinity
     sleep 60
@@ -44,6 +45,7 @@
   register: pod_ready
 
 - name: Retrieve secrets from vault
+  no_log: true
   shell: |
     kubectl exec deploy-secrets -n openidl -- sh -c "./vault-scripts/pull-aws-vault-config.sh \
               -s {{ vault_secret_name }} -r {{ aws_region }} -a config-{{ org_name }} \
