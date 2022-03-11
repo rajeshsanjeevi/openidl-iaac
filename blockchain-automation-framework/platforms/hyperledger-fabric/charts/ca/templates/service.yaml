@@ -63,7 +63,7 @@ spec:
     nodePort: {{ $.Values.service.ports.tcp.nodeport }}
     {{- end }}
 
-{{- if eq $.Values.proxy.provider "haproxy" }}
+{{- if eq $.Values.proxy.provider "nginx" }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
