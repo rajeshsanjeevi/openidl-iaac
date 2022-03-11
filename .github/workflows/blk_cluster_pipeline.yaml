@@ -118,7 +118,7 @@ jobs:
           ansible-playbook vault-setup.yml -i ./inventory/ansible_provisioners \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
             -e "region=${{ env.region }}" \
-            -e "registry=${{ env.registry }}"
+            -e "registry=${{ env.registry }}" \
             -e "aws_account_number=${{ env.account }}" \
             -e "env=${{ github.event.inputs.environment }}"
 
