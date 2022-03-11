@@ -8,8 +8,8 @@ metadata:
 spec:
   releaseName: ordererorg-net-ca
   chart:
-    git: https://github.com/rajeshsanjeevi/openidl-iaac.git
-    ref: develop-jenkins
+    git: https://github.com/rajeshsanjeevi/openidl-iaac
+    ref: develop-singlevpc
     path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/ca    
   values:
     metadata:
@@ -26,7 +26,7 @@ spec:
       storagesize: 20Gi 
     vault:
       role: vault-role
-      address: http://vault.dev.aais.internal.thetech.digital
+      address: http://vault.dev.internal.thetech.digital
       authpath: devordererorg-net-auth
       secretcert: ordererorg/crypto/ordererOrganizations/ordererorg-net/ca?ca.ordererorg-net-cert.pem
       secretkey: ordererorg/crypto/ordererOrganizations/ordererorg-net/ca?ordererorg-net-CA.key
@@ -41,4 +41,4 @@ spec:
     proxy:
       provider: haproxy
       type: orderer
-      external_url_suffix: ordererorg.dev.aais.thetech.digital
+      external_url_suffix: ordererorg.dev.thetech.digital
