@@ -160,7 +160,8 @@ jobs:
             -e "gitops_repo_user=${{ env.repo_user }}" \
             -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
-            -e "registry=${{ env.registry }}"
+            -e "registry=${{ env.registry }}" \
+            -e "env=${{ github.event.inputs.environment }}"
 
       - name: Reset node
         if: github.event.inputs.action == 'reset'
@@ -176,7 +177,8 @@ jobs:
             -e "gitops_repo_user=${{ env.repo_user }}" \
             -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
-            -e "registry=${{ env.registry }}"
+            -e "registry=${{ env.registry }}" \
+            -e "env=${{ github.event.inputs.environment }}"
 
       - name: Deploy chaincode
         if: github.event.inputs.action == 'chaincode'
@@ -195,7 +197,8 @@ jobs:
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "extra_vars=${{ github.event.inputs.extra_vars }}" \
             -e "chaincode_version=v${{ github.event.inputs.chaincode_version }}" \
-            -e "registry=${{ env.registry }}"
+            -e "registry=${{ env.registry }}" \
+            -e "env=${{ github.event.inputs.environment }}"
 
       - name: Deploy new_org prerequisites
         if: github.event.inputs.action == 'new_org'
@@ -213,7 +216,8 @@ jobs:
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "org_json=${{ github.event.inputs.org_json }}" \
-            -e "registry=${{ env.registry }}"
+            -e "registry=${{ env.registry }}" \
+            -e "env=${{ github.event.inputs.environment }}"
 
       - name: Deploy new_org
         if: github.event.inputs.action == 'new_org'
@@ -232,7 +236,8 @@ jobs:
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "org_json=${ORDERER_TLS_CERT}" \
-            -e "registry=${{ env.registry }}"
+            -e "registry=${{ env.registry }}" \
+            -e "env=${{ github.event.inputs.environment }}"
 
       - name: Deploy add_new_channel
         if: github.event.inputs.action == 'add_new_channel'
@@ -250,7 +255,8 @@ jobs:
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "extra_vars=${{ github.event.inputs.extra_vars }}" \
-            -e "registry=${{ env.registry }}"
+            -e "registry=${{ env.registry }}" \
+            -e "env=${{ github.event.inputs.environment }}"
 
       - name: Deploy add_new_org
         if: github.event.inputs.action == 'add_new_org'
@@ -270,7 +276,8 @@ jobs:
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "org_json=${ORG_MSP}" \
             -e "add_org=${{ github.event.inputs.add_org_name }}" \
-            -e "registry=${{ env.registry }}"
+            -e "registry=${{ env.registry }}" \
+            -e "env=${{ github.event.inputs.environment }}"
 
       - name: Deploy join_peer
         if: github.event.inputs.action == 'join_peer'
@@ -287,11 +294,13 @@ jobs:
             -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
-            -e "registry=${{ env.registry }}"
+            -e "registry=${{ env.registry }}" \
+            -e "env=${{ github.event.inputs.environment }}"
 
       - name: Pre-register users for application
         if: github.event.inputs.action == 'register_users'
         run: |
           ansible-playbook pre-register-users.yml -i ./inventory/ansible_provisioners \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml"
-            -e "aws_account_number=${{ env.account }}"
+            -e "aws_account_number=${{ env.account }}" \
+            -e "env=${{ github.event.inputs.environment }}"
