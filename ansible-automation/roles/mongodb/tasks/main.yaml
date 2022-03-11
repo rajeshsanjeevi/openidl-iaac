@@ -2,7 +2,7 @@
 - name: Generate aws resource policy from template aws_resource_policy.json.j2
   template:
     src: templates/aws_resource_policy.json.j2
-    dest: ./aws_resource_policy.json
+    dest: "./aws_resource_policy.json"
     mode: 0755
 
 - name: Create a k8s namespace
