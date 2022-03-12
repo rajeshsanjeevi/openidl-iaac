@@ -119,6 +119,7 @@
           args:
           - |-
             #!/bin/bash -e
+            set -x
             export LOCAL_PATH=/home/gitrepo
             git clone https://{{ gitops_repo_user|urlencode() }}:${PAT}@{{ gitops_repo_url|urlencode() }} -b {{ gitops_repo_branch }} $LOCAL_PATH
             mkdir /home/blockchain-automation-framework/build
