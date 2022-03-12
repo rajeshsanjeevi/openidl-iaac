@@ -33,20 +33,20 @@
       data:
         org.creds: "{{ org_json | default('') }}"
 
-- name: Create secret for aws credentials
-  no_log: true
-  community.kubernetes.k8s:
-    state: present
-    definition: 
-      apiVersion: v1
-      kind: Secret
-      type: Opaque             
-      metadata:
-        name: openidl-baf-aws
-        namespace: openidl-baf     
-      data:
-        ID: "{{ access_id | b64encode }}"
-        KEY: "{{ access_key | b64encode }}"
+#- name: Create secret for aws credentials
+#  no_log: true
+#  community.kubernetes.k8s:
+#    state: present
+#    definition:
+#      apiVersion: v1
+#      kind: Secret
+#      type: Opaque
+#      metadata:
+#        name: openidl-baf-aws
+#        namespace: openidl-baf
+#      data:
+#        ID: "{{ access_id | b64encode }}"
+#        KEY: "{{ access_key | b64encode }}"
 
 - name: Create secret for github token
   no_log: true
@@ -119,7 +119,6 @@
           args:
           - |-
             #!/bin/bash -e
-            set -x
             export LOCAL_PATH=/home/gitrepo
             git clone https://{{ gitops_repo_user|urlencode() }}:${PAT}@{{ gitops_repo_url|urlencode() }} -b {{ gitops_repo_branch }} $LOCAL_PATH
             mkdir /home/blockchain-automation-framework/build

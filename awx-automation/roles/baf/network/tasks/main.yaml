@@ -34,20 +34,20 @@
       data:
         org.creds: "{{ org_json | default('') }}"
 
-- name: Create secret for aws credentials
-  no_log: true
-  community.kubernetes.k8s:
-    state: present
-    definition: 
-      apiVersion: v1
-      kind: Secret
-      type: Opaque             
-      metadata:
-        name: openidl-baf-aws
-        namespace: openidl-baf     
-      data:
-        ID: "{{ access_id | b64encode }}"
-        KEY: "{{ access_key | b64encode }}"
+#- name: Create secret for aws credentials
+#  no_log: true
+#  community.kubernetes.k8s:
+#    state: present
+#    definition:
+#      apiVersion: v1
+#      kind: Secret
+#      type: Opaque
+#      metadata:
+#        name: openidl-baf-aws
+#        namespace: openidl-baf
+#      data:
+#        ID: "{{ access_id | b64encode }}"
+#        KEY: "{{ access_key | b64encode }}"
 
 - name: Create secret for github token
   no_log: true
@@ -85,23 +85,23 @@
         - name: baf
           image: "{{ registry }}/openidl-baf"
           env:
-          - name: AWS_ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                name: openidl-baf-aws
-                key: ID
-          - name: AWS_SECRET_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: openidl-baf-aws
-                key: KEY
+          #- name: AWS_ACCESS_KEY_ID
+          #  valueFrom:
+          #    secretKeyRef:
+          #      name: openidl-baf-aws
+          #      key: ID
+          #- name: AWS_SECRET_ACCESS_KEY
+          #  valueFrom:
+          #    secretKeyRef:
+          #      name: openidl-baf-aws
+          #      key: KEY
           - name: PAT
             valueFrom:
               secretKeyRef:
                 name: openidl-github-pat
                 key: PAT
-          - name: AWS_REGION
-            value: "{{ region }}"
+          #- name: AWS_REGION
+          #  value: "{{ region }}"
           - name: ACTION
             value: "{{ action }}"
           - name: ORG_NAME
@@ -124,6 +124,15 @@
             git clone https://{{ gitops_repo_user|urlencode() }}:${PAT}@{{ gitops_repo_url|urlencode() }} -b {{ gitops_repo_branch }} $LOCAL_PATH
             mkdir /home/blockchain-automation-framework/build
             touch /home/blockchain-automation-framework/build/orderer1.crt
+            aws configure set aws_access_key_id {{ access_id }} --profile baf-user
+            aws configure set aws_secret_access_key {{ access_key }} --profile baf-user
+            aws configure set region {{ region }} --profile baf-user
+            aws configure set external_id {{ external_id }} --profile baf-user
+            aws configure set external_id {{ external_id }} --profile baf-role
+            aws configure set source_profile baf-user --profile baf-role
+            aws configure set role_arn {{ iam_role }} --profile baf-role
+            export AWS_PROFILE=baf-role
+            aws sts get-caller-identity
             aws eks --region {{ region }} update-kubeconfig --name {{ cluster_name }}
             cd $LOCAL_PATH
             ansible-playbook blockchain-automation-framework/platforms/shared/configuration/environment-setup.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true"
