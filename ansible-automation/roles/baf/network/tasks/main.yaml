@@ -124,9 +124,9 @@
             git clone https://{{ gitops_repo_user|urlencode() }}:${PAT}@{{ gitops_repo_url|urlencode() }} -b {{ gitops_repo_branch }} $LOCAL_PATH
             mkdir /home/blockchain-automation-framework/build
             touch /home/blockchain-automation-framework/build/orderer1.crt
-            aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID} --profile baf-user
-            aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY} --profile baf-user
-            aws configure set region ${AWS_REGION} --profile baf-user
+            aws configure set aws_access_key_id {{ access_id }} --profile baf-user
+            aws configure set aws_secret_access_key {{ access_key }} --profile baf-user
+            aws configure set region {{ region }} --profile baf-user
             aws configure set external_id {{ external_id }} --profile baf-user
             aws configure set external_id {{ external_id }} --profile baf-role
             aws configure set source_profile baf-user --profile baf-role
