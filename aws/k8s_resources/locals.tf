@@ -16,6 +16,7 @@ locals {
   private_domain = "${var.domain_info.sub_domain_name}" == "" ? "${var.aws_env}" : "${var.aws_env}.${var.domain_info.sub_domain_name}"
 
   #Application cluster (eks) config-map (aws auth) - iam user to map
+  ##This is required to remove once BAF IAM role based is enabled fully.
   app_cluster_map_users = [{
     userarn = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
     username = "admin"
@@ -23,6 +24,7 @@ locals {
   }]
 
   #Blockchain cluster (eks) config-map (aws auth) - iam user to map
+  ##This is required to remove once BAF IAM role based is enabled fully.
   blk_cluster_map_users = [{
     userarn = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
     username = "admin"
@@ -53,6 +55,14 @@ locals {
         "system:masters",
         "system:nodes",
         "system:bootstrappers"]
+  },
+  {
+      rolearn  = data.terraform_remote_state.base_setup.outputs.baf_automation_role_arn
+      username = "admin"
+      groups = [
+        "system:masters",
+        "system:nodes",
+        "system:bootstrappers"]
   }]
   #Blockchain cluster (eks) config-map (aws auth) - iam roles to map
   blk_cluster_map_roles = [
@@ -64,7 +74,7 @@ locals {
         "system:nodes",
         "system:bootstrappers"]
   },
-    {
+  {
       rolearn  = data.terraform_remote_state.base_setup.outputs.eks_admin_role_arn
       username = "admin"
       groups = [
@@ -74,6 +84,14 @@ locals {
   },
   {
       rolearn  = data.terraform_remote_state.base_setup.outputs.git_actions_admin_role_arn
+      username = "admin"
+      groups = [
+        "system:masters",
+        "system:nodes",
+        "system:bootstrappers"]
+  },
+  {
+      rolearn  = data.terraform_remote_state.base_setup.outputs.baf_automation_role_arn
       username = "admin"
       groups = [
         "system:masters",
