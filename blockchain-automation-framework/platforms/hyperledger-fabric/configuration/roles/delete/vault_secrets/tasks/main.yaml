@@ -82,7 +82,7 @@
   environment:
     VAULT_ADDR: "{{ item.vault.url }}"
     VAULT_TOKEN: "{{ item.vault.root_token }}"
-
+  ignore_errors: yes
 ############################################################################################
 # This task deletes crypto materials from vault
 - name: Delete Crypto for orderers
@@ -102,6 +102,7 @@
     VAULT_ADDR: "{{ item.vault.url }}"
     VAULT_TOKEN: "{{ item.vault.root_token }}"
   when: component_type == 'orderer'
+  ignore_errors: yes
 
 ############################################################################################
 # This task deletes crypto materials from vault
@@ -128,6 +129,7 @@
     VAULT_ADDR: "{{ item.vault.url }}"
     VAULT_TOKEN: "{{ item.vault.root_token }}"
   when: component_type == 'peer'
+  ignore_errors: yes
 
 - name: Remove all endorsers
   no_log: true
