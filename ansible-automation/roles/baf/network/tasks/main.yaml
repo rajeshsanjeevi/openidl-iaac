@@ -132,6 +132,7 @@
             aws configure set source_profile baf-user --profile baf-role
             aws configure set role_arn {{ iam_role }} --profile baf-role
             export AWS_PROFILE=baf-role
+            aws sts get-caller-identity
             aws eks --region {{ region }} update-kubeconfig --name {{ cluster_name }}
             cd $LOCAL_PATH
             ansible-playbook blockchain-automation-framework/platforms/shared/configuration/environment-setup.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true"
