@@ -4,6 +4,7 @@ metadata:
   name: {{ sc_name }}
 provisioner: kubernetes.io/aws-ebs
 allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
 parameters:
   type: gp2
   encrypted: "true"
