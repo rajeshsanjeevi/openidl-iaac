@@ -139,7 +139,7 @@
               POD_NAME=$(kubectl -n ${ORG_NAME}-net get pods --selector=name=ca-tools --output=jsonpath={.items..metadata.name})
               mkdir -p $LOCAL_PATH/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/channel-artifacts
               kubectl -n ${ORG_NAME}-net cp $POD_NAME:/crypto-config $LOCAL_PATH/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config
-              cp $LOCAL_PATH/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config/peerOrganizations/${ORG_NAME}-net/peers/peer0.${ORG_NAME}-net/msp/cacerts/ca.${ORG_NAME}-net.${ORG_NAME}.${ENV}.${DOMAIN}-8443.pem /home/blockchain-automation-framework/build/${ORG_NAME}-ca.crt
+              cp $LOCAL_PATH/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config/peerOrganizations/${ORG_NAME}-net/peers/peer0.${ORG_NAME}-net/msp/cacerts/ca-${ORG_NAME}-net-${ORG_NAME}.${ENV}.${DOMAIN}-8443.pem /home/blockchain-automation-framework/build/${ORG_NAME}-ca.crt
               if [ -z $ORDERERORG ]; then
                 POD_NAME=$(kubectl -n ordererorg-net get pods --selector=name=ca-tools --output=jsonpath={.items..metadata.name})
                 kubectl -n ordererorg-net cp $POD_NAME:/crypto-config /home/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config
@@ -148,7 +148,7 @@
             fi
             if [ $ACTION = "deploy_network" ]; then
               ansible-playbook blockchain-automation-framework/platforms/shared/configuration/kubernetes-env-setup.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true"
-              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/deploy-network.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=false" -e "no_ansible_log=false" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/deploy-network.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=false" -e "no_ansible_log=true" $EXTRA_VARS
             elif [ $ACTION = "chaincode" ]; then
               ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/chaincode-ops.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true" -e "add_peer=true" $EXTRA_VARS
             elif [ $ACTION = "reset" ]; then
@@ -201,19 +201,19 @@
   debug:
     msg: '{{ baf_logs.stdout_lines }}'
 
-- name: Delete baf pod
-  community.kubernetes.k8s:
-    name: openidl-baf
-    namespace: openidl-baf
-    api_version: v1
-    kind: Pod
-    state: absent
-    wait: yes
+#- name: Delete baf pod
+#  community.kubernetes.k8s:
+#    name: openidl-baf
+#    namespace: openidl-baf
+#    api_version: v1
+#    kind: Pod
+#    state: absent
+#    wait: yes
 
-- name: Delete k8s namespace
-  community.kubernetes.k8s:
-    name: openidl-baf
-    api_version: v1
-    kind: Namespace
-    state: absent
-    wait: yes
+#- name: Delete k8s namespace
+#  community.kubernetes.k8s:
+#    name: openidl-baf
+#    api_version: v1
+#    kind: Namespace
+#    state: absent
+#    wait: yes
