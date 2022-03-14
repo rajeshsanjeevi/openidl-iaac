@@ -7,9 +7,4 @@ parameters:
   type: gp2
   encrypted: "true"
 volumeBindingMode: WaitForFirstConsumer
-allowedTopologies:
-- matchLabelExpressions:
-  - key: failure-domain.beta.kubernetes.io/zone
-    values:
-    - "{{ kubernetes.region }}a"
-    - "{{ kubernetes.region }}b"
+
