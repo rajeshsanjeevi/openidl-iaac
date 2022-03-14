@@ -117,7 +117,7 @@
 ############################################################################################
 # This task writes the policies to the vault
 - name: Write Policy to Vault
-  no_log: false 
+  no_log: true 
   shell: |
     vault write sys/policy/vault-crypto-{{ component_type }}-{{ component_name }}-ro policy="@./build/vault-crypto-{{ component_name | lower }}-ro.hcl"
   environment:
