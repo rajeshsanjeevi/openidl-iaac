@@ -6,5 +6,6 @@ provisioner: kubernetes.io/aws-ebs
 parameters:
   type: gp2
   encrypted: "true"
+allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
 
