@@ -7,7 +7,10 @@
       shell: |
         aws secretsmanager get-secret-value --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key --version-stage AWSCURRENT | jq -r .SecretString
       register: vault
-
+    
+    - debug:
+          msg: "{{ vault.stdout }}"
+          
     - include_role:
         name: "baf/network"
       vars:
