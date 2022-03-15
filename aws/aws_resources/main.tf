@@ -2,15 +2,3 @@
 #terraform {
 #  backend "s3" {}
 #}
-
-#This code is when backend is TFC/TFE
-terraform {
-  backend "remote" {
-    hostname = "app.terraform.io"
-    organization = "openidl-aais"
-    token = ""
-    workspaces {
-      name = "aais-dev-k8s-resources"
-    }
-  }
-}
