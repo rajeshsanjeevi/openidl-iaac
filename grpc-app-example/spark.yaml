@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: nginx-ingress
-    namespace: web
+    name: spark
+    namespace: spark-apps
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /
       kubernetes.io/ingress.class: nginx
@@ -16,7 +16,7 @@ spec:
       - pathType: Prefix
         backend:
          service:
-           name: nginx-svc
+           name: spark-pi-test-1647298166764216514-ui-svc
            port:
-            number: 80
-        path: /nginx
+            number: 4040
+        path: /
