@@ -17,7 +17,7 @@
       "Principal": {
         "AWS": [
             "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-openidl-apps",
-	        "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-baf-automation"
+    	    "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-baf-automation1"
 			]
       },
       "Action": [
@@ -38,9 +38,9 @@
 			    "aws:PrincipalArn": [
 			        "arn:aws:iam::{{ aws_account_number }}:root",
 			        "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-gitactions-admin",
-                    "arn:aws:iam::{{ aws_account_number }}:role/tf_automation",
-				    "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-openidl-apps",
-				    "arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-baf-automation"
+              		"arn:aws:iam::{{ aws_account_number }}:role/tf_automation",
+    				"arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-openidl-apps",
+	    			"arn:aws:iam::{{ aws_account_number }}:role/{{ network.org_name }}-{{ env }}-baf-automation1"
 				]
 			}
 		}
