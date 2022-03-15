@@ -42,6 +42,6 @@ spec:
         tcp:
           port: 7054
     proxy:
-      provider: nginx
+      provider: haproxy
       type: peer
       external_url_suffix: aais.dev.thetech.digital
