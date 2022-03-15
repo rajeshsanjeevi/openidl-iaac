@@ -10,7 +10,7 @@ terraform {
     organization = "openidl-aais"
     token = ""
     workspaces {
-      name = "aais-dev-k8s-resources"
+      name = "aais-dev-aws-resources"
     }
   }
 }
