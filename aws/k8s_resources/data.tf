@@ -22,35 +22,38 @@ data "terraform_remote_state" "base_setup" {
 #-------------------------------------------------------------------------------------------------------------------
 #The following code remains same irrespective of backend
 #Reading NLB setup by ingress controller deployed in app EKS
+
 data aws_alb "app_nlb_external" {
   tags = {
     "kubernetes.io/cluster/${local.app_cluster_name}" = "owned",
     "kubernetes.io/service-name" = "nginx/nginx-ingress-ingress-nginx-nginx"
   }
-  depends_on = [helm_release.app_nginx]
+  depends_on = [helm_release.app_haproxy]
 }
+/*
 data aws_alb "app_nlb_internal" {
   tags = {
     "kubernetes.io/cluster/${local.app_cluster_name}" = "owned",
     "kubernetes.io/service-name" = "nginx/nginx-ingress-ingress-nginx-nginx-internal"
   }
   depends_on = [helm_release.app_nginx]
-}
+}*/
 #Reading NLB setup by ingress controller deployed in blk EKS
 data aws_alb "blk_nlb_external" {
   tags = {
     "kubernetes.io/cluster/${local.blk_cluster_name}" = "owned",
     "kubernetes.io/service-name" = "nginx/nginx-ingress-ingress-nginx-nginx"
   }
-  depends_on = [helm_release.blk_nginx]
+  depends_on = [helm_release.blk_haproxy]
 }
+/*
 data aws_alb "blk_nlb_internal" {
   tags = {
     "kubernetes.io/cluster/${local.blk_cluster_name}" = "owned",
     "kubernetes.io/service-name" = "nginx/nginx-ingress-ingress-nginx-nginx-internal"
   }
   depends_on = [helm_release.blk_nginx]
-}
+}*/
 #Reading application cluster info
 data "aws_eks_cluster" "app_eks_cluster" {
   name = data.terraform_remote_state.base_setup.outputs.app_cluster_name

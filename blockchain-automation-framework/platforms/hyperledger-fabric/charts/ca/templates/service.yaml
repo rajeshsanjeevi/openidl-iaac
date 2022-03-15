@@ -63,7 +63,7 @@ spec:
     nodePort: {{ $.Values.service.ports.tcp.nodeport }}
     {{- end }}
 
-{{- if eq $.Values.proxy.provider "nginx" }}
+{{- if eq $.Values.proxy.provider "haproxy" }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -71,9 +71,9 @@ metadata:
   name: {{ $.Values.server.name }}
   namespace:  {{ $.Values.metadata.namespace }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    #nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "haproxy"
+    ingress.kubernetes.io/ssl-passthrough: "true"
+    #ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
   - host: {{ $.Values.server.name }}.{{ $.Values.metadata.namespace }}.{{ $.Values.proxy.external_url_suffix }}

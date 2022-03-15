@@ -9,6 +9,8 @@ locals {
       environment = var.aws_env
       managed_by  = "terraform"
       node_type   = var.org_name
+      owner       = var.aws_role_arn
+      user        = var.aws_user_arn
   })
 }
 

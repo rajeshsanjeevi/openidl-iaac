@@ -41,6 +41,6 @@ spec:
         tcp:
           port: 7054
     proxy:
-      provider: nginx
+      provider: haproxy
       type: orderer
       external_url_suffix: ordererorg.dev.thetech.digital
